@@ -1,7 +1,16 @@
 # GRACe_repo
 Repository for the GRACe Engine addon for Home Assistant
 
-Installation instructions
+Take back your time, focus on your garden, while GRACe looks after your regulatory compliance
+
+* Annual reporting / stock-take
+* Monthly summaries for the Medicinal Cannabis Agency
+* Minimal effort for plant tracking
+* Easy Chain of Custody creation (WIP)
+* Automatic emails (coming soon)
+
+
+## Installation instructions
 
 Go to Home Assistant Settings -> Add-ons -> Add-on Store
 

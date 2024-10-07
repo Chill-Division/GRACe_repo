@@ -1,3 +1,8 @@
+## 0.9.2
+
+- Helpful info explaining what each page is for
+- Clarified what's incomplete / coming soon
+
 ## 0.9.1
 
 - Minor tweaks to the cosmetics

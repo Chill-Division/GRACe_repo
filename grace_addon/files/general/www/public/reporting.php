@@ -27,6 +27,7 @@
 
         <section>
             <h2>Transaction Reports</h2>
+	    <p>These are pre-formatted and ready to send to the Agency</p>
             <ul>
                 <li><a href="this_months_flower_transactions.php">This Month's Out Flower</a></li>
                 <li><a href="last_months_flower_transactions.php">Last Month's Out Flower</a></li>

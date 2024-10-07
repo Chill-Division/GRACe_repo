@@ -22,25 +22,28 @@
         <section>
             <h2>Plant / Product Management</h2>
             <ul>
-                <li><a href="list_all_genetics.php">List All Genetics</a></li>
-                <li><a href="receive_genetics.php">Receive Plants / Take Clones</a></li>
+                <li><a href="list_all_genetics.php">List All Plants</a><br />
+		View current and historical plants, live / harvested / destroyed</li>
+                <li><a href="receive_genetics.php">Receive Plants / Take Clones</a><br />
+		Newly added plants, such as from a license holder, Form D declaration, or clones taken internally.</li>
                 <li><a href="harvest_plants.php">Harvest/Destroy plants</a></li>
-                <li><a href="record_dry_weight.php">Record Dry Weight</a></li>
+                <li><a href="record_dry_weight.php">Record Dry Weight</a><br />
+		All dry weight flower changes, such as sending for testing, destruction, or harvesting into inventory</li>
             </ul>
         </section>
 
         <section>
             <h2>Shipping</h2>
             <ul>
-                <li><a href="generate_shipping_manifest.php">Generate Shipping Manifest</a></li>
-                <li><a href="amend_complete_manifest.php">Amend / Complete Manifest</a></li>
+                <li><a href="generate_shipping_manifest.php">Generate Shipping Manifest</a> - Incomplete</li>
+                <li><a href="amend_complete_manifest.php">Amend / Complete Manifest</a> - Coming soon</li>
             </ul>
         </section>
 
         <section>
             <h2>Recalls</h2>
             <ul>
-                <li><a href="initiate_recall.php">Initiate Recall</a></li>
+                <li><a href="initiate_recall.php">Initiate Recall</a> - Coming soon</li>
             </ul>
         </section>
 

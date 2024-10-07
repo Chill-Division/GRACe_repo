@@ -22,34 +22,37 @@
         <section>
             <h2>Contact Management</h2>
             <ul>
-                <li><a href="add_verified_company.php">Add Verified Company</a></li>
+                <li><a href="add_verified_company.php">Add Verified Company</a><br />
+		Add a company you'll send flower / plants to, such as an offtake buyer or testing lab.</li>
             </ul>
         </section>
 
         <section>
             <h2>Genetics Management</h2>
             <ul>
-                <li><a href="add_new_genetics.php">Add New Genetics</a></li>
+                <li><a href="add_new_genetics.php">Add New Genetics</a><br />
+		Any genetics you'll have as either plants/flower</li>
             </ul>
         </section>
 
         <section>
             <h2>Record management</h2>
             <ul>
-                <li><a href="police_vet_check_records.php">Police Vet Check Records</a></li>
+                <li><a href="police_vet_check_records.php">Police Vet Check Records</a> - Coming soon</li>
             </ul>
             <ul>
-                <li><a href="sops.php">Manage SOPs</a></li>
+                <li><a href="sops.php">Manage SOPs</a> - Coming soon</li>
             </ul>
             <ul>
-                <li><a href="offtake_agreements.php">Offtake Agreements</a></li>
+                <li><a href="offtake_agreements.php">Offtake Agreements</a> - Coming soon</li>
             </ul>
         </section>
 
         <section>
             <h2>System Management</h2>
             <ul>
-                <li><a href="own_company.php">Update company information</a></li>
+                <li><a href="own_company.php">Update company information</a><br />
+		Enter your own company information, so we can populate CoC docs etc</li>
             </ul>
 	    <ul>
 		<li><a href="show_database.php">Dump database</a></li>
