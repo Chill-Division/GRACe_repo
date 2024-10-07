@@ -1,8 +1,8 @@
 name: "GRACe Portal"
-description: "GRACe Portal for Home Assistant"
+description: "Growers Regulatory Assistance and Compliance engine"
 url: "https://www.chilldivision.co.nz"
 codenotary: josiah@chilldivision.co.nz
-version: "0.9"
+version: "0.9.1"
 slug: "grace_addon"
 panel_icon: mdi:cannabis
 init: false
