@@ -1,3 +1,8 @@
+## 0.9.4
+
+- Added Docs instructions
+- Minor page renaming in Reporting
+
 ## 0.9.3
 
 - Fixed outgoing to now be plants + flower, in accordance with regulatory reporting requirements
