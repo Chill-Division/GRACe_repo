@@ -23,7 +23,7 @@ You may need to tap the 3-button menu in the upper-right and choose "Check for u
 
 ![image](https://github.com/user-attachments/assets/ba8b20de-f414-4e8d-834c-eba6a62f817d)
 
-Tap the new add-on, select "Install", then tap "Show in sidebar", and tap "Start".
+Tap the new add-on, select "Install", then tap "Show in sidebar", "Auto update" and tap "Start".
 
 ![image](https://github.com/user-attachments/assets/72cde961-1459-4805-ae29-f1a4f6ef1b47)
 

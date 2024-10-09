@@ -12,7 +12,7 @@ Backups are also taken as part of the Home Assistant backup regime, but ensuring
 
 - Install the add-on
 - Select "Show in sidebar" for easier access
-- Ensure "Start on boot" is ticked
+- Ensure "Start on boot" is ticked, as well as "Auto update"
 - Tap "Start" to start the add-on
 - Tap "Open WebUI" to go to the GRACe Portal
 
