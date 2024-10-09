@@ -10,7 +10,6 @@
                 <li><a href="tracking.php">Plant Tracking</a></li>
                 <li><a href="reporting.php">Reporting</a></li>
                 <li><a href="administration.php">Administration</a></li>
-		<li><a href="logout.php">Logout</a></li>
                 <li><a href="#" id="theme_switcher">Toggle theme</a></li>
             </ul>
         </nav>

@@ -22,12 +22,12 @@
         <section>
             <h2>Plant / Product Management</h2>
             <ul>
-                <li><a href="list_all_genetics.php">List All Plants</a><br />
+                <li><a href="list_all_genetics.php">List all plants</a><br />
 		View current and historical plants, live / harvested / destroyed</li>
-                <li><a href="receive_genetics.php">Receive Plants / Take Clones</a><br />
-		Newly added plants, such as from a license holder, Form D declaration, or clones taken internally.</li>
-                <li><a href="harvest_plants.php">Harvest/Destroy plants</a></li>
-                <li><a href="record_dry_weight.php">Record Dry Weight</a><br />
+                <li><a href="receive_genetics.php">Receive plants or take clones</a><br />
+		Newly added plants, such as from a license holder, Form D declaration, or clones taken from a mother plant.</li>
+                <li><a href="harvest_plants.php">Harvest/Destroy/Send plants</a></li>
+                <li><a href="record_dry_weight.php">Record dry weight change</a><br />
 		All dry weight flower changes, such as sending for testing, destruction, or harvesting into inventory</li>
             </ul>
         </section>

@@ -1,3 +1,11 @@
+## 0.9.3
+
+- Fixed outgoing to now be plants + flower, in accordance with regulatory reporting requirements
+- WIP: CoC generation improvements, still incomplete
+- CoC save as PDF now too
+- Tidied some page titles
+- Removed the logout function (legacy), no longer needed
+
 ## 0.9.2
 
 - Helpful info explaining what each page is for

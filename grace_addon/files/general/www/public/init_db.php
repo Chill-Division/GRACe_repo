@@ -1,10 +1,4 @@
 <?php
-/**
- * init_db.php
- *
- * This script initializes the SQLite database by creating necessary tables.
- * It should be included or required in scripts where database access is needed.
- */
 
 function initializeDatabase($dbPath = '/data/grace.db') {
     try {
@@ -54,7 +48,9 @@ function initializeDatabase($dbPath = '/data/grace.db') {
                 status TEXT CHECK(status IN ('Growing', 'Harvested', 'Destroyed', 'Sent')),
                 date_created DATETIME,
                 date_harvested DATETIME,
-                FOREIGN KEY (genetics_id) REFERENCES Genetics(id) ON DELETE SET NULL ON UPDATE CASCADE
+                company_id INTEGER,
+                FOREIGN KEY (genetics_id) REFERENCES Genetics(id) ON DELETE SET NULL ON UPDATE CASCADE,
+                FOREIGN KEY (company_id) REFERENCES Companies(id) ON DELETE SET NULL ON UPDATE CASCADE
             );",
 
             // Flower
@@ -116,18 +112,13 @@ function initializeDatabase($dbPath = '/data/grace.db') {
             $pdo->exec($sql);
         }
 
-        // Return the $pdo object
         return $pdo;
 
-
-        // Optionally, you can output a success message or log it
-        // echo "Database initialized successfully.";
     } catch (PDOException $e) {
-        // Handle PDO exceptions
         die("Database error: " . $e->getMessage());
     } catch (Exception $e) {
-        // Handle other exceptions
         die("Initialization error: " . $e->getMessage());
     }
 }
+
 ?>

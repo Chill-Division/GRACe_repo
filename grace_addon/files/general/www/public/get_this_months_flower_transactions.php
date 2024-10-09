@@ -14,60 +14,79 @@ try {
     $startDate = date('Y-m-01'); // First day of the current month
     $endDate = date('Y-m-t'); // Last day of the current month
 
-    // Log the date range being queried
-    error_log("Querying for dates between $startDate and $endDate");
+    // Query for flower transactions this month
+    $flowerSql = "SELECT
+                    G.name AS geneticsName,
+                    F.weight,
+                    F.transaction_date,
+                    C.name AS companyName
+                  FROM
+                    Flower F
+                  JOIN
+                    Genetics G ON F.genetics_id = G.id
+                  LEFT JOIN
+                    Companies C ON F.company_id = C.id
+                  WHERE
+                    F.transaction_type = 'Subtract'
+                    AND F.reason IN ('Send external', 'Testing')
+                    AND F.transaction_date BETWEEN :startDate AND :endDate
+                  ORDER BY
+                    F.transaction_date DESC";
 
-    // Fetch flower transaction data for this month
-    $sql = "SELECT
-                G.name AS geneticsName,
-                F.weight, 
-                F.transaction_date,
-                F.reason,
-                C.name AS companyName,
-                C.address AS companyAddress
-            FROM
-                Flower F
-            JOIN
-                Genetics G ON F.genetics_id = G.id
-            LEFT JOIN
-                Companies C ON F.company_id = C.id
-            WHERE
-                F.transaction_type = 'Subtract'
-                AND F.reason IN ('Send external', 'Testing')
-                AND F.transaction_date BETWEEN :startDate AND :endDate
-            ORDER BY
-                F.transaction_date DESC";
+    $flowerStmt = $pdo->prepare($flowerSql);
+    $flowerStmt->bindParam(':startDate', $startDate, PDO::PARAM_STR);
+    $flowerStmt->bindParam(':endDate', $endDate, PDO::PARAM_STR);
+    $flowerStmt->execute();
+    $flowerData = $flowerStmt->fetchAll(PDO::FETCH_ASSOC);
 
-    $stmt = $pdo->prepare($sql);
-    $stmt->bindParam(':startDate', $startDate, PDO::PARAM_STR);
-    $stmt->bindParam(':endDate', $endDate, PDO::PARAM_STR);
-    $stmt->execute();
-    $transactionData = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-    // Adjust weights to absolute values for clarity
-    foreach ($transactionData as &$transaction) {
-        $transaction['weight'] = abs($transaction['weight']);
+    // Make sure weights are positive for clarity in reporting
+    foreach ($flowerData as &$flower) {
+        $flower['weight'] = abs($flower['weight']);
     }
 
-    // Data verification
-    if (empty($transactionData)) {
-        error_log("No data retrieved from the database for the date range $startDate to $endDate.");
-        echo json_encode(['warning' => 'No data found for the given criteria']);
-    } else {
-        // Log the number of records retrieved
-        error_log("Retrieved " . count($transactionData) . " records from the database.");
+    // Query for plant transactions this month
+    $plantSql = "SELECT
+                    G.name AS geneticsName,
+                    COUNT(P.id) AS plantCount,
+                    MAX(P.date_harvested) AS transaction_date,
+                    C.name AS companyName
+                 FROM
+                    Plants P
+                 JOIN
+                    Genetics G ON P.genetics_id = G.id
+                 LEFT JOIN
+                    Companies C ON P.company_id = C.id
+                 WHERE
+                    P.status = 'Sent'
+                    AND P.date_harvested BETWEEN :startDate AND :endDate
+                 GROUP BY
+                    G.name, C.name
+                 ORDER BY
+                    transaction_date DESC";
 
-        // Send data as JSON
-        echo json_encode($transactionData, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
-    }
+    $plantStmt = $pdo->prepare($plantSql);
+    $plantStmt->bindParam(':startDate', $startDate, PDO::PARAM_STR);
+    $plantStmt->bindParam(':endDate', $endDate, PDO::PARAM_STR);
+    $plantStmt->execute();
+    $plantData = $plantStmt->fetchAll(PDO::FETCH_ASSOC);
+
+    // Combine the data for output
+    $result = [
+        'flowers' => $flowerData,
+        'plants' => $plantData
+    ];
+
+    // Send data as JSON
+    header('Content-Type: application/json');
+    echo json_encode($result, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
 
 } catch (PDOException $e) {
-    // Handle errors gracefully
+    // Handle SQL/database errors
     error_log("Database error: " . $e->getMessage());
     http_response_code(500);
     echo json_encode(['error' => 'Database error: ' . $e->getMessage()]);
 } catch (Exception $e) {
-    // Handle any other unexpected errors
+    // Handle other unforeseen errors
     error_log("Unexpected error: " . $e->getMessage());
     http_response_code(500);
     echo json_encode(['error' => 'An unexpected error occurred']);
