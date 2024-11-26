@@ -1,6 +1,7 @@
 ## 0.9.5
 
 - Fixed this/last months reporting, include company address as required by MCA
+- Fixed title of Last Months to indicate correctly it reports on last months product out
 
 ## 0.9.4
 
