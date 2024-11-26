@@ -76,7 +76,7 @@
                     nameCell.textContent = transaction.geneticsName;
                     weightCell.textContent = transaction.weight;
                     dateCell.textContent = new Date(transaction.transaction_date).toLocaleDateString();
-                    companyCell.textContent = transaction.companyName || '-';
+                    companyCell.textContent = transaction.companyNameAddress || '-';
                 });
             }
 
@@ -94,7 +94,7 @@
                     nameCell.textContent = transaction.geneticsName;
                     countCell.textContent = transaction.plantCount;
                     dateCell.textContent = new Date(transaction.transaction_date).toLocaleDateString();
-                    companyCell.textContent = transaction.companyName || '-';
+                    companyCell.textContent = transaction.companyNameAddress || '-';
                 });
             }
 

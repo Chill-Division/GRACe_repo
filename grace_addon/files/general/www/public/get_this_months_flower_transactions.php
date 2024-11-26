@@ -19,7 +19,7 @@ try {
                     G.name AS geneticsName,
                     F.weight,
                     F.transaction_date,
-                    C.name AS companyName
+                    C.name || ', ' || COALESCE(C.address, '') AS companyNameAddress  -- Concatenate name and address
                   FROM
                     Flower F
                   JOIN
@@ -49,7 +49,7 @@ try {
                     G.name AS geneticsName,
                     COUNT(P.id) AS plantCount,
                     MAX(P.date_harvested) AS transaction_date,
-                    C.name AS companyName
+		    C.name || ', ' || COALESCE(C.address, '') AS companyNameAddress  -- Concatenate name and address
                  FROM
                     Plants P
                  JOIN
