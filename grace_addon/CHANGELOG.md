@@ -1,3 +1,7 @@
+## 0.9.6
+
+- Added Company Name / License # to the reporting pages to make it easier to copy/paste
+
 ## 0.9.5
 
 - Fixed this/last months reporting, include company address as required by MCA

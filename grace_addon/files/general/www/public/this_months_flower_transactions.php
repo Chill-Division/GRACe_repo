@@ -1,3 +1,28 @@
+<?php
+require_once 'init_db.php';
+
+try {
+    $pdo = initializeDatabase();
+
+    // Fetch company name and license number from OwnCompany table
+    $stmt = $pdo->query("SELECT company_name, company_license_number FROM OwnCompany LIMIT 1");
+    $companyData = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    // Check if company data was found
+    if ($companyData) {
+        $companyName = $companyData['company_name'];
+        $companyLicense = $companyData['company_license_number'];
+        $pageTitle = "Current month's materials out for $companyName ($companyLicense)";
+    } else {
+        $pageTitle = "Current month's materials out"; // Fallback if no company data
+    }
+
+} catch (PDOException $e) {
+    error_log("Database error: " . $e->getMessage());
+    echo "Error: An unexpected error occurred. Please try again later.";
+}
+?>
+
 <!doctype html>
 <html lang="en" data-theme="dark">
 <head>
@@ -6,7 +31,7 @@
     <meta name="color-scheme" content="light dark">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
     <link rel="stylesheet" href="css/growcart.css">
-    <title>GRACe - This Month's Flower Transactions (Out)</title>
+    <title>GRACe - <?php echo $pageTitle; ?></title>
 </head>
 <body>
     <header class="container-fluid">
@@ -14,7 +39,7 @@
     </header>
 
     <main class="container">
-        <h1>This months materials out</h1>
+        <h1><?php echo $pageTitle; ?></h1>
 
         <p>Total Weight Sent Out: <span id="totalWeightSent">0</span> grams</p>
 
