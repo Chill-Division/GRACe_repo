@@ -42,19 +42,19 @@ try {
 
         // Count 'Sent' plants (Out)
         $sentCount = $pdo->prepare("SELECT COUNT(*) FROM Plants WHERE genetics_id = :geneticsId AND status = 'Sent' AND date_harvested BETWEEN :startDate AND :endDate");
-        $sentCount->bindParam(':geneticsId', $geneticsId, PDO::PARAM_INT);
+        $sentCount->bindParam(':geneticsId', $genetic['id'], PDO::PARAM_INT);
         $sentCount->bindParam(':startDate', $startDate, PDO::PARAM_STR);
         $sentCount->bindParam(':endDate', $endDate, PDO::PARAM_STR);
         $sentCount->execute();
-        $sentCount = $sentCount->fetchColumn();
+        $sentCount = (int) $sentCount->fetchColumn();
 
         // Count 'Harvested' plants
         $harvestedCount = $pdo->prepare("SELECT COUNT(*) FROM Plants WHERE genetics_id = :geneticsId AND status = 'Harvested' AND DATE(date_harvested) BETWEEN :startDate AND :endDate");
-        $harvestedCount->bindParam(':geneticsId', $geneticsId, PDO::PARAM_INT);
+        $harvestedCount->bindParam(':geneticsId', $genetic['id'], PDO::PARAM_INT);
         $harvestedCount->bindParam(':startDate', $startDate, PDO::PARAM_STR);
         $harvestedCount->bindParam(':endDate', $endDate, PDO::PARAM_STR);
         $harvestedCount->execute();
-        $harvestedCount = $harvestedCount->fetchColumn();
+        $harvestedCount = (int) $harvestedCount->fetchColumn();
 
         $destroyedCountQuery = "SELECT COUNT(*) AS destroyedCount
                                 FROM Plants

@@ -1,7 +1,8 @@
-## 0.9.7.1
+## 0.9.7.2
 
 - Correctly separated the "Out" so it only counts "Sent" now, with "Harvested" being separate
 - Fix date query
+- Fix binding genetics correctly
 
 ## 0.9.6
 
