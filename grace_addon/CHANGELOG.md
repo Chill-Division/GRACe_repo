@@ -1,3 +1,7 @@
+## 0.9.7
+
+- Correctly separated the "Out" so it only counts "Sent" now, with "Harvested" being separate
+
 ## 0.9.6
 
 - Added Company Name / License # to the reporting pages to make it easier to copy/paste

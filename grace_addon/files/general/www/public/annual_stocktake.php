@@ -38,6 +38,7 @@
                         <th>Start Amount</th>
                         <th>In</th>
                         <th>Out</th>
+			<th>Harvested</th>
                         <th>Destroyed</th>
                         <th>End</th>
                     </tr>
