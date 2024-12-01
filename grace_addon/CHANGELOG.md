@@ -1,6 +1,7 @@
-## 0.9.7
+## 0.9.7.1
 
 - Correctly separated the "Out" so it only counts "Sent" now, with "Harvested" being separate
+- Fix date query
 
 ## 0.9.6
 
