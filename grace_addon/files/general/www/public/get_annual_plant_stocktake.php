@@ -69,7 +69,7 @@ try {
         $stmt->execute();
         $destroyedCount = (int) $stmt->fetchColumn();
 
-        $endAmount = $startAmount + $inCount - abs($outCount) - abs($destroyedCount);
+	$endAmount = $startAmount + $inCount - abs($sentCount) - abs($harvestedCount) - abs($destroyedCount);
 
         $plantStocktakeData[] = [
             'geneticsName' => $genetic['name'],
