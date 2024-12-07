@@ -9,6 +9,13 @@ Take back your time, focus on your garden, while GRACe looks after your regulato
 * Easy Chain of Custody creation (WIP)
 * Automatic emails (coming soon)
 
+## Installation and getting started video
+
+Check out the video on YouTube for a walkthrough of installation / getting started:
+[![image](https://github.com/user-attachments/assets/c7a64972-cfdb-4253-bb63-a615c5614f20)](https://youtu.be/KMqnaY6NRiY)
+
+[https://youtu.be/KMqnaY6NRiY](https://youtu.be/KMqnaY6NRiY)
+
 ## Installation instructions
 
 Go to Home Assistant Settings -> Add-ons -> Add-on Store
