@@ -9,6 +9,10 @@ try {
 
     $startDate = "{$selectedYear}-01-01";
     $endDate = "{$selectedYear}-12-31";
+    
+    $previousYear = $selectedYear - 1;
+    $prevStartDate = "{$previousYear}-01-01";
+    $prevEndDate = "{$previousYear}-12-31";
 
     $query = "SELECT id, name FROM Genetics";
     $geneticsStmt = $pdo->query($query);
@@ -17,14 +21,28 @@ try {
     $plantStocktakeData = [];
 
     foreach ($genetics as $genetic) {
-        $startAmountQuery = "SELECT COUNT(*) AS startAmount
-                             FROM Plants
-                             WHERE genetics_id = :geneticsId
-                             AND date_created < :startDate";
-
-        $stmt = $pdo->prepare($startAmountQuery);
+        // $startAmountQuery = "SELECT COUNT(*) AS startAmount
+        //                      FROM Plants
+        //                      WHERE genetics_id = :geneticsId
+        //                      AND date_created < :startDate";
+        
+        // $stmt = $pdo->prepare($startAmountQuery);
+        // $stmt->bindParam(':geneticsId', $genetic['id'], PDO::PARAM_INT);
+        // $stmt->bindParam(':startDate', $startDate, PDO::PARAM_STR);
+        // $stmt->execute();
+        // $startAmount = (int) $stmt->fetchColumn();
+        
+        $prevEndAmountQuery = "SELECT (COUNT(*) -
+                                  (SELECT COUNT(*) FROM Plants WHERE genetics_id = :geneticsId AND status IN ('Sent', 'Harvested', 'Destroyed') AND date_harvested BETWEEN :prevStartDate AND :prevEndDate)
+                                 ) AS prevEndAmount
+                              FROM Plants
+                              WHERE genetics_id = :geneticsId 
+                              AND date_created < :prevEndDate";
+        
+        $stmt = $pdo->prepare($prevEndAmountQuery);
         $stmt->bindParam(':geneticsId', $genetic['id'], PDO::PARAM_INT);
-        $stmt->bindParam(':startDate', $startDate, PDO::PARAM_STR);
+        $stmt->bindParam(':prevStartDate', $prevStartDate, PDO::PARAM_STR);
+        $stmt->bindParam(':prevEndDate', $prevEndDate, PDO::PARAM_STR);
         $stmt->execute();
         $startAmount = (int) $stmt->fetchColumn();
 
