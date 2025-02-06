@@ -12,7 +12,7 @@ try {
 
     // Calculate the start and end dates for the last month
     $startDate = date('Y-m-01', strtotime('-1 month')); // First day of the previous month
-    $endDate = date('Y-m-t', strtotime('-1 month')); // Last day of the previous month
+    $endDate = date('Y-m-t 23:59:59', strtotime('-1 month')); // Last day of the previous month
 
     // Log the date range being queried
     error_log("Querying for dates between $startDate and $endDate");

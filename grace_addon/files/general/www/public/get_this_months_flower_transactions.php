@@ -12,7 +12,7 @@ try {
 
     // Calculate the start and end dates for this month
     $startDate = date('Y-m-01'); // First day of the current month
-    $endDate = date('Y-m-t'); // Last day of the current month
+    $endDate = date('Y-m-t 23:59:59'); // Last day of the current month
 
     // Query for flower transactions this month
     $flowerSql = "SELECT
