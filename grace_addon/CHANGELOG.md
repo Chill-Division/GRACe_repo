@@ -1,3 +1,9 @@
+## 0.9.8
+
+- Fix annual reporting for previous year
+- Fix last months materials out data
+- Update Chain of Custody PDF generation, now printable and formatted nicely
+
 ## 0.9.7.2
 
 - Correctly separated the "Out" so it only counts "Sent" now, with "Harvested" being separate
