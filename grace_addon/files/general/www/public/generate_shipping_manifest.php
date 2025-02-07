@@ -151,5 +151,6 @@ $geneticsList = $geneticsStmt->fetchAll(PDO::FETCH_ASSOC);
         populateDetails(sendingChoice.value, 'sendingDetails');
         populateDetails(receivingChoice.value, 'receivingDetails');
     </script>
+       <script src="js/growcart.js"></script> 
 </body>
 </html>

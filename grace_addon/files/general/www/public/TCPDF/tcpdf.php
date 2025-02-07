@@ -1962,7 +1962,7 @@ class TCPDF {
 		$this->clMargin = $this->lMargin;
 		$this->crMargin = $this->rMargin;
 		// internal cell padding
-		$cpadding = $margin / 10;
+		$cpadding = $margin / 2;
 		$this->setCellPaddings($cpadding, 0, $cpadding, 0);
 		// cell margins
 		$this->setCellMargins(0, 0, 0, 0);
@@ -7385,12 +7385,20 @@ class TCPDF {
 		if (($parsed === false) AND function_exists('imagecreatefrompng')) {
 			try {
 				// generate images
-				$img = imagecreatefrompng($file);
+				$img = @imagecreatefrompng($file); // Suppress warning
+		
+				// Check if the image was created successfully
+				if ($img === false) {
+					throw new Exception("Failed to create image from PNG.");
+				}
+		
 				$imgalpha = imagecreate($wpx, $hpx);
+		
 				// generate gray scale palette (0 -> 255)
 				for ($c = 0; $c < 256; ++$c) {
 					ImageColorAllocate($imgalpha, $c, $c, $c);
 				}
+		
 				// extract alpha channel
 				for ($xpx = 0; $xpx < $wpx; ++$xpx) {
 					for ($ypx = 0; $ypx < $hpx; ++$ypx) {
@@ -7400,13 +7408,16 @@ class TCPDF {
 						imagesetpixel($imgalpha, (int) $xpx, (int) $ypx, (int) $alpha);
 					}
 				}
+		
 				imagepng($imgalpha, $tempfile_alpha);
 				imagedestroy($imgalpha);
+		
 				// extract image without alpha channel
 				$imgplain = imagecreatetruecolor($wpx, $hpx);
 				imagecopy($imgplain, $img, 0, 0, 0, 0, $wpx, $hpx);
 				imagepng($imgplain, $tempfile_plain);
 				imagedestroy($imgplain);
+		
 				$parsed = true;
 			} catch (Exception $e) {
 				// GD fails
@@ -10890,8 +10901,8 @@ class TCPDF {
 				$this->encryptdata['perms'] = TCPDF_STATIC::_AESnopad($this->encryptdata['key'], $perms);
 			} else { // RC4-40, RC4-128, AES-128
 				// Pad passwords
-				$this->encryptdata['user_password'] = substr($this->encryptdata['user_password'].TCPDF_STATIC::$enc_padding, 0, 32);
-				$this->encryptdata['owner_password'] = substr($this->encryptdata['owner_password'].TCPDF_STATIC::$enc_padding, 0, 32);
+				$this->encryptdata['user_password'] = substr($this->encryptdata['user_password'].TCPDF_STATIC::$enc_padding, 0, 30);
+				$this->encryptdata['owner_password'] = substr($this->encryptdata['owner_password'].TCPDF_STATIC::$enc_padding, 0, 30);
 				// Compute O value
 				$this->encryptdata['O'] = $this->_Ovalue();
 				// get default permissions (reverse byte order)
@@ -20102,7 +20113,7 @@ class TCPDF {
 				$this->addHTMLVertSpace(0, 0, $cell, false, $lasttag);
 				break;
 			}
-			case 'h1':
+			// case 'h1':
 			case 'h2':
 			case 'h3':
 			case 'h4':
