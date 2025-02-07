@@ -1,3 +1,7 @@
+## 0.9.8.1
+
+- Fix theme toggle so it works in the materials-out (missing js include) for easier copy/paste into emails
+
 ## 0.9.8
 
 - Fix annual reporting for previous year

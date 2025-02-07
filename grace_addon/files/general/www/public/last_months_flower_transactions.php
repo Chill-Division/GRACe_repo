@@ -132,5 +132,7 @@ try {
             plantTransactionsTable.innerHTML = '<tr><td colspan="4">Error loading plant data. Please check the console for details.</td></tr>';
         });
 </script>
+
+<script src="js/growcart.js"></script>
 </body>
 </html>
