@@ -36,7 +36,7 @@ $geneticsList = $geneticsStmt->fetchAll(PDO::FETCH_ASSOC);
         <h1>Generate Shipping Manifest</h1>
 
         <form id="shippingManifestForm" class="form" method="post" action="process_shipping_manifest.php">
-            <h2>Sending Party</h2>
+        <h2>Sending Party</h2>
             <label for="sendingChoice">Choose:</label>
             <select id="sendingChoice" name="sendingChoice" class="input" required>
                 <option value="us">Us</option>

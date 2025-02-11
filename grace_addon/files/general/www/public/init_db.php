@@ -104,7 +104,17 @@ function initializeDatabase($dbPath = '/data/grace.db') {
                 company_license_number TEXT NOT NULL,
                 company_address TEXT,
                 primary_contact_email TEXT
+            );",
+            
+            // Documents
+            "CREATE TABLE IF NOT EXISTS Documents (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                category TEXT NOT NULL, 
+                original_filename TEXT NOT NULL,
+                unique_filename TEXT NOT NULL,
+                upload_date DATETIME DEFAULT CURRENT_TIMESTAMP
             );"
+
         ];
 
         // Execute each CREATE TABLE statement

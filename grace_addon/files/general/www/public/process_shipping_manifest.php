@@ -36,6 +36,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     exit();
 }
 
+$formattedAddress = nl2br(htmlspecialchars($address));
+
 // Create PDF object
 $pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 $pdf->SetCreator(PDF_CREATOR);
@@ -78,7 +80,7 @@ $htmlContent = <<<EOD
         <tr><td><strong>Shipment Weight (Net / Gross):</strong></td><td>________________________</td></tr>
         <tr><td><strong>Recipient Staff Name:</strong></td><td>________________________</td></tr>
         <tr><td><strong>Recipient Company + Licence #:</strong></td><td><u>{$receivingCompany} / {$receivingLicense}</u></td></tr>
-        <tr><td><strong>Destination Address:</strong></td><td><u>{$address}</u></td></tr>
+        <tr><td><strong>Destination Address:</strong></td><td><u>{$formattedAddress}</u></td></tr>
     </table>
 
     <p class="signature"><strong>• Staff Signature:</strong> ________________________</p>
@@ -95,7 +97,7 @@ $htmlContent = <<<EOD
 
     <h2>Receiving Party:</h2>
     <table class="ms-[30px]">
-        <tr><td><strong>Received By (Staff Name):</strong></td><td><u>{$receivingChoice}</u></td></tr>
+        <tr><td><strong>Received By (Staff Name):</strong></td><td>________________________</td></tr>
         <tr><td><strong>Date / Time of Receipt:</strong></td><td><u>{$datePrepared}</u></td></tr>
         <tr><td><strong># of Items Received:</strong></td><td><u>{$quantity}</u></td></tr>
         <tr><td><strong>Shipment Weight (Net / Gross):</strong></td><td>________________________</td></tr>

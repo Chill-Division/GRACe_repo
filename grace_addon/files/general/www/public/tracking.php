@@ -35,7 +35,7 @@
         <section>
             <h2>Shipping</h2>
             <ul>
-                <li><a href="generate_shipping_manifest.php">Generate Shipping Manifest</a> - Incomplete</li>
+                <li><a href="generate_shipping_manifest.php">Generate Shipping Manifest</a></li>
                 <li><a href="amend_complete_manifest.php">Amend / Complete Manifest</a> - Coming soon</li>
             </ul>
         </section>
