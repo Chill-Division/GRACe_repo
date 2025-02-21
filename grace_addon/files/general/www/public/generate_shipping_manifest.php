@@ -104,25 +104,24 @@ $geneticsList = $geneticsStmt->fetchAll(PDO::FETCH_ASSOC);
                 `;
             } else {
                 let options = '<label for="companySelect">Select Company:</label>';
-                options += '<select name="companySelect" class="input" required>';
+                options += '<select id="companySelect" name="companySelect" class="input" required>';
                 companies.forEach(company => {
                     options += `<option value="${company.id}">${company.name}</option>`;
                 });
                 options += '</select>';
                 detailElement.innerHTML = options;
 
-                const companySelect = detailElement.querySelector('select');
-                updateExternalDetails(companySelect, detailElementId);
-
+                const companySelect = detailElement.querySelector('#companySelect');
                 companySelect.addEventListener('change', function() {
-                    updateExternalDetails(this, detailElementId);
+                    updateExternalDetails(this, detailElement);
                 });
+                updateExternalDetails(companySelect, detailElement);
             }
         };
 
-        const updateExternalDetails = (selectElement, detailElementId) => {
+        const updateExternalDetails = (selectElement, detailElement) => {
+            let infoContainer = document.createElement('div');
             const selectedCompany = companies.find(company => company.id == selectElement.value);
-            const infoContainer = document.createElement('div');
             infoContainer.innerHTML = `
                 <label for="companyName">Company Name:</label>
                 <input type="text" name="companyName" class="input" value="${selectedCompany.name}" readonly>
@@ -136,8 +135,15 @@ $geneticsList = $geneticsStmt->fetchAll(PDO::FETCH_ASSOC);
                 <label for="contactEmail">Contact Email:</label>
                 <input type="email" name="contactEmail" class="input" value="${selectedCompany.primary_contact_email}" readonly>
             `;
-            document.getElementById(`${detailElementId}`).appendChild(infoContainer);
-        };
+            // Remove any previous appended company details
+                const existingDetails = detailElement.querySelector('div');
+                if (existingDetails) {
+                    existingDetails.remove();
+                }
+
+                // Append new details
+                detailElement.appendChild(infoContainer);
+            };
 
         sendingChoice.addEventListener('change', () => {
             populateDetails(sendingChoice.value, 'sendingDetails');
