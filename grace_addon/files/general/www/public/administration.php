@@ -38,13 +38,16 @@
         <section>
             <h2>Record management</h2>
             <ul>
-                <li><a href="police_vet_check_records.php">Police Vet Check Records</a> - Coming soon</li>
+                <li><a href="other_records/police_vet_check_records.php">Police Vet Check Records</a></li>
             </ul>
             <ul>
-                <li><a href="sops.php">Manage SOPs</a> - Coming soon</li>
+                <li><a href="sops/sops.php">Manage SOPs</a></li>
             </ul>
             <ul>
-                <li><a href="offtake_agreements.php">Offtake Agreements</a> - Coming soon</li>
+                <li><a href="offtakes/offtake_agreements.php">Offtake Agreements</a></li>
+            </ul>
+            <ul>
+                <li><a href="licenses/company_licenses.php">Company licenses </a></li>
             </ul>
         </section>
 

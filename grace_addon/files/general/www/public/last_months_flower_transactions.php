@@ -71,7 +71,7 @@ try {
             </tbody>
         </table>
     </main>
-
+    <script src="js/growcart.js"></script> 
 <script>
     const flowerTransactionsTable = document.getElementById('flowerTransactionsTable').getElementsByTagName('tbody')[0];
     const plantTransactionsTable = document.getElementById('plantTransactionsTable').getElementsByTagName('tbody')[0];
