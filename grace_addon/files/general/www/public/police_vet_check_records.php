@@ -1,4 +1,4 @@
-<?php require_once '../auth.php'; ?>
+<?php require_once 'auth.php'; ?>
 <!doctype html>
 <html lang="en" data-theme="dark">                                              
 <head>
@@ -9,12 +9,12 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">   
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-    <link rel="stylesheet" href="../css/growcart.css"> 
+    <link rel="stylesheet" href="css/growcart.css"> 
     <title>GRACe - Police Vet Check Records</title> 
 </head>
 <body>
     <header class="container-fluid">
-	<?php require_once '../nav.php'; ?>
+	<?php require_once 'nav.php'; ?>
     </header>
 
     <main class="container">
@@ -53,11 +53,11 @@
         </section>
     </main>
 
-    <script src="../js/growcart.js"></script> 
+    <script src="js/growcart.js"></script> 
     <script>
     function loadFiles() {
         const order = $('#sortOrder').val();
-        $.get('../fetch_files.php', { category: 'other_records', order: order }, function(files) {
+        $.get('fetch_files.php', { category: 'other_records', order: order }, function(files) {
             const fileList = $('#fileList');
             fileList.empty();
 
@@ -71,7 +71,7 @@
                         <tr>
                             <td>${file.original_filename}</td>
                             <td>${file.upload_date}</td>
-                            <td><a href="../uploads/other_records/${file.unique_filename}" download><i class="fa-solid fa-download"></i> Download</a></td>
+                            <td><a href="uploads/other_records/${file.unique_filename}" download><i class="fa-solid fa-download"></i> Download</a></td>
                         </tr>
                     `);
                 });
@@ -85,7 +85,7 @@
         e.preventDefault();
         const formData = new FormData(this);
         $.ajax({
-            url:'../upload.php',
+            url:'upload.php',
             type: 'POST',
             data: formData,
             contentType: false,

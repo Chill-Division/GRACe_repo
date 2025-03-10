@@ -1,4 +1,4 @@
-<?php require_once '../auth.php'; ?>
+<?php require_once 'auth.php'; ?>
 <!doctype html>
 <html lang="en" data-theme="dark">
 <head>
@@ -10,35 +10,34 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> 
 
-
-    <link rel="stylesheet" href="../css/growcart.css"> 
-    <title>GRACe - Company Licenses</title> 
+    <link rel="stylesheet" href="css/growcart.css"> 
+    <title>GRACe - Offtake Agreements</title> 
 </head>
 <body>
     <header class="container-fluid">
-	<?php require_once '../nav.php'; ?>
+	<?php require_once 'nav.php'; ?>
     </header>
 
     <main class="container">
-        <h1>Company Licenses</h1>
+        <h1>Offtake Agreements</h1>
 
         <section>
-            <h2>Upload New License</h2>
+            <h2>Upload New Agreement</h2>
             <form id="uploadForm">
                 <input type="file" name="file" required>
-                <input type="hidden" name="category" value="licenses">
+                <input type="hidden" name="category" value="offtakes">
                 <button type="submit">Upload</button>
             </form>
         </section>
 
         <section>
-            <h2>Existing Licenses</h2>
+            <h2>Existing Agreements</h2>
             <div id="sortContainer">
-            <label>Sort by:</label>
-            <select id="sortOrder">
-                <option value="date_desc">Newest First</option>
-                <option value="name_asc">Name A-Z</option>
-            </select>
+                <label>Sort by:</label>
+                <select id="sortOrder">
+                    <option value="date_desc">Newest First</option>
+                    <option value="name_asc">Name A-Z</option>
+                </select>
             </div>
             <table>
                 <thead>
@@ -55,17 +54,17 @@
         </section>
     </main>
     
-    <script src="../js/growcart.js"></script> 
+    <script src="js/growcart.js"></script> 
 
     <script>
         function loadFiles() {
             const order = $('#sortOrder').val();
-            $.get('../fetch_files.php', { category: 'licenses', order: order }, function(files) {
+            $.get('fetch_files.php', { category: 'offtakes', order: order }, function(files) {
                 const fileList = $('#fileList');
                 fileList.empty();
                 if (files.length === 0) {
                     fileList.append('<tr><td colspan="3">No records found.</td></tr>');
-                    $('#sortContainer').hide(); 
+                    $('#sortContainer').hide();
                 } else {
                     $('#sortContainer').show(); 
                     files.forEach(file => {
@@ -73,7 +72,7 @@
                             <tr>
                                 <td>${file.original_filename}</td>
                                 <td>${file.upload_date}</td>
-                                <td><a href="../uploads/licenses/${file.unique_filename}" download><i class="fa-solid fa-download"></i> Download</a></td>
+                                <td><a href="uploads/offtakes/${file.unique_filename}" download><i class="fa-solid fa-download"></i> Download</a></td>
                             </tr>
                         `);
                     });
@@ -87,14 +86,14 @@
             e.preventDefault();
             const formData = new FormData(this);
             $.ajax({
-                url:'../upload.php',
+                url:'upload.php',
                 type: 'POST',
                 data: formData,
                 contentType: false,
                 processData: false,
                 success: function() {
                     alert('File uploaded');
-                    $('#uploadForm')[0].reset();
+                    $('#uploadForm')[0].reset(); 
                     loadFiles();
                 }
             });
