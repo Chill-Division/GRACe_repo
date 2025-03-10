@@ -94,6 +94,7 @@
                 processData: false,
                 success: function() {
                     alert('File uploaded');
+                    $('#uploadForm')[0].reset();
                     loadFiles();
                 }
             });

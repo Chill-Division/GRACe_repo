@@ -1,5 +1,6 @@
         <?php
-        $base_url = '/GRACe_repo/grace_addon/files/general/www/public/';
+        $base_path = str_replace('\\', '/', realpath(__DIR__ . '/../public/')); 
+        $base_url = $_SERVER['REQUEST_SCHEME'] . "://" . $_SERVER['HTTP_HOST'] . str_replace($_SERVER['DOCUMENT_ROOT'], '', $base_path) . "/";
         ?>
         <nav>
             <ul>
