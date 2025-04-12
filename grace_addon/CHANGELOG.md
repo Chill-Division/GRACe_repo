@@ -1,3 +1,9 @@
+## 0.10
+
+- Added file upload for SOPs, Offtakes, Licenses, CoCs etc
+- Fix shipping manifest generation
+- Fix Pacific/Auckland timezone
+
 ## 0.9.8.1
 
 - Fix theme toggle so it works in the materials-out (missing js include) for easier copy/paste into emails
