@@ -38,7 +38,7 @@
                         <th>Start Amount</th>
                         <th>In</th>
                         <th>Out</th>
-			<th>Harvested</th>
+			            <th>Harvested</th>
                         <th>Destroyed</th>
                         <th>End</th>
                     </tr>
@@ -135,8 +135,9 @@
                 for (const row of rows) {
                     const cells = row.getElementsByTagName('td');
                     let allZero = true;
-                    for (const cell of cells) {
-                        if (parseInt(cell.textContent) !== 0) {
+                    for (let i = 1; i < cells.length; i++) { 
+                        const value = cells[i].textContent.trim();
+                        if (value !== '' && !isNaN(value) && parseFloat(value) !== 0) {
                             allZero = false;
                             break;
                         }

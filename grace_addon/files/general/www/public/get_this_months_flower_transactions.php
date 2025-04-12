@@ -48,7 +48,7 @@ try {
     $plantSql = "SELECT
                     G.name AS geneticsName,
                     COUNT(P.id) AS plantCount,
-                    MAX(P.date_harvested) AS transaction_date,
+                    P.date_harvested AS transaction_date,
 		    C.name || ', ' || COALESCE(C.address, '') AS companyNameAddress  -- Concatenate name and address
                  FROM
                     Plants P
@@ -60,7 +60,7 @@ try {
                     P.status = 'Sent'
                     AND P.date_harvested BETWEEN :startDate AND :endDate
                  GROUP BY
-                    G.name, C.name
+                    G.name, C.name, p.date_harvested
                  ORDER BY
                     transaction_date DESC";
 

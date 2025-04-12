@@ -1,13 +1,14 @@
 <?php require_once 'auth.php'; ?>
 <!doctype html>
-<html lang="en" data-theme="dark">
+<html lang="en" data-theme="dark">                                              
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">   
 
     <meta name="color-scheme" content="light dark">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">   
-
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <link rel="stylesheet" href="css/growcart.css"> 
     <title>GRACe - Police Vet Check Records</title> 
 </head>
@@ -21,39 +22,83 @@
 
         <section>
             <h2>Upload New Record</h2>
-            <form id="uploadRecordForm" class="form">
-                <input type="file" id="recordFile" name="recordFile" accept=".pdf" required>
-                <button type="submit" class="button">Upload</button>
+            <form id="uploadForm">
+                <input type="file" name="file" required>
+                <input type="hidden" name="category" value="other_records">
+                <button type="submit">Upload</button>
             </form>
         </section>
 
         <section>
             <h2>Existing Records</h2>
-            <ul id="recordList">
-                </ul>
+            <div id="sortContainer">
+            <label>Sort by:</label>
+            <select id="sortOrder">
+                <option value="date_desc">Newest First</option>
+                <option value="name_asc">Name A-Z</option>
+            </select>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>File Name</th>
+                        <th>Upload Date</th>
+                        <th>Download</th>
+                    </tr>
+                </thead>
+                <tbody id="fileList">
+                    <tr><td colspan="3">No records found.</td></tr>
+                </tbody>
+            </table>
         </section>
     </main>
 
     <script src="js/growcart.js"></script> 
     <script>
-        // Placeholder to fetch and display existing records with datestamps
-        const recordList = document.getElementById('recordList');
+    function loadFiles() {
+        const order = $('#sortOrder').val();
+        $.get('fetch_files.php', { category: 'other_records', order: order }, function(files) {
+            const fileList = $('#fileList');
+            fileList.empty();
 
-        // Simulate fetching records with dates (replace with actual logic)
-        const records = [
-            { filename: 'record1.pdf', timestamp: '2023-08-15' },
-            { filename: 'record2.pdf', timestamp: '2024-02-20' },
-            { filename: 'staff/record3.pdf', timestamp: '2023-11-03' }
-        ];
+            if (files.length === 0) {
+            fileList.append('<tr><td colspan="3">No records found.</td></tr>');
+            $('#sortContainer').hide(); // Hide sorting dropdown
+        } else {
+            $('#sortContainer').show(); // Show sorting dropdown if there are records
+            files.forEach(file => {
+                fileList.append(`
+                        <tr>
+                            <td>${file.original_filename}</td>
+                            <td>${file.upload_date}</td>
+                            <td><a href="uploads/other_records/${file.unique_filename}" download><i class="fa-solid fa-download"></i> Download</a></td>
+                        </tr>
+                    `);
+                });
+            }
+        }, 'json');
+    }
 
-        records.forEach(record => {
-            const listItem = document.createElement('li');
-            const link = document.createElement('a');
-            link.href = `/police_vet_checks/${record.filename}`; // Adjust path as needed
-            link.textContent = `${record.filename} (${record.timestamp})`;
-            listItem.appendChild(link);
-            recordList.appendChild(listItem);
+    $('#sortOrder').change(loadFiles);
+
+    $('#uploadForm').submit(function(e) {
+        e.preventDefault();
+        const formData = new FormData(this);
+        $.ajax({
+            url:'upload.php',
+            type: 'POST',
+            data: formData,
+            contentType: false,
+            processData: false,
+            success: function() {
+                alert('File uploaded');
+                $('#uploadForm')[0].reset(); 
+                loadFiles();
+            }
         });
+    });
+
+    $(document).ready(loadFiles);
     </script>
 </body>
 </html>

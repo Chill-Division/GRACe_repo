@@ -3,13 +3,15 @@
 <html lang="en" data-theme="dark">
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1">   
 
     <meta name="color-scheme" content="light dark">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">  
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> 
 
-    <link rel="stylesheet" href="css/growcart.css">
-    <title>GRACe - Offtake Agreements</title>
+    <link rel="stylesheet" href="css/growcart.css"> 
+    <title>GRACe - Offtake Agreements</title> 
 </head>
 <body>
     <header class="container-fluid">
@@ -21,39 +23,83 @@
 
         <section>
             <h2>Upload New Agreement</h2>
-            <form id="uploadAgreementForm" class="form">
-                <input type="file" id="agreementFile" name="agreementFile" accept=".pdf" required>
-                <button type="submit" class="button">Upload</button>
+            <form id="uploadForm">
+                <input type="file" name="file" required>
+                <input type="hidden" name="category" value="offtakes">
+                <button type="submit">Upload</button>
             </form>
         </section>
 
         <section>
             <h2>Existing Agreements</h2>
-            <ul id="agreementList">
-                </ul>
+            <div id="sortContainer">
+                <label>Sort by:</label>
+                <select id="sortOrder">
+                    <option value="date_desc">Newest First</option>
+                    <option value="name_asc">Name A-Z</option>
+                </select>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>File Name</th>
+                        <th>Upload Date</th>
+                        <th>Download</th>
+                    </tr>
+                </thead>
+                <tbody id="fileList">
+                    <tr><td colspan="3">No records found.</td></tr>
+                </tbody>
+            </table>
         </section>
     </main>
-
+    
     <script src="js/growcart.js"></script> 
+
     <script>
-        // Placeholder to fetch and display existing agreements from /offtakes/
-        const agreementList = document.getElementById('agreementList');
+        function loadFiles() {
+            const order = $('#sortOrder').val();
+            $.get('fetch_files.php', { category: 'offtakes', order: order }, function(files) {
+                const fileList = $('#fileList');
+                fileList.empty();
+                if (files.length === 0) {
+                    fileList.append('<tr><td colspan="3">No records found.</td></tr>');
+                    $('#sortContainer').hide();
+                } else {
+                    $('#sortContainer').show(); 
+                    files.forEach(file => {
+                        fileList.append(`
+                            <tr>
+                                <td>${file.original_filename}</td>
+                                <td>${file.upload_date}</td>
+                                <td><a href="uploads/offtakes/${file.unique_filename}" download><i class="fa-solid fa-download"></i> Download</a></td>
+                            </tr>
+                        `);
+                    });
+                }
+            }, 'json');
+        }
 
-        // Simulate fetching agreements (replace with actual logic)
-        const agreements = [
-            'agreement1.pdf',
-            'agreement2.pdf',
-            'subfolder/agreement3.pdf'
-        ];
+        $('#sortOrder').change(loadFiles);
 
-        agreements.forEach(agreement => {
-            const listItem = document.createElement('li');
-            const link = document.createElement('a');
-            link.href = `/offtakes/${agreement}`; // Assuming files are in /offtakes/
-            link.textContent = agreement;
-            listItem.appendChild(link);
-            agreementList.appendChild(listItem);
+        $('#uploadForm').submit(function(e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+            $.ajax({
+                url:'upload.php',
+                type: 'POST',
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function() {
+                    alert('File uploaded');
+                    $('#uploadForm')[0].reset(); 
+                    loadFiles();
+                }
+            });
         });
+
+        $(document).ready(loadFiles);
     </script>
 </body>
 </html>

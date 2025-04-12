@@ -1,5 +1,8 @@
 <?php
 
+date_default_timezone_set('Pacific/Auckland'); 
+
+
 function initializeDatabase($dbPath = '/data/grace.db') {
     try {
         // Check if the directory exists
@@ -47,7 +50,7 @@ function initializeDatabase($dbPath = '/data/grace.db') {
                 genetics_id INTEGER,
                 status TEXT CHECK(status IN ('Growing', 'Harvested', 'Destroyed', 'Sent')),
                 date_created DATETIME,
-                date_harvested DATETIME,
+                date_harvested DATETIME DEFAULT CURRENT_TIMESTAMP,
                 company_id INTEGER,
                 FOREIGN KEY (genetics_id) REFERENCES Genetics(id) ON DELETE SET NULL ON UPDATE CASCADE,
                 FOREIGN KEY (company_id) REFERENCES Companies(id) ON DELETE SET NULL ON UPDATE CASCADE
@@ -59,7 +62,7 @@ function initializeDatabase($dbPath = '/data/grace.db') {
                 genetics_id INTEGER,
                 weight DECIMAL(10, 2) NOT NULL,
                 transaction_type TEXT CHECK(transaction_type IN ('Add', 'Subtract')) NOT NULL,
-                transaction_date DATETIME NOT NULL,
+                transaction_date DATETIME DEFAULT CURRENT_TIMESTAMP,
                 reason TEXT,
                 company_id INTEGER,
                 FOREIGN KEY (company_id) REFERENCES Companies(id) ON DELETE SET NULL ON UPDATE CASCADE,
@@ -72,7 +75,7 @@ function initializeDatabase($dbPath = '/data/grace.db') {
                 sender_id INTEGER,
                 sending_company_id INTEGER,
                 recipient_id INTEGER,
-                shipment_date DATETIME,
+                shipment_date DATETIME DEFAULT CURRENT_TIMESTAMP,
                 product_type TEXT,
                 item_count INTEGER,
                 net_weight DECIMAL(10, 2),
@@ -85,7 +88,7 @@ function initializeDatabase($dbPath = '/data/grace.db') {
             // PoliceVettingRecords
             "CREATE TABLE IF NOT EXISTS PoliceVettingRecords (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
-                record_date DATE,
+                record_date DATE DEFAULT CURRENT_TIMESTAMP,
                 file_path TEXT
             );",
 
@@ -93,7 +96,7 @@ function initializeDatabase($dbPath = '/data/grace.db') {
             "CREATE TABLE IF NOT EXISTS SOPs (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 name TEXT NOT NULL,
-                upload_date DATE,
+                upload_date DATE DEFAULT CURRENT_TIMESTAMP,
                 file_path TEXT
             );",
 
@@ -104,7 +107,17 @@ function initializeDatabase($dbPath = '/data/grace.db') {
                 company_license_number TEXT NOT NULL,
                 company_address TEXT,
                 primary_contact_email TEXT
+            );",
+            
+            // Documents
+            "CREATE TABLE IF NOT EXISTS Documents (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                category TEXT NOT NULL, 
+                original_filename TEXT NOT NULL,
+                unique_filename TEXT NOT NULL,
+                upload_date DATETIME DEFAULT CURRENT_TIMESTAMP
             );"
+
         ];
 
         // Execute each CREATE TABLE statement
