@@ -8,7 +8,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file'])) {
     $file = $_FILES['file'];
     $category = $_POST['category'] ?? 'other_records'; 
 
-    if (!in_array($category, ['offtakes', 'sops', 'licenses', 'other_records'])) {
+    if (!in_array($category, ['offtakes', 'sops', 'licenses', 'other_records' , 'coc'])) {
         die("Invalid category");
     }
 
