@@ -1,3 +1,19 @@
+## 0.10
+
+- Added file upload for SOPs, Offtakes, Licenses, CoCs etc
+- Fix shipping manifest generation
+- Fix Pacific/Auckland timezone
+
+## 0.9.8.1
+
+- Fix theme toggle so it works in the materials-out (missing js include) for easier copy/paste into emails
+
+## 0.9.8
+
+- Fix annual reporting for previous year
+- Fix last months materials out data
+- Update Chain of Custody PDF generation, now printable and formatted nicely
+
 ## 0.9.7.2
 
 - Correctly separated the "Out" so it only counts "Sent" now, with "Harvested" being separate
