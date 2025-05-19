@@ -16,13 +16,13 @@ $companies = $companiesStmt->fetchAll(PDO::FETCH_ASSOC);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $_SESSION['formData'] = $_POST;
-    $sendingChoice = $_POST['sendingChoice'];
-    $receivingChoice = $_POST['receivingChoice'];
-    $productType = $_POST['productType'];
-    $quantity = $_POST['quantity'];
-    $address = $_POST['address'];
-    $geneticsName = $_POST['geneticsName'];
-    $datePrepared = date('Y-m-d H:i:s');
+    $sendingChoice = $_POST['sendingChoice'] ?? "";
+    $receivingChoice = $_POST['receivingChoice'] ?? "";
+    $productType = $_POST['productType']?? "";
+    $quantity = $_POST['quantity']?? "";
+    $address = $_POST['address']?? "";
+    $geneticsName = $_POST['geneticsName']?? "";
+    $datePrepared = date('Y-m-d H:i:s')?? "";
     
     // Handling sending company data
     if ($sendingChoice === 'us') {
@@ -35,9 +35,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $sendingCompanyData->execute([$sendingCompanyId]);
         $sendingCompanyInfo = $sendingCompanyData->fetch(PDO::FETCH_ASSOC);
 
-        $sendingCompany = $sendingCompanyInfo['name'] ?? "Unknown";
-        $sendingLicense = $sendingCompanyInfo['license_number'] ?? "Unknown";
-        $sendingEmail = $sendingCompanyInfo['primary_contact_email'] ?? "Unknown";
+        $sendingCompany = $sendingCompanyInfo['name'] ?? "";
+        $sendingLicense = $sendingCompanyInfo['license_number'] ?? "";
+        $sendingEmail = $sendingCompanyInfo['primary_contact_email'] ?? "";
     }
 
     // Handling receiving company data
@@ -51,20 +51,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $receivingCompanyData->execute([$receivingCompanyId]);
         $receivingCompanyInfo = $receivingCompanyData->fetch(PDO::FETCH_ASSOC);
 
-        $receivingCompany = $receivingCompanyInfo['name'] ?? "Unknown";
-        $receivingLicense = $receivingCompanyInfo['license_number'] ?? "Unknown";
-        $receivingEmail = $receivingCompanyInfo['primary_contact_email'] ?? "Unknown";
+        $receivingCompany = $receivingCompanyInfo['name'] ?? "";
+        $receivingLicense = $receivingCompanyInfo['license_number'] ?? "";
+        $receivingEmail = $receivingCompanyInfo['primary_contact_email'] ?? "";
     }
 } elseif (isset($_SESSION['formData'])) {
     // Retrieve session data on refresh
     $formData = $_SESSION['formData'];
-    $sendingChoice = $formData['sendingChoice'];
-    $receivingChoice = $formData['receivingChoice'];
-    $productType = $formData['productType'];
-    $quantity = $formData['quantity'];
-    $address = $formData['address'];
-    $geneticsName = $formData['geneticsName'];
-    $datePrepared = date('Y-m-d H:i:s');
+    $sendingChoice = $formData['sendingChoice']?? "";
+    $receivingChoice = $formData['receivingChoice']?? "";
+    $productType = $formData['productType']?? "";
+    $quantity = $formData['quantity']?? "";
+    $address = $formData['address']?? "";
+    $geneticsName = $formData['geneticsName']?? "";
+    $datePrepared = date('Y-m-d H:i:s')?? "";
 
     if ($sendingChoice === 'us') {
         $sendingCompany = $ownCompany['company_name'];
@@ -76,9 +76,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $sendingCompanyData->execute([$sendingCompanyId]);
         $sendingCompanyInfo = $sendingCompanyData->fetch(PDO::FETCH_ASSOC);
 
-        $sendingCompany = $sendingCompanyInfo['name'] ?? "Unknown";
-        $sendingLicense = $sendingCompanyInfo['license_number'] ?? "Unknown";
-        $sendingEmail = $sendingCompanyInfo['primary_contact_email'] ?? "Unknown";
+        $sendingCompany = $sendingCompanyInfo['name'] ?? "";
+        $sendingLicense = $sendingCompanyInfo['license_number'] ?? "";
+        $sendingEmail = $sendingCompanyInfo['primary_contact_email'] ?? "";
     }
 
     if ($receivingChoice === 'us') {
@@ -91,9 +91,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $receivingCompanyData->execute([$receivingCompanyId]);
         $receivingCompanyInfo = $receivingCompanyData->fetch(PDO::FETCH_ASSOC);
 
-        $receivingCompany = $receivingCompanyInfo['name'] ?? "Unknown";
-        $receivingLicense = $receivingCompanyInfo['license_number'] ?? "Unknown";
-        $receivingEmail = $receivingCompanyInfo['primary_contact_email'] ?? "Unknown";
+        $receivingCompany = $receivingCompanyInfo['name'] ?? "";
+        $receivingLicense = $receivingCompanyInfo['license_number'] ?? "";
+        $receivingEmail = $receivingCompanyInfo['primary_contact_email'] ?? "";
     }
 } else {
     header("Location: process_shipping_manifest.php");

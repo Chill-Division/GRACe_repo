@@ -49,6 +49,9 @@
             <ul>
                 <li><a href="company_licenses.php">Company licenses </a></li>
             </ul>
+            <ul>
+                <li><a href="chain_of_custody_documents.php">Chain of Custody Documents </a></li>
+            </ul>
         </section>
 
         <section>
