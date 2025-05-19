@@ -1,3 +1,7 @@
+## 0.11
+
+- Added CoC document upload page
+
 ## 0.10
 
 - Added file upload for SOPs, Offtakes, Licenses, CoCs etc
