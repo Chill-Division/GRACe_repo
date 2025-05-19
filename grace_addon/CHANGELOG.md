@@ -1,6 +1,7 @@
 ## 0.11
 
-- Added CoC document upload page
+- Added Chain of Custody (CoC) document upload page
+- Fixes for Shipping Manifest generation
 
 ## 0.10
 
