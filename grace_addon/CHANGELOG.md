@@ -1,3 +1,8 @@
+## 0.11
+
+- Added Chain of Custody (CoC) document upload page
+- Fixes for Shipping Manifest generation
+
 ## 0.10
 
 - Added file upload for SOPs, Offtakes, Licenses, CoCs etc
