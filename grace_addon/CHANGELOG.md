@@ -1,3 +1,7 @@
+## 0.11.1
+
+ - Added "Hide rows with zero values" to some of the reports so we don't see empty rows
+
 ## 0.11
 
 - Added Chain of Custody (CoC) document upload page
