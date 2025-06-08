@@ -17,6 +17,13 @@
     <main class="container">
         <h1>Current Dried Flower</h1>
 
+        <div class="grid">
+            <label for="hideZeroRowsCheckbox">
+                <input type="checkbox" id="hideZeroRowsCheckbox" name="hideZeroRows">
+                Hide rows with all zero values
+            </label>
+        </div>
+
         <table id="driedFlowerTable" class="table">
             <thead>
                 <tr>
@@ -27,6 +34,7 @@
             <tbody>
             </tbody>
         </table>
+        <p id="noDataMessage" style="display: none; text-align: center; font-style: italic;"></p>
     </main>
 
     <script src="js/growcart.js"></script> 
@@ -47,6 +55,30 @@
                 });
             })
             .catch(error => console.error('Error fetching dried flower data:', error));
+    </script>
+    <script>
+        document.getElementById('hideZeroRowsCheckbox').addEventListener('change', function() {
+            const rows = driedFlowerTable.rows;
+            let visibleRowCount = 0;
+
+            for (let i = 0; i < rows.length; i++) {
+                const weight = parseFloat(rows[i].cells[1].textContent);
+                const shouldHide = this.checked && weight === 0;
+                rows[i].style.display = shouldHide ? 'none' : '';
+
+                if (!shouldHide) {
+                    visibleRowCount++;
+                }
+            }
+
+            const noDataMessage = document.getElementById('noDataMessage');
+            if (visibleRowCount === 0) {
+                noDataMessage.textContent = "No dried flowers available.";
+                noDataMessage.style.display = 'block';
+            } else {
+                noDataMessage.style.display = 'none';
+            }
+        });
     </script>
 </body>
 </html>
