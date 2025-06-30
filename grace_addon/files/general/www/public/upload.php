@@ -9,6 +9,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file'])) {
     $category = $_POST['category'] ?? 'other_records'; 
     $expiryDate = !empty($_POST['expiry_date']) ? $_POST['expiry_date'] : null;
 
+    if ($file['error'] === 1) {
+        echo json_encode([
+            "success" => false,
+            "message" => "File exceeds PHP limit (upload_max_filesize or post_max_size)"
+        ]);
+        exit;
+    }
+
     if (!in_array($category, ['offtakes', 'sops', 'licenses', 'other_records' , 'coc'])) {
         die("Invalid category");
     }
@@ -22,6 +30,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file'])) {
              echo json_encode(["success" => false, "message" => "Expiry date must be within 12 months."]);
              exit;
         }
+    }
+
+    // Size check (if file did upload)
+    $maxSize = 50 * 1024 * 1024; // 50 MB
+    if ($file['size'] > $maxSize) {
+        echo json_encode(["success" => false, "message" => "File too large. Max 50MB allowed."]);
+        exit;
     }
 
     $originalName = $file['name'];

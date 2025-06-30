@@ -21,6 +21,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     try {
+        // Check for duplicate genetics name
+        $checkStmt = $pdo->prepare("SELECT id FROM Genetics WHERE name = ?");
+        $checkStmt->execute([$geneticsName]);
+
+        if ($checkStmt->fetch()) {
+            // Redirect with error about duplicate
+            $data = urlencode(json_encode($_POST));
+            $error = urlencode("Don't try to add it a second time");
+            header("Location: add_new_genetics.php?error=$error&data=$data");
+            exit();
+        }
         // Prepare and execute SQL query to insert data using PDO
         $stmt = $pdo->prepare("INSERT INTO Genetics (name, breeder, genetic_lineage)
                                 VALUES (:geneticsName, :breeder, :geneticLineage)");
