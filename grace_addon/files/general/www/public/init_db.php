@@ -3,7 +3,7 @@
 date_default_timezone_set('Pacific/Auckland'); 
 
 
-function initializeDatabase($dbPath = '/data/grace.db') {
+function initializeDatabase($dbPath = '/grace.db') {
     try {
         // Check if the directory exists
         $dir = dirname($dbPath);
