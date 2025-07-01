@@ -54,7 +54,7 @@
         </form>
     </main>
 
-    <script src="js/growcart.js"></script>
+     <script src="js/growcart.js"></script>
     <script>
         const form = document.getElementById('addGeneticsForm');
         const statusMessage = document.getElementById('statusMessage');
@@ -68,7 +68,7 @@
             showStatusMessage(successMessage, 'success');
             form.reset(); // Clear the form
         } else if (errorMessage) {
-            showStatusMessage(errorMessage, 'error');
+            alert(errorMessage, 'error');
 
             // Pre-populate the form with the submitted data (if available)
             const submittedData = JSON.parse(urlParams.get('data') || '{}');

@@ -12,7 +12,7 @@
     <title>GRACe - Add Verified Company</title> 
 </head>
 <body>
-    <header class="container-fluid">
+ <header class="container-fluid">
 	<?php require_once 'nav.php'; ?>
     </header>
 
@@ -46,7 +46,7 @@
         </form>
     </main>
 
-    <script src="js/growcart.js"></script> 
+     <script src="js/growcart.js"></script> 
     <script>
         const form = document.getElementById('addCompanyForm');
         const statusMessage = document.getElementById('statusMessage');
@@ -62,14 +62,17 @@
             })
             .then(response => response.text()) 
             .then(message => {
-                if (message.startsWith('Success')) {
-                    showStatusMessage(message, 'success');
-                    form.reset();
-                } else {
-                    showStatusMessage(message, 'error');
-                }
+                    if (message.startsWith('Success')) {
+                        showStatusMessage(message, 'success');
+                        form.reset();
+                    } else if (message.startsWith('Error')) {
+                        alert(message);
+                        showStatusMessage(message, 'error');
+                    } else {
+                    showStatusMessage('Unexpected response: ' + message, 'error');
+                    }
             })
-            .catch(error => {
+        .catch(error => {
                 console.error('Error adding company:', error);
                 showStatusMessage('An error occurred while adding the company.', 'error');
             });
@@ -85,6 +88,6 @@
                 statusMessage.classList.remove(type);
             }, 5000); 
         }
-    </script>
+    </script> 
 </body>
 </html>

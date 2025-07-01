@@ -22,6 +22,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     try {
+        $stmt = $pdo->prepare("SELECT id FROM Companies WHERE license_number = ?");
+        $stmt->execute([$licenseNumber]);
+        if ($stmt->fetch()) {
+            echo "Error: Don't try to add it a second time";
+            exit();
+        }
+
+        $stmt = $pdo->prepare("SELECT id FROM Companies WHERE primary_contact_email = ?");
+        $stmt->execute([$contactEmail]);
+        if ($stmt->fetch()) {
+            echo "Error: Don't try to add it a second time.";
+            exit();
+        }
         // Prepare SQL and bind parameters
         $sql = "INSERT INTO Companies (name, license_number, address, primary_contact_name, primary_contact_email, primary_contact_phone)
                 VALUES (:companyName, :licenseNumber, :address, :contactName, :contactEmail, :contactPhone)";
