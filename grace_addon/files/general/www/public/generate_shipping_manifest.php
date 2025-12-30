@@ -9,12 +9,12 @@ $pdo = initializeDatabase();
 $ownCompanyStmt = $pdo->query("SELECT company_name, company_license_number, company_address, primary_contact_email FROM OwnCompany LIMIT 1");
 $ownCompany = $ownCompanyStmt->fetch(PDO::FETCH_ASSOC);
 
-// Fetch list of external companies
-$companiesStmt = $pdo->query("SELECT id, name, license_number, address, primary_contact_email FROM Companies");
+// Fetch list of external companies, sorted alphabetically by name
+$companiesStmt = $pdo->query("SELECT id, name, license_number, address, primary_contact_email FROM Companies ORDER BY name ASC");
 $companies = $companiesStmt->fetchAll(PDO::FETCH_ASSOC);
 
-// Fetch genetics for dropdown
-$geneticsStmt = $pdo->query("SELECT id, name FROM Genetics");
+// Fetch genetics for dropdown, sorted alphabetically by name
+$geneticsStmt = $pdo->query("SELECT id, name FROM Genetics ORDER BY name ASC");
 $geneticsList = $geneticsStmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 

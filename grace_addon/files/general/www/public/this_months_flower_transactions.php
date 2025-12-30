@@ -103,7 +103,8 @@ try {
 
                     nameCell.textContent = transaction.geneticsName;
                     weightCell.textContent = transaction.weight;
-                    dateCell.textContent = new Date(transaction.transaction_date).toLocaleDateString();
+                    dateCell.textContent = new Date(transaction.transaction_date)
+                        .toLocaleDateString('en-NZ', { timeZone: 'Pacific/Auckland' });
                     companyCell.textContent = transaction.companyNameAddress || '-';
                 });
                 // Add Footer
@@ -132,7 +133,8 @@ try {
 
                     nameCell.textContent = transaction.geneticsName;
                     countCell.textContent = transaction.plantCount;
-                    dateCell.textContent = new Date(transaction.transaction_date).toLocaleDateString();
+                    dateCell.textContent = new Date(transaction.transaction_date)
+                        .toLocaleDateString('en-NZ', { timeZone: 'Pacific/Auckland' });
                     companyCell.textContent = transaction.companyNameAddress || '-';
                 });
                 // Add Footer

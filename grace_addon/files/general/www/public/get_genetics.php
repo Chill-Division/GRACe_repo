@@ -6,8 +6,8 @@ try {
     // Get the PDO instance from the initializeDatabase function
     $pdo = initializeDatabase(); 
 
-    // Fetch genetics data
-    $stmt = $pdo->query("SELECT id, name FROM Genetics");
+    // Fetch genetics data, sorted alphabetically by name
+    $stmt = $pdo->query("SELECT id, name FROM Genetics ORDER BY name ASC");
     $genetics = $stmt->fetchAll();
 
     // Send data as JSON
