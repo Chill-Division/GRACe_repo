@@ -6,8 +6,8 @@ try {
     // Initialize the PDO connection using SQLite
     $pdo = initializeDatabase();
 
-    // Fetch all genetics
-    $geneticsStmt = $pdo->query("SELECT id, name FROM Genetics");
+    // Fetch all genetics, sorted alphabetically by name
+    $geneticsStmt = $pdo->query("SELECT id, name FROM Genetics ORDER BY name ASC");
     $genetics = $geneticsStmt->fetchAll(PDO::FETCH_ASSOC);
 
     $flowerData = [];

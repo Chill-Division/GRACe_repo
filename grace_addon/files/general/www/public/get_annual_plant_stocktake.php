@@ -14,7 +14,7 @@ try {
     $prevStartDate = "{$previousYear}-01-01";
     $prevEndDate = "{$previousYear}-12-31";
 
-    $query = "SELECT id, name FROM Genetics";
+    $query = "SELECT id, name FROM Genetics ORDER BY name ASC";
     $geneticsStmt = $pdo->query($query);
     $genetics = $geneticsStmt->fetchAll(PDO::FETCH_ASSOC);
 
@@ -33,7 +33,7 @@ try {
         // $startAmount = (int) $stmt->fetchColumn();
         
         $prevEndAmountQuery = "SELECT (COUNT(*) -
-                                  (SELECT COUNT(*) FROM Plants WHERE genetics_id = :geneticsId AND status IN ('Sent', 'Harvested', 'Destroyed') AND date_harvested BETWEEN :prevStartDate AND :prevEndDate)
+                                  (SELECT COUNT(*) FROM Plants WHERE genetics_id = :geneticsId AND status IN ('Sent', 'Harvested', 'Harvested - Drying', 'Harvested - Destroyed', 'Destroyed') AND date_harvested BETWEEN :prevStartDate AND :prevEndDate)
                                  ) AS prevEndAmount
                               FROM Plants
                               WHERE genetics_id = :geneticsId 
@@ -66,8 +66,8 @@ try {
         $sentCount->execute();
         $sentCount = (int) $sentCount->fetchColumn();
 
-        // Count 'Harvested' plants
-        $harvestedCount = $pdo->prepare("SELECT COUNT(*) FROM Plants WHERE genetics_id = :geneticsId AND status = 'Harvested' AND DATE(date_harvested) BETWEEN :startDate AND :endDate");
+        // Count harvested plants (both drying and harvested-destroyed, include legacy Harvested)
+        $harvestedCount = $pdo->prepare("SELECT COUNT(*) FROM Plants WHERE genetics_id = :geneticsId AND status IN ('Harvested', 'Harvested - Drying', 'Harvested - Destroyed') AND DATE(date_harvested) BETWEEN :startDate AND :endDate");
         $harvestedCount->bindParam(':geneticsId', $genetic['id'], PDO::PARAM_INT);
         $harvestedCount->bindParam(':startDate', $startDate, PDO::PARAM_STR);
         $harvestedCount->bindParam(':endDate', $endDate, PDO::PARAM_STR);

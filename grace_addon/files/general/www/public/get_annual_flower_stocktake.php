@@ -10,7 +10,7 @@ try {
     $startDate = "{$selectedYear}-01-01";
     $endDate = "{$selectedYear}-12-31";
 
-    $query = "SELECT id, name FROM Genetics";
+    $query = "SELECT id, name FROM Genetics ORDER BY name ASC";
     $geneticsStmt = $pdo->query($query);
     $genetics = $geneticsStmt->fetchAll(PDO::FETCH_ASSOC);
 
