@@ -30,7 +30,14 @@ try {
         throw new Exception('No plants selected.');
     }
 
-    $newStatus = ($action === 'harvest') ? 'Harvested' : (($action === 'destroy') ? 'Destroyed' : 'Sent');
+    // Map actions to new harvest sub-states while keeping legacy compatibility.
+    if ($action === 'harvest') {
+        $newStatus = 'Harvested - Drying';
+    } elseif ($action === 'destroy') {
+        $newStatus = 'Harvested - Destroyed';
+    } else {
+        $newStatus = 'Sent';
+    }
     $placeholders = implode(',', array_fill(0, count($selectedPlantIds), '?'));
     $sql = "UPDATE Plants SET status = ?, date_harvested = DATETIME('now')";
 

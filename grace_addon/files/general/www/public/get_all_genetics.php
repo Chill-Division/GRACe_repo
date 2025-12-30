@@ -19,15 +19,20 @@ try {
             JOIN
                 Genetics G ON P.genetics_id = G.id ";
 
+    // If filtering, handle the aggregate "Harvested-all" specially
     if ($statusFilter) {
-        $sql .= "WHERE P.status = :status ";
+        if ($statusFilter === 'Harvested-all') {
+            $sql .= "WHERE P.status IN ('Harvested', 'Harvested - Drying', 'Harvested - Destroyed') ";
+        } else {
+            $sql .= "WHERE P.status = :status ";
+        }
     }
 
     $sql .= "ORDER BY age ASC";
 
     $stmt = $pdo->prepare($sql);
 
-    if ($statusFilter) {
+    if ($statusFilter && $statusFilter !== 'Harvested-all') {
         $stmt->bindParam(':status', $statusFilter, PDO::PARAM_STR);
     }
 

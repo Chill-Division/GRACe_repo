@@ -15,7 +15,7 @@ try {
             JOIN
                 Genetics G ON P.genetics_id = G.id
             WHERE
-                P.status = 'Growing'
+                P.status IN ('Growing', 'Harvested - Drying', 'Harvested')
             ORDER BY
                 age ASC";
 

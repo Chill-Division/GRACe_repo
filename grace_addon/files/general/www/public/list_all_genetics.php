@@ -20,8 +20,11 @@
         <label for="statusFilter">Filter by Status:</label>
         <select id="statusFilter" name="statusFilter" class="input">
             <option value="">All</option>
+            <option value="Harvested-all">Harvested (All)</option>
             <option value="Growing">Growing</option>
-            <option value="Harvested">Harvested</option>
+            <option value="Harvested">Harvested (Legacy)</option>
+            <option value="Harvested - Drying">Harvested - Drying</option>
+            <option value="Harvested - Destroyed">Harvested - Destroyed</option>
             <option value="Destroyed">Destroyed</option>
             <option value="Sent">Sent</option>
         </select>

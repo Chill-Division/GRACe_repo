@@ -21,8 +21,8 @@
 
         <label for="action">Action:</label>
         <select id="action" name="action" class="input" required>
-            <option value="harvest">Harvest</option>
-            <option value="destroy">Destroy</option>
+            <option value="harvest">Harvest (Drying)</option>
+            <option value="destroy">Harvest - Destroy</option>
             <option value="send">Send External</option>
         </select>
 
