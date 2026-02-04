@@ -6,8 +6,17 @@ Take back your time, focus on your garden, while GRACe looks after your regulato
 * Annual reporting / stock-take
 * Monthly summaries for the Medicinal Cannabis Agency
 * Minimal effort for plant tracking
-* Easy Chain of Custody creation (WIP)
+* Easy Chain of Custody creation
 * Automatic emails (coming soon)
+
+## Storage and Upgrades
+
+Files are stored in `/data/uploads`, which is a permanent storage volume in Home Assistant. This ensures uploaded documents persist across addon updates.
+
+**Note on Upgrades (v0.12+):**
+- **Database:** Schema changes (new `expiry_date` and `acknowledged` columns) are handled automatically by the application upon start.
+- **File Storage:** Uploads now go to `/data/uploads`. Existing files in the container's ephemeral storage are *not* automatically migrated. They must be moved manually to `/data/uploads` if needed.
+- **Permissions:** The application automatically attempts to create necessary directories in `/data` and set permissions.
 
 ## Installation and getting started video
 

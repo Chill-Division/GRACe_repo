@@ -73,7 +73,7 @@
                             <tr>
                                 <td>${file.original_filename}</td>
                                 <td>${file.upload_date}</td>
-                                <td><a href="uploads/coc/${file.unique_filename}" download><i class="fa-solid fa-download"></i> Download</a></td>
+                                <td><a href="download.php?category=coc&file=${encodeURIComponent(file.unique_filename)}" download><i class="fa-solid fa-download"></i> Download</a></td>
                             </tr>
                         `);
                     });

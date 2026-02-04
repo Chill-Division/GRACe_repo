@@ -25,7 +25,12 @@
         <section>
             <h2>Upload New License</h2>
             <form id="uploadForm">
-                <input type="file" name="file" required>
+                <label for="file">License File</label>
+                <input type="file" name="file" id="file" required>
+                
+                <label for="expiry_date">Expiry Date (Max 12 months from now)</label>
+                <input type="date" name="expiry_date" id="expiry_date" required>
+                
                 <input type="hidden" name="category" value="licenses">
                 <button type="submit">Upload</button>
             </form>
@@ -45,11 +50,13 @@
                     <tr>
                         <th>File Name</th>
                         <th>Upload Date</th>
+                        <th>Expiry Date</th>
                         <th>Download</th>
+                        <th>Action</th>
                     </tr>
                 </thead>
                 <tbody id="fileList">
-                    <tr><td colspan="3">No records found.</td></tr>
+                    <tr><td colspan="5">No records found.</td></tr>
                 </tbody>
             </table>
         </section>
@@ -64,21 +71,61 @@
                 const fileList = $('#fileList');
                 fileList.empty();
                 if (files.length === 0) {
-                    fileList.append('<tr><td colspan="3">No records found.</td></tr>');
+                    fileList.append('<tr><td colspan="5">No records found.</td></tr>');
                     $('#sortContainer').hide(); 
                 } else {
                     $('#sortContainer').show(); 
+                    const today = new Date();
+                    const warningDate = new Date();
+                    warningDate.setDate(today.getDate() + 3);
+
                     files.forEach(file => {
+                        let alertHtml = '';
+                        // Check if acknowledged is 0 or null (falsy)
+                        let isAck = file.acknowledged == 1;
+                        let expiryDate = file.expiry_date ? new Date(file.expiry_date) : null;
+                        let showAck = false;
+                        let rowStyle = '';
+
+                        if (expiryDate) {
+                            if (expiryDate <= warningDate) {
+                                rowStyle = 'style="background-color: rgba(217, 53, 38, 0.1);"'; // Light red hint
+                                if (!isAck) {
+                                    showAck = true;
+                                }
+                            }
+                        }
+
+                        let ackButton = showAck 
+                            ? `<button class="secondary outline" onclick="acknowledge(${file.id})">Acknowledge Alert</button>` 
+                            : (isAck ? '<small>Acknowledged</small>' : '');
+
                         fileList.append(`
-                            <tr>
+                            <tr ${rowStyle}>
                                 <td>${file.original_filename}</td>
                                 <td>${file.upload_date}</td>
-                                <td><a href="uploads/licenses/${file.unique_filename}" download><i class="fa-solid fa-download"></i> Download</a></td>
+                                <td>${file.expiry_date || '-'}</td>
+                                <td><a href="download.php?category=licenses&file=${encodeURIComponent(file.unique_filename)}" download><i class="fa-solid fa-download"></i> Download</a></td>
+                                <td>${ackButton}</td>
                             </tr>
                         `);
                     });
                 }
             }, 'json');
+        }
+        
+        function acknowledge(id) {
+            if(confirm('Acknowledge this expiry alert? It will disappear from the top banner.')) {
+                $.post('acknowledge_license.php', { id: id }, function(res) {
+                    const data = JSON.parse(res);
+                    if(data.success) {
+                        loadFiles(); // Reload to update UI
+                        location.reload(); // Reload to update banner
+                    } else {
+                        alert('Error: ' + (data.message || 'Unknown error'));
+                    }
+                });
+            }
         }
 
         $('#sortOrder').change(loadFiles);
@@ -92,10 +139,19 @@
                 data: formData,
                 contentType: false,
                 processData: false,
-                success: function() {
-                    alert('File uploaded');
-                    $('#uploadForm')[0].reset();
-                    loadFiles();
+                success: function(response) {
+                    try {
+                        const res = JSON.parse(response);
+                        if(res.success) {
+                            alert('File uploaded');
+                            $('#uploadForm')[0].reset();
+                            loadFiles();
+                        } else {
+                            alert('Upload failed: ' + res.message);
+                        }
+                    } catch(e) {
+                        alert('Upload failed: Invalid server response');
+                    }
                 }
             });
         });

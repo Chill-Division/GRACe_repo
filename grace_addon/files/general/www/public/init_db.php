@@ -134,4 +134,49 @@ function initializeDatabase($dbPath = '/data/grace.db') {
     }
 }
 
+// Function to perform migrations
+function performMigrations($pdo) {
+    // Check for expiry_date column in Documents
+    try {
+        $pdo->query("SELECT expiry_date FROM Documents LIMIT 1");
+    } catch (PDOException $e) {
+        // Column doesn't exist, add it
+        $pdo->exec("ALTER TABLE Documents ADD COLUMN expiry_date DATE DEFAULT NULL");
+    }
+
+    // Check for acknowledged column in Documents
+    try {
+        $pdo->query("SELECT acknowledged FROM Documents LIMIT 1");
+    } catch (PDOException $e) {
+        // Column doesn't exist, add it
+        $pdo->exec("ALTER TABLE Documents ADD COLUMN acknowledged INTEGER DEFAULT 0");
+    }
+}
+
+// Function to ensure directories exist
+function ensureUploadDirectories() {
+    $baseDir = '/data/uploads/';
+    $categories = ['offtakes', 'sops', 'licenses', 'other_records', 'coc'];
+
+    if (!is_dir($baseDir)) {
+        if (!mkdir($baseDir, 0755, true)) {
+             error_log("Failed to create base upload directory: $baseDir");
+        }
+    }
+
+    foreach ($categories as $category) {
+        $catDir = $baseDir . $category;
+        if (!is_dir($catDir)) {
+            if (!mkdir($catDir, 0777, true)) { // 0777 or 0755 depending on user/group config, 0777 safe for now
+                error_log("Failed to create directory: $catDir");
+            }
+        }
+    }
+}
+
+// Run additional setup
+$pdo = initializeDatabase();
+performMigrations($pdo);
+ensureUploadDirectories();
+
 ?>

@@ -115,14 +115,45 @@
         function populateStocktakeTable(tableId, data) {
             const tableBody = document.getElementById(tableId).getElementsByTagName('tbody')[0];
             tableBody.innerHTML = ''; // Clear existing rows
+            
+            // Initialize totals array (size based on first row, assuming all rows have same columns)
+            let totals = [];
+            if (data.length > 0) {
+                totals = new Array(Object.values(data[0]).length).fill(0);
+            }
 
             data.forEach(item => {
                 const row = tableBody.insertRow();
-                Object.values(item).forEach(value => {
+                Object.values(item).forEach((value, index) => {
                     const cell = row.insertCell();
                     cell.textContent = value;
+                    
+                    // Add to total if index > 0 (assuming first column 'Genetics Name' is not numeric to sum)
+                    if (index > 0) {
+                        totals[index] += parseFloat(value) || 0;
+                    }
                 });
             });
+
+             // Add Footer Row
+            if (data.length > 0) {
+                const footerRow = tableBody.insertRow();
+                footerRow.style.fontWeight = 'bold';
+                footerRow.classList.add('stocktake-total'); // Class for identification if needed
+                
+                totals.forEach((total, index) => {
+                    const cell = footerRow.insertCell();
+                    if (index === 0) {
+                        cell.textContent = 'Totals';
+                    } else {
+                        // Check if integer (plant counts) or float (weights). 
+                        // Simplistic check: if rounded total equals total, show integer, else fixed(2)
+                        // Or safer: just fixed(2) for weight tables, but plant tables are ints.
+                        // Let's use simple logic: if sum % 1 === 0 show int, else fixed(2)
+                        cell.textContent = (total % 1 === 0) ? total : total.toFixed(2);
+                    }
+                });
+            }
         }
 
         hideZeroRowsCheckbox.addEventListener('change', filterStocktakeTables);

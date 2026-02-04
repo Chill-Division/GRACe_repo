@@ -67,11 +67,11 @@
         } else {
             $('#sortContainer').show(); // Show sorting dropdown if there are records
             files.forEach(file => {
-                fileList.append(`
+                        fileList.append(`
                         <tr>
                             <td>${file.original_filename}</td>
                             <td>${file.upload_date}</td>
-                            <td><a href="uploads/other_records/${file.unique_filename}" download><i class="fa-solid fa-download"></i> Download</a></td>
+                            <td><a href="download.php?category=other_records&file=${encodeURIComponent(file.unique_filename)}" download><i class="fa-solid fa-download"></i> Download</a></td>
                         </tr>
                     `);
                 });

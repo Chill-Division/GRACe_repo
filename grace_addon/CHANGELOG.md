@@ -1,6 +1,12 @@
-## 0.11.1
+## [0.12] - 2026-02-05
+### Added
+- Company License Expiry Feature: Alerts for expiring licenses and acknowledgement workflow.
+- Database Schema: Added `expiry_date` and `acknowledged` fields to `Documents` table.
+- Secure File Download: Implemented `download.php` for serving files, fixed tracking.php invalid downloads
+- Add totals to reporting columns to help with INCB etc
 
- - Added "Hide rows with zero values" to some of the reports so we don't see empty rows
+
+## [0.11.1] - 2025-02-04 Added "Hide rows with zero values" to some of the reports so we don't see empty rows
 
 ## 0.11
 

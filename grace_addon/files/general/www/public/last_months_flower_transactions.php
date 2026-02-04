@@ -83,14 +83,15 @@ try {
             const flowerData = data.flowers || [];
             const plantData = data.plants || [];
 
-            let totalWeight = 0;
-            
             // Process flower data
+            let flowerTotal = 0;
             if (flowerData.length === 0) {
                 flowerTransactionsTable.innerHTML = '<tr><td colspan="4">Nothing to report</td></tr>';
             } else {
                 flowerData.forEach(transaction => {
-                    totalWeight += parseFloat(transaction.weight) || 0;
+                    let weight = parseFloat(transaction.weight) || 0;
+                    flowerTotal += weight;
+                    totalWeight += weight;
 
                     const row = flowerTransactionsTable.insertRow();
                     const nameCell = row.insertCell();
@@ -103,13 +104,24 @@ try {
                     dateCell.textContent = new Date(transaction.transaction_date).toLocaleDateString();
                     companyCell.textContent = transaction.companyNameAddress || '-';
                 });
+                // Add Footer
+                const footerRow = flowerTransactionsTable.insertRow();
+                footerRow.style.fontWeight = 'bold';
+                footerRow.insertCell().textContent = 'Total';
+                footerRow.insertCell().textContent = flowerTotal.toFixed(2);
+                footerRow.insertCell();
+                footerRow.insertCell();
             }
 
             // Process plant data
+            let plantTotal = 0;
             if (plantData.length === 0) {
                 plantTransactionsTable.innerHTML = '<tr><td colspan="4">Nothing to report</td></tr>';
             } else {
                 plantData.forEach(transaction => {
+                    let count = parseInt(transaction.plantCount) || 0;
+                    plantTotal += count;
+
                     const row = plantTransactionsTable.insertRow();
                     const nameCell = row.insertCell();
                     const countCell = row.insertCell();
@@ -121,6 +133,13 @@ try {
                     dateCell.textContent = new Date(transaction.transaction_date).toLocaleDateString();
                     companyCell.textContent = transaction.companyNameAddress || '-';
                 });
+                // Add Footer
+                const footerRow = plantTransactionsTable.insertRow();
+                footerRow.style.fontWeight = 'bold';
+                footerRow.insertCell().textContent = 'Total';
+                footerRow.insertCell().textContent = plantTotal;
+                footerRow.insertCell();
+                footerRow.insertCell();
             }
 
             totalWeightSentSpan.textContent = totalWeight.toFixed(2);
