@@ -18,6 +18,13 @@ Files are stored in `/data/uploads`, which is a permanent storage volume in Home
 - **File Storage:** Uploads now go to `/data/uploads`. Existing files in the container's ephemeral storage are *not* automatically migrated. They must be moved manually to `/data/uploads` if needed.
 - **Permissions:** The application automatically attempts to create necessary directories in `/data` and set permissions.
 
+## Release Process
+
+For future edits, note that the version number is maintained in three places:
+1.  **`config.yaml`**: The source of truth for the Home Assistant Addon version.
+2.  **`grace_addon/files/general/www/public/nav.php`**: Displayed to the user in the top navigation bar.
+3.  **`CHANGELOG.md`**: Documenting changes for each version.
+
 ## Installation and getting started video
 
 Check out the video on YouTube for a walkthrough of installation / getting started:
