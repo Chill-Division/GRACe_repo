@@ -9,6 +9,52 @@ Take back your time, focus on your garden, while GRACe looks after your regulato
 * Easy Chain of Custody creation
 * Automatic emails (coming soon)
 
+---
+
+## ⚠️ CRITICAL: Persistent Storage Requirements
+
+> [!CAUTION]
+> **This application runs as a Home Assistant addon and MUST use persistent storage paths.**
+> 
+> **Ephemeral storage (container filesystem) is WIPED on every addon update/restart.**
+
+### Absolute Requirements
+
+The following paths are **IMMUTABLE** and must **NEVER** be changed:
+
+| Resource | Required Path | Notes |
+|----------|--------------|-------|
+| **Database** | `/data/grace.db` | SQLite database file |
+| **Uploads** | `/data/uploads/` | All uploaded documents |
+
+### Why This Matters
+
+Home Assistant addons run in Docker containers where:
+- ✅ `/data` → **Persistent volume** (survives updates)
+- ❌ Container filesystem → **Ephemeral** (wiped on updates)
+
+**If database or uploads use relative paths like `__DIR__ . '/uploads/'` or any path outside `/data`, ALL DATA WILL BE LOST on the next addon update.**
+
+### For Developers & AI Assistants
+
+When reviewing Pull Requests or making code changes:
+
+1. **REJECT** any PR that changes database path from `/data/grace.db`
+2. **REJECT** any PR that changes upload path from `/data/uploads/`
+3. **VERIFY** `init_db.php` default parameter: `initializeDatabase($dbPath = '/data/grace.db')`
+4. **VERIFY** `upload.php` and `download.php` use: `$uploadDir = '/data/uploads/';`
+
+**This requirement takes absolute precedence over all other considerations.**
+
+### Current Implementation Status
+
+✅ **Verified Correct** (as of last check):
+- `grace_addon/files/general/www/public/init_db.php` → `/data/grace.db`
+- `grace_addon/files/general/www/public/upload.php` → `/data/uploads/`
+- `grace_addon/files/general/www/public/download.php` → `/data/uploads/`
+
+
+
 ## Storage and Upgrades
 
 Files are stored in `/data/uploads`, which is a permanent storage volume in Home Assistant. This ensures uploaded documents persist across addon updates.
