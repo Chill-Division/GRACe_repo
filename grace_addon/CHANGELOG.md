@@ -1,3 +1,12 @@
+## [0.13] - 2026-02-07
+### Added
+- **Image Compression**: Added client-side image compression (`image-compress.js`) to automatically compress images >1MB.
+- **Upload Improvements**: Enforced 1MB file size limit (post-compression) and improved error handling for uploads.
+- **Database Path Fix**: Enforced persistent storage path `/data/grace.db` for database to prevent data loss.
+- **Documentation**: Added critical "Persistent Storage Requirements" to README.
+- **UX**: Added alphabetic filtering to multiple record management pages.
+- **Backend**: Added `upload_date` tracking for all documents and duplicate prevention for Companies/Genetics.
+
 ## [0.12.1] - 2026-02-05
 ### Added
 - **UI**: Added version number display to top navigation.

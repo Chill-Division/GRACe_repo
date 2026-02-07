@@ -151,6 +151,14 @@ function performMigrations($pdo) {
         // Column doesn't exist, add it
         $pdo->exec("ALTER TABLE Documents ADD COLUMN acknowledged INTEGER DEFAULT 0");
     }
+
+    // Check for upload_date column in Documents (Added for image compression/upload update)
+    try {
+        $pdo->query("SELECT upload_date FROM Documents LIMIT 1");
+    } catch (PDOException $e) {
+        // Column doesn't exist, add it
+        $pdo->exec("ALTER TABLE Documents ADD COLUMN upload_date DATETIME DEFAULT CURRENT_TIMESTAMP");
+    }
 }
 
 // Function to ensure directories exist
