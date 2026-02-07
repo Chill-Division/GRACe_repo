@@ -64,6 +64,21 @@ Files are stored in `/data/uploads`, which is a permanent storage volume in Home
 - **File Storage:** Uploads now go to `/data/uploads`. Existing files in the container's ephemeral storage are *not* automatically migrated. They must be moved manually to `/data/uploads` if needed.
 - **Permissions:** The application automatically attempts to create necessary directories in `/data` and set permissions.
 
+## Local Testing
+
+This repository includes a manual CI testing suite for local development.
+
+**Prerequisites:**
+- PHP 8.1+ CLI
+- `php-sqlite3` extension (Required for DB tests)
+
+To run the suite:
+```bash
+bash tests/run_ci.sh
+```
+
+For full details, see [TESTING.md](TESTING.md).
+
 ## Release Process
 
 For future edits, note that the version number is maintained in three places:

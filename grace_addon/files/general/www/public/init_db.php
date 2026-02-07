@@ -162,8 +162,7 @@ function performMigrations($pdo) {
 }
 
 // Function to ensure directories exist
-function ensureUploadDirectories() {
-    $baseDir = '/data/uploads/';
+function ensureUploadDirectories($baseDir = '/data/uploads/') {
     $categories = ['offtakes', 'sops', 'licenses', 'other_records', 'coc'];
 
     if (!is_dir($baseDir)) {
@@ -182,9 +181,11 @@ function ensureUploadDirectories() {
     }
 }
 
-// Run additional setup
-$pdo = initializeDatabase();
-performMigrations($pdo);
-ensureUploadDirectories();
+// Run additional setup only if not in test mode
+if (!defined('GRACE_TEST_MODE')) {
+    $pdo = initializeDatabase();
+    performMigrations($pdo);
+    ensureUploadDirectories();
+}
 
 ?>
