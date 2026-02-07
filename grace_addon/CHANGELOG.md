@@ -1,3 +1,8 @@
+## [0.13.2] - 2026-02-07
+### Fixed
+- **Transactions UI**: Fixed `ReferenceError: totalWeight is not defined` on flower transaction pages.
+- **JavaScript**: Fixed `SyntaxError: Identifier 'isLight' has already been declared` caused by duplicate script inclusion in transaction pages.
+
 ## [0.13.1] - 2026-02-07
 ### Added
 - **Local CI/Test Suite**: Added comprehensive manual testing suite (`tests/`) for local development.

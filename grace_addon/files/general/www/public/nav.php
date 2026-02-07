@@ -1,6 +1,6 @@
         <nav>
             <ul>
-                <li><strong>GRACe by Chill Division <small>v0.13.1</small></strong></li>
+                <li><strong>GRACe by Chill Division <small>v0.13.2</small></strong></li>
             </ul>
             <input type="checkbox" id="nav-toggle" class="nav-toggle">
             <label for="nav-toggle" class="nav-toggle-label">

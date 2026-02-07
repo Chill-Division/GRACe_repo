@@ -71,8 +71,7 @@ try {
             </tbody>
         </table>
     </main>
-    <script src="js/growcart.js"></script> 
-<script>
+    <script>
     const flowerTransactionsTable = document.getElementById('flowerTransactionsTable').getElementsByTagName('tbody')[0];
     const plantTransactionsTable = document.getElementById('plantTransactionsTable').getElementsByTagName('tbody')[0];
     const totalWeightSentSpan = document.getElementById('totalWeightSent');
@@ -82,6 +81,7 @@ try {
         .then(data => {
             const flowerData = data.flowers || [];
             const plantData = data.plants || [];
+            let totalWeight = 0;
 
             // Process flower data
             let flowerTotal = 0;
