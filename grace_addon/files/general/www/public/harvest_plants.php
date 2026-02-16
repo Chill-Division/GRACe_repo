@@ -127,7 +127,6 @@
                  updateSelectionCount();
              }
         });
-    </script>
 
         // Handle "Process Selected" button click
         processSelectedButton.addEventListener('click', () => {
