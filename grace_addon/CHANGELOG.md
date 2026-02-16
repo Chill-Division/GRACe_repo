@@ -1,3 +1,7 @@
+## [0.14.1] - 2026-02-16
+### Added
+- **Administration**: Added a tool to migrate legacy "Harvested" plants to "Harvested - Destroyed" status.
+
 ## [0.14] - 2026-02-16
 ### Added
 - **Annual Stocktake**: Updated logic to treat "Harvested - Drying" plants as active stock in annual reports.

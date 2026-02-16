@@ -63,6 +63,10 @@
 	    <ul>
 		<li><a href="show_database.php">Dump database</a></li>
 	    </ul>
+        <ul>
+        <li><a href="admin_migrate_harvested.php">Migrate Legacy Harvest Status</a><br />
+        Update old "Harvested" records to "Harvested - Destroyed".</li>
+        </ul>
         </section>
     </main>
 
