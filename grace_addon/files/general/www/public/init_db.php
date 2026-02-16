@@ -48,7 +48,7 @@ function initializeDatabase($dbPath = '/data/grace.db') {
             "CREATE TABLE IF NOT EXISTS Plants (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 genetics_id INTEGER,
-                status TEXT CHECK(status IN ('Growing', 'Harvested', 'Destroyed', 'Sent')),
+                status TEXT CHECK(status IN ('Growing', 'Harvested', 'Destroyed', 'Sent', 'Harvested - Drying', 'Harvested - Destroyed')),
                 date_created DATETIME,
                 date_harvested DATETIME DEFAULT CURRENT_TIMESTAMP,
                 company_id INTEGER,
@@ -158,6 +158,61 @@ function performMigrations($pdo) {
     } catch (PDOException $e) {
         // Column doesn't exist, add it
         $pdo->exec("ALTER TABLE Documents ADD COLUMN upload_date DATETIME DEFAULT CURRENT_TIMESTAMP");
+    }
+
+    // Check Plants table constraint for new Harvest statuses
+    // We try to insert a dummy record with new status inside a transaction. 
+    // If it fails, we need migration. If it succeeds, we rollback.
+    $needsMigration = false;
+    $pdo->beginTransaction();
+    try {
+        // Prepare statement to avoid syntax errors if table structure is different (though likely same columns)
+        // usage of simple INSERT with NULLs for other columns should suffice for CHECK constraint test
+        $stmt = $pdo->prepare("INSERT INTO Plants (status) VALUES ('Harvested - Drying')");
+        $stmt->execute();
+        // If successful, constraint supports it. Rollback.
+        $pdo->rollBack();
+    } catch (PDOException $e) {
+        // Insert failed, likely due to constraint.
+        $pdo->rollBack();
+        // Check if error is constraint violation
+        if (strpos($e->getMessage(), 'constraint') !== false) {
+             $needsMigration = true;
+        }
+    }
+
+    if ($needsMigration) {
+        try {
+            $pdo->beginTransaction();
+            
+            // 1. Rename existing table
+            $pdo->exec("ALTER TABLE Plants RENAME TO Plants_old");
+
+            // 2. Create new table with updated CHECK constraint
+            $pdo->exec("CREATE TABLE Plants (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                genetics_id INTEGER,
+                status TEXT CHECK(status IN ('Growing', 'Harvested', 'Destroyed', 'Sent', 'Harvested - Drying', 'Harvested - Destroyed')),
+                date_created DATETIME,
+                date_harvested DATETIME DEFAULT CURRENT_TIMESTAMP,
+                company_id INTEGER,
+                FOREIGN KEY (genetics_id) REFERENCES Genetics(id) ON DELETE SET NULL ON UPDATE CASCADE,
+                FOREIGN KEY (company_id) REFERENCES Companies(id) ON DELETE SET NULL ON UPDATE CASCADE
+            )");
+
+            // 3. Copy data
+            $pdo->exec("INSERT INTO Plants (id, genetics_id, status, date_created, date_harvested, company_id)
+                        SELECT id, genetics_id, status, date_created, date_harvested, company_id FROM Plants_old");
+
+            // 4. Drop old table
+            $pdo->exec("DROP TABLE Plants_old");
+
+            $pdo->commit();
+            error_log("Plants table migration completed successfully.");
+        } catch (Exception $e) {
+            $pdo->rollBack();
+            die("Migration failed: " . $e->getMessage());
+        }
     }
 }
 

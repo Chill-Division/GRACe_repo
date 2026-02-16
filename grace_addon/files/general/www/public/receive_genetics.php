@@ -36,51 +36,9 @@
     </main>
 
     <script src="js/growcart.js"></script> 
+    <script src="js/genetics.js"></script>
     <script>
-        const form = document.getElementById('receiveGeneticsForm');
-        const statusMessage = document.getElementById('statusMessage');
-        const geneticsDropdown = document.getElementById('geneticsName');
-
-        // Check if there's a success or error message in the URL parameters
-        const urlParams = new URLSearchParams(window.location.search);
-        const successMessage = urlParams.get('success');
-        const errorMessage = urlParams.get('error');
-
-        if (successMessage) {
-            showStatusMessage(successMessage, 'success');
-            form.reset(); // Clear the form
-        } else if (errorMessage) {
-            showStatusMessage(errorMessage, 'error');
-
-            // Pre-populate the form with the submitted data (if available)
-            const submittedData = JSON.parse(urlParams.get('data') || '{}');
-            form.plantCount.value = submittedData.plantCount || '';
-            form.geneticsName.value = submittedData.geneticsName || '';
-        }
-
-        function showStatusMessage(message, type) {
-            statusMessage.textContent = message;
-            statusMessage.classList.add(type);
-            statusMessage.style.display = 'block';
-
-            setTimeout(() => {
-                statusMessage.style.display = 'none';
-                statusMessage.classList.remove(type);
-            }, 5000);
-        }
-
-        // Fetch genetics data and populate dropdown on page load
-        fetch('get_genetics.php')
-            .then(response => response.json())
-            .then(genetics => {
-                genetics.forEach(geneticsItem => {
-                    const option = document.createElement('option');
-                    option.value = geneticsItem.id; 
-                    option.textContent = geneticsItem.name;
-                    geneticsDropdown.appendChild(option);
-                });
-            })
-            .catch(error => console.error('Error fetching genetics:', error));
+        document.addEventListener('DOMContentLoaded', initReceiveGenetics);
     </script>
 </body>
 </html>

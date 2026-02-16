@@ -44,6 +44,17 @@ else
     echo "[PASS] No dangerous relative upload paths found"
 fi
 
+# 6. Check for duplicate script inclusions (catch Copy/Paste errors)
+echo "Checking for duplicate script inclusions..."
+find grace_addon/files/general/www/public/ -name "*.php" -print0 | while IFS= read -r -d '' file; do
+    DUPLICATES=$(grep -o 'src="[^"]*"' "$file" | sort | uniq -d)
+    if [ ! -z "$DUPLICATES" ]; then
+        echo "[FAIL] Duplicate script(s) found in $file:"
+        echo "$DUPLICATES"
+        FAIL=1
+    fi
+done
+
 echo "Static Analysis Complete"
 if [ $FAIL -eq 1 ]; then
     exit 1

@@ -55,111 +55,15 @@
 
     <script src="js/growcart.js"></script> 
     <script src="js/image-compress.js"></script>
+    <script src="js/documents.js"></script>
     <script>
-    function loadFiles() {
-        const order = $('#sortOrder').val();
-        $.get('fetch_files.php', { category: 'other_records', order: order }, function(files) {
-            const fileList = $('#fileList');
-            fileList.empty();
-
-            if (files.length === 0) {
-            fileList.append('<tr><td colspan="3">No records found.</td></tr>');
-            $('#sortContainer').hide(); // Hide sorting dropdown
-        } else {
-            $('#sortContainer').show(); // Show sorting dropdown if there are records
-            files.forEach(file => {
-                        fileList.append(`
-                        <tr>
-                            <td>${file.original_filename}</td>
-                            <td>${file.upload_date}</td>
-                            <td><a href="download.php?category=other_records&file=${encodeURIComponent(file.unique_filename)}" download><i class="fa-solid fa-download"></i> Download</a></td>
-                        </tr>
-                    `);
-                });
-            }
-        }, 'json');
-    }
-
-    $('#sortOrder').change(loadFiles);
-
-    $('#uploadForm').submit(async function(e) {
-        e.preventDefault();
-        const form = this;
-        const fileInput = form.querySelector('input[type="file"]');
-        const submitButton = form.querySelector('button[type="submit"]');
-        const originalButtonText = submitButton.textContent;
-        
-        if (!fileInput.files || !fileInput.files[0]) {
-            alert('Please select a file to upload');
-            return;
-        }
-        
-        let file = fileInput.files[0];
-        const originalSize = file.size;
-        
-        // Disable submit button and show processing message
-        submitButton.disabled = true;
-        submitButton.textContent = 'Processing...';
-        
-        try {
-            // Compress image if it's an image file
-            if (file.type.match(/^image\//)) {
-                if (file.size > 1024 * 1024) {
-                    submitButton.textContent = 'Compressing image...';
-                    file = await compressImage(file, 1024 * 1024); // 1MB limit
-                    const newSize = file.size;
-                    console.log(`Image compressed from ${formatFileSize(originalSize)} to ${formatFileSize(newSize)}`);
-                }
-            }
-            
-            // Create new FormData with compressed file
-            const formData = new FormData();
-            formData.append('file', file, file.name);
-            formData.append('category', 'other_records');
-            
-            submitButton.textContent = 'Uploading...';
-            
-            $.ajax({
-                url: 'upload.php',
-                type: 'POST',
-                data: formData,
-                contentType: false,
-                processData: false,
-                success: function(response) {
-                    const result = typeof response === 'string' ? JSON.parse(response) : response;
-                    if (result.success) {
-                        alert('File uploaded successfully');
-                        form.reset();
-                        loadFiles();
-                    } else {
-                        alert('Upload failed: ' + (result.message || 'Unknown error'));
-                    }
-                },
-                error: function(xhr, status, error) {
-                    let errorMsg = 'Upload failed';
-                    if (xhr.responseText) {
-                        try {
-                            const response = JSON.parse(xhr.responseText);
-                            errorMsg = response.message || errorMsg;
-                        } catch (e) {
-                            errorMsg = xhr.responseText || errorMsg;
-                        }
-                    }
-                    alert('Upload error: ' + errorMsg);
-                },
-                complete: function() {
-                    submitButton.disabled = false;
-                    submitButton.textContent = originalButtonText;
-                }
+        $(document).ready(function() {
+            initDocumentManager({
+                category: 'other_records',
+                hasExpiry: false,
+                hasAcknowledgment: false
             });
-        } catch (error) {
-            alert('Error processing file: ' + error.message);
-            submitButton.disabled = false;
-            submitButton.textContent = originalButtonText;
-        }
-    });
-
-    $(document).ready(loadFiles);
+        });
     </script>
 </body>
 </html>

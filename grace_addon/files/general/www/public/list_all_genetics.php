@@ -43,43 +43,6 @@
     </main>
 
     <script src="js/growcart.js"></script> 
-    <script>
-        const geneticsListTable = document.getElementById('geneticsListTable').getElementsByTagName('tbody')[0];
-        const statusFilter = document.getElementById('statusFilter');
-
-        // Fetch genetics data from the server
-        function fetchAndDisplayGenetics(statusFilterValue = '') {
-            // Clear the table body before populating it with new data
-            geneticsListTable.innerHTML = ''; 
-
-            fetch('get_all_genetics.php' + (statusFilterValue ? `?status=${statusFilterValue}` : ''))
-                .then(response => response.json())
-                .then(geneticsData => {
-                    // Sort by age (oldest to newest)
-                    geneticsData.sort((a, b) => a.age - b.age);
-
-                    geneticsData.forEach(genetics => {
-                        const row = geneticsListTable.insertRow();
-                        const nameCell = row.insertCell();
-                        const ageCell = row.insertCell();
-                        const statusCell = row.insertCell();
-
-                        nameCell.textContent = genetics.geneticsName;
-                        ageCell.textContent = genetics.age;
-                        statusCell.textContent = genetics.status;
-                    });
-                })
-                .catch(error => console.error('Error fetching genetics data:', error));
-        }
-
-        // Initial fetch on page load
-        fetchAndDisplayGenetics();
-
-        // Handle status filter change
-        statusFilter.addEventListener('change', () => {
-            const selectedStatus = statusFilter.value;
-            fetchAndDisplayGenetics(selectedStatus);
-        });
-    </script>
+    <script src="js/genetics.js"></script>
 </body>
 </html>

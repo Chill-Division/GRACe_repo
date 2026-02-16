@@ -38,7 +38,7 @@ try {
         <?php require_once 'nav.php'; ?>
     </header>
 
-    <main class="container">
+    <main class="container" data-endpoint="get_this_months_flower_transactions.php">
         <h1><?php echo $pageTitle; ?></h1>
 
         <p>Total Weight Sent Out: <span id="totalWeightSent">0</span> grams</p>
@@ -72,88 +72,7 @@ try {
         </table>
     </main>
 
-    <script>
-    const flowerTransactionsTable = document.getElementById('flowerTransactionsTable').getElementsByTagName('tbody')[0];
-    const plantTransactionsTable = document.getElementById('plantTransactionsTable').getElementsByTagName('tbody')[0];
-    const totalWeightSentSpan = document.getElementById('totalWeightSent');
-
-    fetch('get_this_months_flower_transactions.php')
-        .then(response => response.json())
-        .then(data => {
-            const flowerData = data.flowers || [];
-            const plantData = data.plants || [];
-            let totalWeight = 0;
-
-            // Process flower data
-            let flowerTotal = 0;
-            if (flowerData.length === 0) {
-                flowerTransactionsTable.innerHTML = '<tr><td colspan="4">Nothing to report</td></tr>';
-            } else {
-                flowerData.forEach(transaction => {
-                    let weight = parseFloat(transaction.weight) || 0;
-                    flowerTotal += weight;
-                    totalWeight += weight;
-
-                    const row = flowerTransactionsTable.insertRow();
-                    const nameCell = row.insertCell();
-                    const weightCell = row.insertCell();
-                    const dateCell = row.insertCell();
-                    const companyCell = row.insertCell();
-
-                    nameCell.textContent = transaction.geneticsName;
-                    weightCell.textContent = transaction.weight;
-                    dateCell.textContent = new Date(transaction.transaction_date)
-                        .toLocaleDateString('en-NZ', { timeZone: 'Pacific/Auckland' });
-                    companyCell.textContent = transaction.companyNameAddress || '-';
-                });
-                // Add Footer
-                const footerRow = flowerTransactionsTable.insertRow();
-                footerRow.style.fontWeight = 'bold';
-                footerRow.insertCell().textContent = 'Total';
-                footerRow.insertCell().textContent = flowerTotal.toFixed(2);
-                footerRow.insertCell(); // Date placeholder
-                footerRow.insertCell(); // Company placeholder
-            }
-
-            // Process plant data
-            let plantTotal = 0;
-            if (plantData.length === 0) {
-                plantTransactionsTable.innerHTML = '<tr><td colspan="4">Nothing to report</td></tr>';
-            } else {
-                plantData.forEach(transaction => {
-                    let count = parseInt(transaction.plantCount) || 0;
-                    plantTotal += count;
-
-                    const row = plantTransactionsTable.insertRow();
-                    const nameCell = row.insertCell();
-                    const countCell = row.insertCell();
-                    const dateCell = row.insertCell();
-                    const companyCell = row.insertCell();
-
-                    nameCell.textContent = transaction.geneticsName;
-                    countCell.textContent = transaction.plantCount;
-                    dateCell.textContent = new Date(transaction.transaction_date)
-                        .toLocaleDateString('en-NZ', { timeZone: 'Pacific/Auckland' });
-                    companyCell.textContent = transaction.companyNameAddress || '-';
-                });
-                // Add Footer
-                const footerRow = plantTransactionsTable.insertRow();
-                footerRow.style.fontWeight = 'bold';
-                footerRow.insertCell().textContent = 'Total';
-                footerRow.insertCell().textContent = plantTotal;
-                footerRow.insertCell(); // Date placeholder
-                footerRow.insertCell(); // Company placeholder
-            }
-
-            totalWeightSentSpan.textContent = totalWeight.toFixed(2);
-        })
-        .catch(error => {
-            console.error('Error fetching or processing transaction data:', error);
-            totalWeightSentSpan.textContent = 'Error';
-            flowerTransactionsTable.innerHTML = '<tr><td colspan="4">Error loading flower data. Please check the console for details.</td></tr>';
-            plantTransactionsTable.innerHTML = '<tr><td colspan="4">Error loading plant data. Please check the console for details.</td></tr>';
-        });
-</script>
+    <script src="js/transactions.js"></script>
 <script src="js/growcart.js"></script>
 </body>
 </html>

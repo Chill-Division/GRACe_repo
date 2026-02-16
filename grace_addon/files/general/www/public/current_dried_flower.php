@@ -38,47 +38,6 @@
     </main>
 
     <script src="js/growcart.js"></script> 
-    <script>
-        const driedFlowerTable = document.getElementById('driedFlowerTable').getElementsByTagName('tbody')[0];
-
-        // Fetch dried flower data from the server
-        fetch('get_current_dried_flower.php') // You'll need to create this script
-            .then(response => response.json())
-            .then(flowerData => {
-                flowerData.forEach(item => {
-                    const row = driedFlowerTable.insertRow();
-                    const nameCell = row.insertCell();
-                    const weightCell = row.insertCell();
-
-                    nameCell.textContent = item.geneticsName;
-                    weightCell.textContent = item.totalWeight;
-                });
-            })
-            .catch(error => console.error('Error fetching dried flower data:', error));
-    </script>
-    <script>
-        document.getElementById('hideZeroRowsCheckbox').addEventListener('change', function() {
-            const rows = driedFlowerTable.rows;
-            let visibleRowCount = 0;
-
-            for (let i = 0; i < rows.length; i++) {
-                const weight = parseFloat(rows[i].cells[1].textContent);
-                const shouldHide = this.checked && weight === 0;
-                rows[i].style.display = shouldHide ? 'none' : '';
-
-                if (!shouldHide) {
-                    visibleRowCount++;
-                }
-            }
-
-            const noDataMessage = document.getElementById('noDataMessage');
-            if (visibleRowCount === 0) {
-                noDataMessage.textContent = "No dried flowers available.";
-                noDataMessage.style.display = 'block';
-            } else {
-                noDataMessage.style.display = 'none';
-            }
-        });
-    </script>
+    <script src="js/reports.js"></script>
 </body>
 </html>

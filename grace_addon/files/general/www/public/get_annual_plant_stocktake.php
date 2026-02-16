@@ -66,8 +66,8 @@ try {
         $sentCount->execute();
         $sentCount = (int) $sentCount->fetchColumn();
 
-        // Count harvested plants (both drying and harvested-destroyed, include legacy Harvested)
-        $harvestedCount = $pdo->prepare("SELECT COUNT(*) FROM Plants WHERE genetics_id = :geneticsId AND status IN ('Harvested', 'Harvested - Drying', 'Harvested - Destroyed') AND DATE(date_harvested) BETWEEN :startDate AND :endDate");
+        // Count harvested plants (Legacy only - "Harvested - Drying" are considered active/in-stock, so excluded here)
+        $harvestedCount = $pdo->prepare("SELECT COUNT(*) FROM Plants WHERE genetics_id = :geneticsId AND status = 'Harvested' AND DATE(date_harvested) BETWEEN :startDate AND :endDate");
         $harvestedCount->bindParam(':geneticsId', $genetic['id'], PDO::PARAM_INT);
         $harvestedCount->bindParam(':startDate', $startDate, PDO::PARAM_STR);
         $harvestedCount->bindParam(':endDate', $endDate, PDO::PARAM_STR);
@@ -77,7 +77,7 @@ try {
         $destroyedCountQuery = "SELECT COUNT(*) AS destroyedCount
                                 FROM Plants
                                 WHERE genetics_id = :geneticsId
-                                AND status = 'Destroyed'
+                                AND status IN ('Destroyed', 'Harvested - Destroyed')
                                 AND DATE(date_harvested) BETWEEN :startDate AND :endDate";
 
         $stmt = $pdo->prepare($destroyedCountQuery);

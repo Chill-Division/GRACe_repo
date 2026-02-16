@@ -21,8 +21,8 @@
 
         <label for="action">Action:</label>
         <select id="action" name="action" class="input" required>
-            <option value="harvest">Harvest (Drying)</option>
-            <option value="destroy">Harvest - Destroy</option>
+            <option value="harvest">Harvested - Drying</option>
+            <option value="destroy">Harvested - Destroyed</option>
             <option value="send">Send External</option>
         </select>
 
@@ -83,11 +83,51 @@
             })
             .catch(error => console.error('Error fetching plant data:', error));
 
+
+        // Create selection counter element
+        const selectionCounter = document.createElement('div');
+        selectionCounter.id = 'selectionCounter';
+        selectionCounter.style.position = 'fixed';
+        selectionCounter.style.bottom = '20px';
+        selectionCounter.style.right = '20px';
+        selectionCounter.style.padding = '10px 15px';
+        selectionCounter.style.backgroundColor = 'var(--pico-primary-background)';
+        selectionCounter.style.color = 'var(--pico-primary-inverse)';
+        selectionCounter.style.borderRadius = '8px';
+        selectionCounter.style.boxShadow = '0 2px 10px rgba(0,0,0,0.2)';
+        selectionCounter.style.zIndex = '1000';
+        selectionCounter.style.display = 'none'; // Hidden by default
+        selectionCounter.style.fontWeight = 'bold';
+        document.body.appendChild(selectionCounter);
+
+        function updateSelectionCount() {
+            const selectedCheckboxes = plantsTable.querySelectorAll('input[type="checkbox"]:checked');
+            const count = selectedCheckboxes.length;
+            
+            if (count > 0) {
+                selectionCounter.textContent = `${count} plant${count !== 1 ? 's' : ''} selected`;
+                selectionCounter.style.display = 'block';
+            } else {
+                selectionCounter.style.display = 'none';
+            }
+        }
+
         // Handle "Select All" checkbox
         selectAllCheckbox.addEventListener('change', () => {
             const checkboxes = plantsTable.querySelectorAll('input[type="checkbox"]');
             checkboxes.forEach(checkbox => checkbox.checked = selectAllCheckbox.checked);
+            updateSelectionCount();
         });
+
+        // Add event listener to individual checkboxes dynamically via delegation or after fetch
+        // Since we create checkboxes in code, better to attach listener in the fetch loop or delegate.
+        // Let's delegate to the table body.
+        plantsTable.addEventListener('change', (event) => {
+             if (event.target.type === 'checkbox' && event.target.name === 'selectedPlants[]') {
+                 updateSelectionCount();
+             }
+        });
+    </script>
 
         // Handle "Process Selected" button click
         processSelectedButton.addEventListener('click', () => {

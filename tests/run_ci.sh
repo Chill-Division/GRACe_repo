@@ -47,6 +47,28 @@ else
     FAILures=$((FAILures+1))
 fi
 
+# Run Version Consistency Check
+echo ""
+echo "--- Version Consistency ---"
+php tests/test_version_consistency.php
+if [ $? -eq 0 ]; then
+    echo -e "${GREEN}[PASS]${NC} Versions consistent"
+else
+    echo -e "${RED}[FAIL]${NC} Version verification failed"
+    FAILures=$((FAILures+1))
+fi
+
+# Run Syntax Check
+echo ""
+echo "--- PHP Syntax Check ---"
+bash tests/syntax_check.sh
+if [ $? -eq 0 ]; then
+    echo -e "${GREEN}[PASS]${NC} PHP Syntax verified"
+else
+    echo -e "${RED}[FAIL]${NC} PHP Syntax failed"
+    FAILures=$((FAILures+1))
+fi
+
 echo ""
 echo "=========================================="
 if [ $FAILures -eq 0 ]; then

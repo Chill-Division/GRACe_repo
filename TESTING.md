@@ -40,6 +40,16 @@ bash tests/run_ci.sh
 *   **Limits:** checks for `1024 * 1024` (1MB) logic in `image-compress.js`.
 *   **Timezone:** Verifies `Pacific/Auckland` is set.
 *   **Security:** Scans for dangerous relative path usage (`__DIR__ . '/uploads'`).
+*   **Duplicates:** Scans for duplicate `<script src="...">` tags in PHP files (prevent redeclaration errors).
+
+### 4. Version Consistency (`tests/test_version_consistency.php`)
+*   **Why:** Ensures the version number is identical across:
+    *   `config.yaml` (Home Assistant)
+    *   `nav.php` (UI Display)
+    *   `CHANGELOG.md` (Release Notes)
+
+### 5. PHP Syntax Check (`tests/syntax_check.sh`)
+*   **Linting:** Runs `php -l` on all PHP files in `grace_addon/files/general/www/public/` to catch syntax errors before runtime.
 
 ## Manual Verification Checklist
 

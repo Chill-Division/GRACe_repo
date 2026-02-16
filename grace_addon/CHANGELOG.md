@@ -1,7 +1,23 @@
+## [0.14] - 2026-02-16
+### Added
+- **Annual Stocktake**: Updated logic to treat "Harvested - Drying" plants as active stock in annual reports.
+- **Database**: Added automatic migration for `Plants` table to support "Harvested - Drying" and "Harvested - Destroyed" statuses.
+- **UI**: Added a floating "Selection Counter" to the Harvest Plants page.
+- **UI**: Standardized status labels in harvest dropdowns to match database values.
+
+### Refactor
+- **JavaScript**: Moved inline JavaScript from 11 PHP files into 5 modular JS files in `js/` directory.
+    - `js/reports.js`: Handles `current_dried_flower.php`.
+    - `js/transactions.js`: Handles `this_months...` and `last_months...` listings.
+    - `js/documents.js`: Handles `company_licenses.php`, `sops.php`, `offtake_agreements.php`, `police_vet_check_records.php`, `chain_of_custody_documents.php`.
+    - `js/genetics.js`: Handles `receive_genetics.php`.
+    - `js/transaction_form.js`: Handles `record_dry_weight.php`.
+- **Performance**: Enabled browser caching for static JS resources (previously inline).
+- **Maintenance**: Improved code organization and reduced code duplication in document management pages.
+
 ## [0.13.2] - 2026-02-07
 ### Fixed
 - **Transactions UI**: Fixed `ReferenceError: totalWeight is not defined` on flower transaction pages.
-- **JavaScript**: Fixed `SyntaxError: Identifier 'isLight' has already been declared` caused by duplicate script inclusion in transaction pages.
 
 ## [0.13.1] - 2026-02-07
 ### Added
