@@ -3,6 +3,8 @@ Repository for the GRACe Portal addon for Home Assistant
 
 Take back your time, focus on your garden, while GRACe looks after your regulatory compliance
 
+GRACe is a simple ledger for your plants and dried flower. If you take a clone, you add to the it. If you harvest a plant, you subtract it. This is the whole basis of GRACe, coupled with the intentional inability to historically edit records.
+
 * Annual reporting / stock-take
 * Monthly summaries for the Medicinal Cannabis Agency
 * Minimal effort for plant tracking
