@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once 'tcpdf/tcpdf.php';
+require_once 'TCPDF/tcpdf.php';
 require_once 'init_db.php';
 
 // Initialize PDO connection

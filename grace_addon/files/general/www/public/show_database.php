@@ -1,32 +1,34 @@
 <?php
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
+require_once 'init_db.php';
 
-require_once 'init_db.php'; // Include your database initialization script
-// This page is used to debug the transition to sqlite
+// Downloads the full ledger as a timestamped JSON file — useful for backups
+// and audits. Read-only; the SQLite file itself lives at /data/grace.db.
 try {
-    // Get the PDO instance from the initializeDatabase function
     $pdo = initializeDatabase();
 
     // Get the list of tables in the database
     $stmt = $pdo->query("SELECT name FROM sqlite_master WHERE type='table'");
     $tables = $stmt->fetchAll(PDO::FETCH_COLUMN);
 
-    $databaseData = [];
-    // Loop through each table
+    $databaseData = [
+        '_meta' => [
+            'exported_at' => date('c'),
+            'source' => 'GRACe Portal ledger export',
+        ],
+    ];
     foreach ($tables as $table) {
         $stmt = $pdo->query("SELECT * FROM $table");
         $databaseData[$table] = $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    // Send data as JSON
+    $filename = 'grace-backup-' . date('Y-m-d-His') . '.json';
     header('Content-Type: application/json');
-    echo json_encode($databaseData); 
+    header('Content-Disposition: attachment; filename="' . $filename . '"');
+    echo json_encode($databaseData, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
 
 } catch (PDOException $e) {
-    // Handle errors gracefully (log the error or send an error response)
-    http_response_code(500); // Internal Server Error
+    http_response_code(500);
+    header('Content-Type: application/json');
     echo json_encode(['error' => 'Database error: ' . $e->getMessage()]);
 }
 ?>

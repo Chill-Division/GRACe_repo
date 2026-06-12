@@ -89,8 +89,8 @@ require 'header.php';
                 <a class="nav-card" href="show_database.php">
                     <span class="nav-card-icon" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14a9 3 0 0 0 18 0V5"/><path d="M3 12a9 3 0 0 0 18 0"/></svg></span>
                     <span class="nav-card-body">
-                        <strong>Dump database</strong>
-                        <small>Export the full ledger as raw JSON for backup or audit</small>
+                        <strong>Download backup</strong>
+                        <small>Download the full ledger as a timestamped JSON file for backup or audit</small>
                     </span>
                 </a>
                 <a class="nav-card" href="admin_migrate_harvested.php">

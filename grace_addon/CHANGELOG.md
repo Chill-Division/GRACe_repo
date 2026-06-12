@@ -9,6 +9,15 @@
 ### Changed
 - **Offline support**: Pico CSS and jQuery are now self-hosted (no CDN), so the portal renders correctly on offline / air-gapped Home Assistant boxes. Font Awesome CDN already removed in 0.15.
 - **Auth**: Removed the vestigial `auth.php` (and all references) — authentication is handled by Home Assistant itself. It only started a session; the login redirect had been disabled for some time.
+- **Backup**: "Dump database" is now "Download backup" — the full ledger downloads as a timestamped JSON file instead of rendering raw JSON in the browser.
+- **Developer experience**: New `DEVELOPMENT.md` (local dev server, demo data, release checklist, notes for AI assistants) and `tests/seed_demo_data.php` to fill a dev database with realistic demo data including downloadable documents.
+
+### Removed
+- **Dead auth code**: `login.php`, `logout.php`, `config.php`, `get_users.php` (legacy MySQL login flow — `login.php` contained injectable string-interpolated SQL and `config.php` held unused MySQL credentials), plus the orphaned `get_rooms.php`, `phpinfo.php` (information disclosure), and a stale `public/README.md` documenting the pre-addon setup.
+- **TCPDF bloat**: pruned `examples/`, `tests/`, `tools/`, and `scripts/` from the vendored TCPDF — hundreds of web-executable demo PHP files are gone from the public web root.
+
+### Security / Fixed (additional)
+- **Shipping manifest PDF**: fixed `require_once 'tcpdf/tcpdf.php'` (lowercase) to match the actual `TCPDF/` directory — on the case-sensitive container filesystem this include could not resolve.
 
 ### Fixed
 - **Navigation**: Nav links no longer overlap (horizontally on desktop, vertically in the mobile menu) — Pico's negative link margins are now neutralised. Mobile menu panel is fully opaque, the hamburger icon is positioned reliably, and the menu state resets after back/forward navigation.
