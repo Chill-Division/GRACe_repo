@@ -65,6 +65,28 @@ To start over completely:
 rm /data/grace.db && rm -rf /data/uploads/*
 ```
 
+## Demoing the Agency report reminders
+
+The dashboard reminders (monthly materials-out in the first 7 days of a
+month, annual stocktake in January) are date-windowed, so out of the box you
+can only see them at the right time of month. Two demo aids:
+
+```bash
+# What would the dashboard show on any given day (or range)? Runs against
+# your dev database — perfect for screen recordings:
+php tests/demo_report_reminders.php 2027-01-01 2027-01-10
+
+# Or render the real dashboard as if it were another day:
+# http://127.0.0.1:8420/dashboard.php?demo_date=2027-01-03
+```
+
+`tests/seed_demo_data.php` always seeds an outbound shipment in the middle
+of last month, so the monthly banner has data to point at whatever month you
+demo in. The reminder logic itself is covered by
+`tests/test_report_reminders.php`, whose output reads as a step-by-step
+story of the rules (window open/closed, quiet months, dismissals, the
+January double-up, fresh installs staying silent).
+
 ## Run the test suite
 
 Always run this before committing:

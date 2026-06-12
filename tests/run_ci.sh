@@ -47,6 +47,17 @@ else
     FAILures=$((FAILures+1))
 fi
 
+# Run Report Reminder Test
+echo ""
+echo "--- Report Reminder Test ---"
+php tests/test_report_reminders.php
+if [ $? -eq 0 ]; then
+    echo -e "${GREEN}[PASS]${NC} Report reminder logic verified"
+else
+    echo -e "${RED}[FAIL]${NC} Report reminder logic failed"
+    FAILures=$((FAILures+1))
+fi
+
 # Run Static Checks
 echo ""
 echo "--- Static Analysis ---"

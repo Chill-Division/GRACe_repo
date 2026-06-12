@@ -1,9 +1,11 @@
-## [0.16.1.1] - 2026-06-12
-One big update — everything from 0.15 through 0.16.1.1 rolled together.
+## [0.17.0] - 2026-06-13
+One big update — everything from 0.15 through 0.17.0 rolled together.
 
 ### Features
 - **Fresh new look**: GRACe has been redesigned from top to bottom — a new Dashboard home page, tap-friendly menus and cards, dark & light themes, and a layout that works great on phones, tablets, and PCs.
 - **Dashboard**: your grow at a glance — plants growing and drying, dried flower on hand, what went out this month, manifests awaiting paperwork, and license renewal reminders.
+- **Agency report reminders**: in the first week of each month, the Dashboard reminds you to send last month's materials-out report — but only if you actually sent materials out, so quiet months stay quiet. In January it also reminds you about the annual stocktake. Reminders can be dismissed and never pile up.
+- **One-tap report emails**: a "Draft this in an email" button on the monthly materials-out and annual stocktake reports opens a ready-to-send email to the Medicinal Cannabis Agency — subject line, your company details, and the full report already filled in. No more copy/paste.
 - **Smarter shipping manifests**: a manifest now stays "In Progress" until the signed Chain of Custody is attached, shipped flower is automatically deducted from your inventory, and every exchange has its own summary page with the PDF and CoC.
 - **Annual report fix**: plants destroyed or sent in past years no longer show up as stock in later years' annual stocktake — the report's totals now match your real live stock.
 - **Install like an app**: pin GRACe to your phone's home screen.
