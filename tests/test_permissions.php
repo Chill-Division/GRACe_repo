@@ -19,7 +19,7 @@ try {
     }
 
     // Verify Subdirectories
-    $categories = ['offtakes', 'sops', 'licenses', 'other_records', 'coc'];
+    $categories = ['offtakes', 'sops', 'licenses', 'other_records', 'coc', 'manifests'];
     foreach ($categories as $cat) {
         $catDir = $tempDir . '/' . $cat;
         if (!is_dir($catDir)) {

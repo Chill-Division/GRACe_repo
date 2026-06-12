@@ -1,3 +1,18 @@
+## [0.16.0] - 2026-06-12
+### Added
+- **Manifest lifecycle**: Generating a shipping manifest now records it in the ledger as **In Progress**. It stays In Progress until the signed Chain of Custody (photo or PDF) is attached — a manifest cannot be completed without one (enforced server-side).
+- **Automatic flower deduction**: Flower shipped from us to an external company is deducted from the dried-flower ledger at the moment the manifest is generated (reason `Send external`, so monthly Agency reports and dashboard totals pick it up exactly like a manual entry). The generate page now explains this up front and shows the recorded stock for the selected genetics; generation is blocked if the manifest weight exceeds recorded stock.
+- **Complete Manifest page** (`complete_manifest.php`): lists every manifest awaiting completion (date, destination, what was shipped) and lets you pick one to complete by uploading the CoC or attaching one already uploaded on the Chain of Custody page. Replaces the "Amend / Complete Manifest — coming soon" card — manifests in transit are completed, not amended.
+- **Exchange summary page** (`manifest_summary.php`): source / destination / shipment details, inventory deduction, CoC download, and the manifest PDF for each exchange. Linked from the Chain of Custody page and the Complete Manifest page.
+- **Chain of Custody page**: now also shows all shipment exchanges with their status and CoC state. Manual standalone CoC uploads still work exactly as before.
+- **Dashboard**: "Manifests awaiting CoC" stat linking to the Complete Manifest page.
+- **Manifest PDFs are persisted** to `/data/uploads/manifests/` and re-downloadable from the summary page; the PDF now also carries the manifest number, genetics, and a note that it must be completed in GRACe.
+- **Database**: `ShippingManifests` gains `status`, party-name snapshots, genetics, quantity, destination, flower-transaction link, CoC link, and completion date. Existing installations are migrated in place automatically on first page load — no data loss, no manual steps.
+
+### Fixed
+- **Shipping manifest form**: sending and receiving parties no longer share form field names, so an external→external manifest records both companies correctly (previously the receiving company silently overwrote the sending one). The PDF no longer prints the literal text "us"/"external" as the preparing staff name.
+- **Shipping manifest processing**: generating a manifest is now a single POST/redirect flow — refreshing the result page can no longer re-run generation, and the stale session-replay code is gone.
+
 ## [0.15.1] - 2026-06-12
 ### Added
 - **Dashboard**: New landing page with at-a-glance stats (plants growing/drying, dried flower on hand, materials out this month), license renewal warnings, and quick actions. The portal now opens here instead of Plant Tracking.
