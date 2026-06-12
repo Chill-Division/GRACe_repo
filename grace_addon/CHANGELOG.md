@@ -1,3 +1,12 @@
+## [0.16.1] - 2026-06-12
+### Fixed
+- **Annual Stocktake opening balance**: plants that left stock more than one year before the report year (destroyed / sent / legacy-harvested) kept appearing in the Start Amount and End columns forever. The old query only subtracted departures dated within the *immediately previous* year, so e.g. a plant destroyed in 2024 still showed as stock-on-hand in the 2026 report. The opening balance is now "created before 1 Jan and not departed before 1 Jan", regardless of which year the departure happened. The report's End total now reconciles exactly with live stock (Growing + Drying).
+- **Annual Stocktake 31-December boundary**: plant and flower activity timestamped on 31 December after midnight (e.g. `2026-12-31 14:00`) was silently dropped from the year's In/Out/Destroyed columns because datetimes were string-compared against a plain `YYYY-12-31` upper bound. All date comparisons now use `DATE(...)` with an exclusive 1-January upper bound.
+- 'Harvested - Drying' plants harvested in an earlier year are now consistently treated as active stock in the opening balance (matching how the End column has treated them since 0.14).
+
+### Refactor
+- Stocktake calculations extracted to `annual_stocktake_lib.php`, shared by both report endpoints and covered by a new regression test (`tests/test_annual_stocktake.php`, wired into `tests/run_ci.sh`).
+
 ## [0.16.0] - 2026-06-12
 ### Added
 - **Manifest lifecycle**: Generating a shipping manifest now records it in the ledger as **In Progress**. It stays In Progress until the signed Chain of Custody (photo or PDF) is attached — a manifest cannot be completed without one (enforced server-side).
