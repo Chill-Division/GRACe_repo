@@ -1,4 +1,10 @@
 <?php
+require_once 'init_db.php';
+require_once 'manifest_lib.php';
+
+$pdo = initializeDatabase();
+$manifests = fetchManifests($pdo);
+
 $pageTitle = 'GRACe - Chain of Custody Documents';
 $useJquery = true;
 require 'header.php';
@@ -17,7 +23,48 @@ require 'header.php';
                 <input type="hidden" name="category" value="coc">
                 <button type="submit">Upload</button>
             </form>
+            <p><small>Uploads here are stored as standalone documents. To close out a manifest in transit,
+            attach its CoC on the <a href="complete_manifest.php">Complete Manifest</a> page — documents
+            uploaded here can be selected there too.</small></p>
         </article>
+
+        <?php if ($manifests): ?>
+        <section>
+            <h2>Shipment Exchanges</h2>
+            <figure class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Date</th>
+                            <th>Route</th>
+                            <th>Shipment</th>
+                            <th>Status</th>
+                            <th>CoC</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($manifests as $manifest): ?>
+                        <tr>
+                            <td><a href="manifest_summary.php?id=<?php echo (int) $manifest['id']; ?>"><?php echo (int) $manifest['id']; ?></a></td>
+                            <td><?php echo htmlspecialchars($manifest['shipment_date']); ?></td>
+                            <td><?php echo htmlspecialchars(manifestRouteLabel($manifest)); ?></td>
+                            <td><?php echo htmlspecialchars(manifestShipmentLabel($manifest)); ?></td>
+                            <td><?php echo manifestStatusBadge($manifest); ?></td>
+                            <td>
+                                <?php if ($manifest['coc_document_id']): ?>
+                                    <a href="download.php?category=coc&file=<?php echo urlencode($manifest['coc_unique_filename']); ?>" download>Attached</a>
+                                <?php else: ?>
+                                    <a href="complete_manifest.php?id=<?php echo (int) $manifest['id']; ?>">Pending</a>
+                                <?php endif; ?>
+                            </td>
+                        </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </figure>
+        </section>
+        <?php endif; ?>
 
         <section>
             <h2>Existing Custody Documents</h2>

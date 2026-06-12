@@ -10,7 +10,7 @@ if (empty($category) || empty($filename)) {
 }
 
 // Allowed categories
-$allowedCategories = ['offtakes', 'sops', 'licenses', 'other_records', 'coc'];
+$allowedCategories = ['offtakes', 'sops', 'licenses', 'other_records', 'coc', 'manifests'];
 if (!in_array($category, $allowedCategories)) {
     die("Invalid category.");
 }

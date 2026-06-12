@@ -81,6 +81,16 @@ function initializeDatabase($dbPath = '/data/grace.db') {
                 net_weight DECIMAL(10, 2),
                 gross_weight DECIMAL(10, 2),
                 manifest_file TEXT,
+                status TEXT NOT NULL DEFAULT 'In Progress',
+                sending_company_name TEXT,
+                receiving_company_name TEXT,
+                genetics_id INTEGER,
+                genetics_name TEXT,
+                quantity DECIMAL(10, 2),
+                destination_address TEXT,
+                flower_transaction_id INTEGER,
+                coc_document_id INTEGER,
+                date_completed DATETIME,
                 FOREIGN KEY (sending_company_id) REFERENCES Companies(id) ON DELETE SET NULL ON UPDATE CASCADE,
                 FOREIGN KEY (recipient_id) REFERENCES Companies(id) ON DELETE SET NULL ON UPDATE CASCADE
             );",
@@ -134,6 +144,16 @@ function initializeDatabase($dbPath = '/data/grace.db') {
     }
 }
 
+// Add a column to a table if it doesn't exist yet (in-place upgrade helper)
+function addColumnIfMissing($pdo, $table, $column, $ddl) {
+    try {
+        $pdo->query("SELECT $column FROM $table LIMIT 1");
+    } catch (PDOException $e) {
+        // Column doesn't exist, add it
+        $pdo->exec("ALTER TABLE $table ADD COLUMN $ddl");
+    }
+}
+
 // Function to perform migrations
 function performMigrations($pdo) {
     // Check for expiry_date column in Documents
@@ -158,6 +178,24 @@ function performMigrations($pdo) {
     } catch (PDOException $e) {
         // Column doesn't exist, add it
         $pdo->exec("ALTER TABLE Documents ADD COLUMN upload_date DATETIME DEFAULT CURRENT_TIMESTAMP");
+    }
+
+    // ShippingManifests workflow columns (added in 0.16.0 for the
+    // In Progress -> Completed manifest lifecycle with Chain of Custody)
+    $manifestColumns = [
+        'status' => "status TEXT NOT NULL DEFAULT 'In Progress'",
+        'sending_company_name' => "sending_company_name TEXT",
+        'receiving_company_name' => "receiving_company_name TEXT",
+        'genetics_id' => "genetics_id INTEGER",
+        'genetics_name' => "genetics_name TEXT",
+        'quantity' => "quantity DECIMAL(10, 2)",
+        'destination_address' => "destination_address TEXT",
+        'flower_transaction_id' => "flower_transaction_id INTEGER",
+        'coc_document_id' => "coc_document_id INTEGER",
+        'date_completed' => "date_completed DATETIME",
+    ];
+    foreach ($manifestColumns as $column => $ddl) {
+        addColumnIfMissing($pdo, 'ShippingManifests', $column, $ddl);
     }
 
     // Check Plants table constraint for new Harvest statuses
@@ -218,7 +256,7 @@ function performMigrations($pdo) {
 
 // Function to ensure directories exist
 function ensureUploadDirectories($baseDir = '/data/uploads/') {
-    $categories = ['offtakes', 'sops', 'licenses', 'other_records', 'coc'];
+    $categories = ['offtakes', 'sops', 'licenses', 'other_records', 'coc', 'manifests'];
 
     if (!is_dir($baseDir)) {
         if (!mkdir($baseDir, 0755, true)) {

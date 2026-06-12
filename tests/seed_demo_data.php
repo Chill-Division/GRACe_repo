@@ -67,7 +67,7 @@ function buildDemoPdf($title)
     return $pdf;
 }
 
-/** Insert a document row + matching file on disk so download links work. */
+/** Insert a document row + matching file on disk so download links work. Returns the document id. */
 function seedDocument($pdo, $uploadDir, $category, $originalName, $daysAgoUploaded, $expiryDate = null)
 {
     $uniqueName = uniqid('demo_', true) . '.pdf';
@@ -80,6 +80,19 @@ function seedDocument($pdo, $uploadDir, $category, $originalName, $daysAgoUpload
     $stmt = $pdo->prepare("INSERT INTO Documents (category, original_filename, unique_filename, upload_date, expiry_date, acknowledged)
                            VALUES (?, ?, ?, datetime('now', ?), ?, 0)");
     $stmt->execute([$category, $originalName, $uniqueName, "-$daysAgoUploaded days", $expiryDate]);
+    return (int) $pdo->lastInsertId();
+}
+
+/** Write a demo manifest PDF into uploads/manifests and return its unique filename. */
+function seedManifestPdf($uploadDir, $manifestLabel)
+{
+    $dir = $uploadDir . 'manifests';
+    if (!is_dir($dir)) {
+        mkdir($dir, 0777, true);
+    }
+    $uniqueName = uniqid('demo_', true) . '-shipping-manifest.pdf';
+    file_put_contents($dir . '/' . $uniqueName, buildDemoPdf($manifestLabel));
+    return $uniqueName;
 }
 
 $pdo->beginTransaction();
@@ -155,13 +168,40 @@ seedDocument($pdo, $uploadDir, 'sops', 'SOP-pest-management.pdf', 90);
 seedDocument($pdo, $uploadDir, 'sops', 'SOP-harvest-procedure.pdf', 60);
 seedDocument($pdo, $uploadDir, 'offtakes', 'offtake-agreement-aotearoa.pdf', 150);
 seedDocument($pdo, $uploadDir, 'other_records', 'police-vet-check-grower.pdf', 45);
-seedDocument($pdo, $uploadDir, 'coc', 'coc-shipment-2026-05.pdf', 12);
+$cocDocId = seedDocument($pdo, $uploadDir, 'coc', 'coc-shipment-2026-05.pdf', 12);
+
+// --- Shipping manifests (one completed, one awaiting its CoC) ----------------
+// Completed: matches the 200g White Widow "Send external" ledger entry above
+$sentFlowerId = (int) $pdo->query("SELECT id FROM Flower WHERE reason = 'Send external' AND weight = -200.00")->fetchColumn();
+$manifestStmt = $pdo->prepare("INSERT INTO ShippingManifests
+    (sending_company_id, recipient_id, shipment_date, product_type, status,
+     sending_company_name, receiving_company_name, genetics_id, genetics_name,
+     quantity, destination_address, flower_transaction_id, coc_document_id, date_completed, manifest_file)
+    VALUES (?, ?, datetime('now', ?), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+$manifestStmt->execute([
+    null, 2, '-3 days', 'flower', 'Completed',
+    'Demo Cultivation Co', 'Aotearoa Offtake Partners', 2, 'White Widow',
+    200.00, '45 Harbour View, Auckland 1010', $sentFlowerId, $cocDocId, date('Y-m-d H:i:s', strtotime('-1 day')),
+    seedManifestPdf($uploadDir, 'shipping-manifest-white-widow-200g.pdf'),
+]);
+
+// In Progress: a fresh GG4 shipment, flower already deducted, CoC still pending
+$pdo->prepare("INSERT INTO Flower (genetics_id, weight, transaction_type, reason, transaction_date, company_id)
+               VALUES (3, -50.00, 'Subtract', 'Send external', datetime('now', '-1 days'), 2)")->execute();
+$pendingFlowerId = (int) $pdo->lastInsertId();
+$manifestStmt->execute([
+    null, 2, '-1 days', 'flower', 'In Progress',
+    'Demo Cultivation Co', 'Aotearoa Offtake Partners', 3, 'GG4',
+    50.00, '45 Harbour View, Auckland 1010', $pendingFlowerId, null, null,
+    seedManifestPdf($uploadDir, 'shipping-manifest-gg4-50g.pdf'),
+]);
 
 $pdo->commit();
 
 echo "Demo data seeded into $dbPath\n";
 echo "  - 1 own company, 3 external companies, 5 genetics\n";
 echo "  - " . count($plantRows) . " plants (growing / drying / destroyed / sent)\n";
-echo "  - " . count($flowerRows) . " flower ledger entries\n";
+echo "  - " . (count($flowerRows) + 1) . " flower ledger entries\n";
 echo "  - 7 documents with downloadable demo PDFs in {$uploadDir}\n";
+echo "  - 2 shipping manifests (1 completed with CoC attached, 1 awaiting completion)\n";
 echo "  - 1 license expiring in ~10 days (exercises the expiry banner + dashboard warning)\n";

@@ -8,7 +8,7 @@ $navSections = [
     ],
     'tracking.php' => [
         'label' => 'Plant Tracking',
-        'pages' => ['tracking', 'list_all_genetics', 'receive_genetics', 'harvest_plants', 'record_dry_weight', 'generate_shipping_manifest'],
+        'pages' => ['tracking', 'list_all_genetics', 'receive_genetics', 'harvest_plants', 'record_dry_weight', 'generate_shipping_manifest', 'complete_manifest', 'manifest_summary'],
     ],
     'reporting.php' => [
         'label' => 'Reporting',
@@ -27,7 +27,7 @@ $navSections = [
                 </span>
                 <span class="nav-brand-text">
                     <strong>GRACe</strong>
-                    <span class="nav-brand-sub">by Chill Division <small>v0.15.1</small></span>
+                    <span class="nav-brand-sub">by Chill Division <small>v0.16.0</small></span>
                 </span>
             </a>
             <input type="checkbox" id="nav-toggle" class="nav-toggle">

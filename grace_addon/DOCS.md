@@ -32,6 +32,19 @@ Then when you go to harvest them at the end of the season, go into the "Harvest/
 
 Next, once you've dried them, you can go into "Record dry weight change", select your genetics name, type in the weight you've harvested, choose "add" because we're adding weight to the running tally, and then choose "Harvested". If you'd received flower from another license holder (say, to see a sample of it before you got some genetics from them) you'd choose "Other".
 
+# Shipping & Chain of Custody
+
+When product physically leaves your site, generate a manifest under Tracking → "Generate Shipping Manifest". Pick the sending and receiving parties, the product type, the genetics and the quantity, and GRACe produces the manifest PDF for you to print and send with the shipment.
+
+Two things happen automatically at that moment:
+
+- If you're sending flower to an external company, the shipped weight is deducted from your dried-flower inventory straight away — you don't need to make a separate "Record dry weight change" entry, and it shows up in your monthly materials-out report like any other send.
+- The manifest is recorded as "In Progress". It stays that way while the product is in transit.
+
+Once the shipment has been received and you have the signed Chain of Custody back (a photo of the signed paperwork is fine, or a scanned PDF), go to Tracking → "Complete Manifest". You'll see every manifest still awaiting completion with its date, destination and what was shipped — choose the right one, attach the Chain of Custody, and complete it. GRACe will not let a manifest be closed off without a Chain of Custody attached.
+
+You can still upload standalone Chain of Custody paperwork on the Administration → "Chain of Custody Documents" page like before, and anything uploaded there can be attached to a manifest later from the Complete Manifest page. Each exchange also has a summary page (linked from both pages) showing the source, destination, shipment details, inventory deduction and the attached paperwork.
+
 # Reporting
 
 To take care of your monthly reporting obligations, you'll need to go to Reporting and then choose "This months materials out (Flower+Plants)". If you're doing it after the end of the month has rolled over (but within the first 7 days of the new month) you'll want to choose last months option.

@@ -8,6 +8,7 @@ $stats = [
     'flowerOnHand' => 0,
     'sentThisMonthGrams' => 0,
     'sentThisMonthPlants' => 0,
+    'manifestsInProgress' => 0,
 ];
 $expiringLicenses = [];
 $companyName = '';
@@ -41,6 +42,8 @@ try {
                              AND date_harvested BETWEEN :startDate AND :endDate");
     $stmt->execute([':startDate' => $startDate, ':endDate' => $endDate]);
     $stats['sentThisMonthPlants'] = (int) $stmt->fetchColumn();
+
+    $stats['manifestsInProgress'] = (int) $pdo->query("SELECT COUNT(*) FROM ShippingManifests WHERE status = 'In Progress'")->fetchColumn();
 
     // Licenses expiring within 30 days (or already expired)
     $horizon = date('Y-m-d', strtotime('+30 days'));
@@ -83,6 +86,10 @@ require 'header.php';
             <a class="stat-card stat-card--link" href="this_months_flower_transactions.php">
                 <span class="stat-value"><?php echo formatGrams($stats['sentThisMonthGrams']); ?> g<?php if ($stats['sentThisMonthPlants'] > 0): ?> + <?php echo $stats['sentThisMonthPlants']; ?> plants<?php endif; ?></span>
                 <span class="stat-label">Materials out this month</span>
+            </a>
+            <a class="stat-card stat-card--link" href="complete_manifest.php">
+                <span class="stat-value"><?php echo $stats['manifestsInProgress']; ?></span>
+                <span class="stat-label">Manifests awaiting CoC</span>
             </a>
         </div>
 

@@ -53,14 +53,13 @@ require 'header.php';
                         <small>Create a manifest PDF for plants or flower leaving your site</small>
                     </span>
                 </a>
-                <div class="nav-card is-disabled" aria-disabled="true">
+                <a class="nav-card" href="complete_manifest.php">
                     <span class="nav-card-icon" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="m9 15 2 2 4-4"/></svg></span>
                     <span class="nav-card-body">
-                        <strong>Amend / Complete Manifest</strong>
-                        <small>Update or finalise a manifest already in transit</small>
-                        <span class="badge-soon">Coming soon</span>
+                        <strong>Complete Manifest</strong>
+                        <small>Attach the signed Chain of Custody and close out a manifest in transit</small>
                     </span>
-                </div>
+                </a>
             </div>
         </section>
 
