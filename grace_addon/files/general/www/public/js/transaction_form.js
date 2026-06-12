@@ -108,7 +108,7 @@ function initTransactionForm() {
         if (transactionTypeDropdown.value === 'Subtract' &&
             (reasonDropdown.value === 'Testing' || reasonDropdown.value === 'Send external') &&
             !companyDropdown.value) {
-            alert('Please select a company for Testing or Send external transactions.');
+            showToast('Please select a company for Testing or Send external transactions.', 'error');
             return;
         }
         this.submit();

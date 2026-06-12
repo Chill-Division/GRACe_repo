@@ -1,5 +1,4 @@
 <?php
-require_once 'auth.php'; // Ensure user is logged in
 
 $uploadDir = '/data/uploads/';
 $category = $_GET['category'] ?? '';

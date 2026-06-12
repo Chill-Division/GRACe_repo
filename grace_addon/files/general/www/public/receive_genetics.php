@@ -1,5 +1,4 @@
 <?php
-require_once 'auth.php';
 $pageTitle = 'GRACe - Receive Genetics';
 require 'header.php';
 ?>

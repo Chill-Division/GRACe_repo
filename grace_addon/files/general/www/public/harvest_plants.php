@@ -1,5 +1,4 @@
 <?php
-require_once 'auth.php';
 $pageTitle = 'GRACe - Harvest/Destroy/Send Plants';
 require 'header.php';
 ?>
@@ -124,36 +123,69 @@ require 'header.php';
             const selectedAction = actionDropdown.value;
 
             if (selectedPlantIds.length === 0) {
-                alert('Please select at least one plant to process.');
+                showToast('Please select at least one plant to process.', 'error');
                 return;
             }
 
             if (selectedAction === 'send' && !companyDropdown.value) {
-                alert('Please select a company for external sending.');
+                showToast('Please select a company for external sending.', 'error');
                 return;
             }
 
-            // Send selected plant IDs, action, and company (if applicable) to the server
-            fetch('handle_harvest_plants.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ selectedPlants: selectedPlantIds, action: selectedAction, companyId: companyDropdown.value })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    alert(data.message);
-                    location.reload();
-                } else {
-                    console.error('Error from server:', data.message);
-                    alert('An error occurred: ' + data.message);
-                }
-            })
-            .catch(error => {
-                console.error('Error during fetch or processing response:', error);
-                alert('An error occurred. Please check the console for details.');
+            // Build a per-genetics summary of what's about to happen — the ledger
+            // can't be edited afterwards, so make the user review it first
+            const countsByGenetics = {};
+            selectedCheckboxes.forEach(checkbox => {
+                const name = checkbox.closest('tr').cells[1].textContent;
+                countsByGenetics[name] = (countsByGenetics[name] || 0) + 1;
+            });
+            const summaryItems = Object.keys(countsByGenetics).sort().map(
+                name => `${countsByGenetics[name]} × ${name}`
+            );
+
+            const actionLabels = {
+                harvest: 'Harvested - Drying',
+                destroy: 'Harvested - Destroyed',
+                send: 'Send External'
+            };
+            let actionText = actionLabels[selectedAction] || selectedAction;
+            if (selectedAction === 'send') {
+                const companyName = companyDropdown.options[companyDropdown.selectedIndex].textContent;
+                actionText += ' to ' + companyName;
+            }
+            const total = selectedPlantIds.length;
+
+            confirmAction({
+                title: `Process ${total} plant${total !== 1 ? 's' : ''}?`,
+                message: `Action: ${actionText}. This is recorded in the ledger and cannot be edited afterwards.`,
+                items: summaryItems,
+                confirmLabel: actionLabels[selectedAction] ? `Confirm: ${actionLabels[selectedAction]}` : 'Confirm',
+                danger: selectedAction === 'destroy'
+            }).then(confirmed => {
+                if (!confirmed) return;
+
+                // Send selected plant IDs, action, and company (if applicable) to the server
+                fetch('handle_harvest_plants.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ selectedPlants: selectedPlantIds, action: selectedAction, companyId: companyDropdown.value })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        flashToast(data.message, 'success');
+                        location.reload();
+                    } else {
+                        console.error('Error from server:', data.message);
+                        showToast('An error occurred: ' + data.message, 'error');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error during fetch or processing response:', error);
+                    showToast('An error occurred. Please check the console for details.', 'error');
+                });
             });
         });
 

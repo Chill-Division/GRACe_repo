@@ -1,5 +1,4 @@
 <?php
-require_once 'auth.php';
 $pageTitle = 'GRACe - Chain of Custody Documents';
 $useJquery = true;
 require 'header.php';

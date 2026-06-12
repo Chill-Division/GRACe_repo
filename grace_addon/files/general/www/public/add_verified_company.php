@@ -1,5 +1,4 @@
 <?php
-require_once 'auth.php';
 $pageTitle = 'GRACe - Add Verified Company';
 require 'header.php';
 ?>
@@ -56,7 +55,6 @@ require 'header.php';
                         showStatusMessage(message, 'success');
                         form.reset();
                     } else if (message.startsWith('Error')) {
-                        alert(message);
                         showStatusMessage(message, 'error');
                     } else {
                     showStatusMessage('Unexpected response: ' + message, 'error');

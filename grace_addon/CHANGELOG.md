@@ -1,3 +1,18 @@
+## [0.15.1] - 2026-06-12
+### Added
+- **Dashboard**: New landing page with at-a-glance stats (plants growing/drying, dried flower on hand, materials out this month), license renewal warnings, and quick actions. The portal now opens here instead of Plant Tracking.
+- **Confirmation step**: Harvest / Destroy / Send now shows a review modal summarising exactly which plants are affected before writing to the ledger (records cannot be edited afterwards).
+- **Toasts**: All browser `alert()` / `confirm()` popups replaced with inline toast notifications and styled confirmation modals; success messages now survive the page reload.
+- **PWA**: Web app manifest + home-screen icons so GRACe can be pinned to a phone like an app.
+- **Branding**: Home Assistant addon icon and logo regenerated with the new leaf brand mark.
+
+### Changed
+- **Offline support**: Pico CSS and jQuery are now self-hosted (no CDN), so the portal renders correctly on offline / air-gapped Home Assistant boxes. Font Awesome CDN already removed in 0.15.
+- **Auth**: Removed the vestigial `auth.php` (and all references) — authentication is handled by Home Assistant itself. It only started a session; the login redirect had been disabled for some time.
+
+### Fixed
+- **Navigation**: Nav links no longer overlap (horizontally on desktop, vertically in the mobile menu) — Pico's negative link margins are now neutralised. Mobile menu panel is fully opaque, the hamburger icon is positioned reliably, and the menu state resets after back/forward navigation.
+
 ## [0.15] - 2026-06-12
 ### Changed (UI Revamp)
 - **Design**: New design system layered on Pico CSS — green brand palette, refreshed dark and light themes, sticky translucent header, and consistent cards/tables/forms across every page.

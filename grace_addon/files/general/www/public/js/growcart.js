@@ -23,6 +23,13 @@
         button.innerHTML = currentTheme() === 'light' ? moon : sun;
     }
 
+    // Make sure the mobile menu is closed after back/forward navigation —
+    // the checkbox state can otherwise be restored as "open" by the bfcache
+    window.addEventListener('pageshow', () => {
+        const navToggle = document.getElementById('nav-toggle');
+        if (navToggle) navToggle.checked = false;
+    });
+
     document.addEventListener('DOMContentLoaded', () => {
         const switchTheme = document.getElementById('theme_switcher');
         if (!switchTheme) return;
@@ -40,6 +47,118 @@
         });
     });
 })();
+
+/**
+ * Escape a string for safe insertion into innerHTML.
+ */
+function escapeHtml(value) {
+    const div = document.createElement('div');
+    div.textContent = String(value ?? '');
+    return div.innerHTML;
+}
+
+/**
+ * Show a transient toast notification.
+ * @param {string} message
+ * @param {string} type 'success' | 'error' | 'info'
+ * @param {number} duration ms before auto-dismiss
+ */
+function showToast(message, type = 'info', duration = 4500) {
+    let container = document.getElementById('toastContainer');
+    if (!container) {
+        container = document.createElement('div');
+        container.id = 'toastContainer';
+        document.body.appendChild(container);
+    }
+    const toast = document.createElement('div');
+    toast.className = 'toast toast--' + type;
+    toast.setAttribute('role', type === 'error' ? 'alert' : 'status');
+    toast.textContent = message;
+    container.appendChild(toast);
+
+    requestAnimationFrame(() => toast.classList.add('toast--visible'));
+    setTimeout(() => {
+        toast.classList.remove('toast--visible');
+        setTimeout(() => toast.remove(), 400);
+    }, duration);
+}
+
+/**
+ * Queue a toast to be shown after the next page load — use before
+ * location.reload() / navigation so the message isn't lost.
+ */
+function flashToast(message, type = 'success') {
+    try {
+        sessionStorage.setItem('grace-flash', JSON.stringify({ message: message, type: type }));
+    } catch (e) { /* sessionStorage unavailable — message is lost, not fatal */ }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    try {
+        const flash = sessionStorage.getItem('grace-flash');
+        if (flash) {
+            sessionStorage.removeItem('grace-flash');
+            const data = JSON.parse(flash);
+            showToast(data.message, data.type || 'success');
+        }
+    } catch (e) { /* ignore malformed flash data */ }
+});
+
+/**
+ * Show a confirmation modal. Resolves true (confirm) or false (cancel).
+ * @param {Object} options
+ * @param {string} options.title
+ * @param {string} [options.message]
+ * @param {string[]} [options.items]  bullet list shown in the modal (e.g. affected plants)
+ * @param {string} [options.confirmLabel]
+ * @param {string} [options.cancelLabel]
+ * @param {boolean} [options.danger]  style the confirm button red
+ * @returns {Promise<boolean>}
+ */
+function confirmAction(options) {
+    const opts = options || {};
+    const title = opts.title || 'Are you sure?';
+    const message = opts.message || '';
+    const items = opts.items || [];
+    const confirmLabel = opts.confirmLabel || 'Confirm';
+    const cancelLabel = opts.cancelLabel || 'Cancel';
+    const danger = !!opts.danger;
+
+    if (typeof HTMLDialogElement === 'undefined') {
+        // Very old browser — fall back to the native dialog
+        return Promise.resolve(window.confirm(title + (message ? '\n\n' + message : '')));
+    }
+
+    return new Promise((resolve) => {
+        const dialog = document.createElement('dialog');
+        dialog.className = 'grace-modal';
+        const list = items.length
+            ? '<ul class="grace-modal-list">' + items.map(i => '<li>' + escapeHtml(i) + '</li>').join('') + '</ul>'
+            : '';
+        dialog.innerHTML = `
+            <article>
+                <h3>${escapeHtml(title)}</h3>
+                ${message ? '<p>' + escapeHtml(message) + '</p>' : ''}
+                ${list}
+                <footer>
+                    <button type="button" class="secondary" data-modal-cancel>${escapeHtml(cancelLabel)}</button>
+                    <button type="button"${danger ? ' class="modal-danger"' : ''} data-modal-confirm>${escapeHtml(confirmLabel)}</button>
+                </footer>
+            </article>`;
+        document.body.appendChild(dialog);
+
+        const close = (result) => {
+            dialog.close();
+            dialog.remove();
+            resolve(result);
+        };
+        dialog.querySelector('[data-modal-cancel]').addEventListener('click', () => close(false));
+        dialog.querySelector('[data-modal-confirm]').addEventListener('click', () => close(true));
+        dialog.addEventListener('cancel', (e) => { e.preventDefault(); close(false); });
+        dialog.addEventListener('click', (e) => { if (e.target === dialog) close(false); });
+        dialog.showModal();
+    });
+}
 
 /**
  * Render a plant/transaction status as a coloured badge element.

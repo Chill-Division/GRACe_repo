@@ -1,5 +1,4 @@
 <?php
-require_once 'auth.php';
 $pageTitle = 'GRACe - Police Vet Check Records';
 $useJquery = true;
 require 'header.php';

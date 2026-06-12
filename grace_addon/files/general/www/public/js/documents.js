@@ -107,7 +107,7 @@ function initDocumentManager(options) {
         const originalButtonText = submitButton.textContent;
 
         if (!fileInput.files || !fileInput.files[0]) {
-            alert('Please select a file to upload');
+            showToast('Please select a file to upload', 'error');
             return;
         }
 
@@ -149,11 +149,11 @@ function initDocumentManager(options) {
                 success: function (response) {
                     const result = typeof response === 'string' ? JSON.parse(response) : response;
                     if (result.success) {
-                        alert('File uploaded successfully');
+                        showToast('File uploaded successfully', 'success');
                         form.reset();
                         loadFiles();
                     } else {
-                        alert('Upload failed: ' + (result.message || 'Unknown error'));
+                        showToast('Upload failed: ' + (result.message || 'Unknown error'), 'error');
                     }
                 },
                 error: function (xhr, status, error) {
@@ -166,7 +166,7 @@ function initDocumentManager(options) {
                             errorMsg = xhr.responseText || errorMsg;
                         }
                     }
-                    alert('Upload error: ' + errorMsg);
+                    showToast('Upload error: ' + errorMsg, 'error');
                 },
                 complete: function () {
                     submitButton.disabled = false;
@@ -174,7 +174,7 @@ function initDocumentManager(options) {
                 }
             });
         } catch (error) {
-            alert('Error processing file: ' + error.message);
+            showToast('Error processing file: ' + error.message, 'error');
             submitButton.disabled = false;
             submitButton.textContent = originalButtonText;
         }
@@ -184,16 +184,21 @@ function initDocumentManager(options) {
     // A clearer way would be to use event delegation, but for now we'll match existing behavior
     // or attach it to window.
     window.acknowledgeAlert = function (id) {
-        if (confirm('Acknowledge this expiry alert? It will disappear from the top banner.')) {
+        confirmAction({
+            title: 'Acknowledge expiry alert?',
+            message: 'It will disappear from the banner at the top of every page.',
+            confirmLabel: 'Acknowledge'
+        }).then(function (confirmed) {
+            if (!confirmed) return;
             $.post('acknowledge_license.php', { id: id }, function (res) {
                 const data = JSON.parse(res);
                 if (data.success) {
-                    loadFiles(); // Reload to update UI
+                    flashToast('Expiry alert acknowledged', 'success');
                     location.reload(); // Reload to update banner
                 } else {
-                    alert('Error: ' + (data.message || 'Unknown error'));
+                    showToast('Error: ' + (data.message || 'Unknown error'), 'error');
                 }
             });
-        }
+        });
     };
 }

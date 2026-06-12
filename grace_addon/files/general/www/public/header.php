@@ -7,7 +7,7 @@
  *   $useJquery  - set true on pages that use the jQuery document manager
  */
 if (!defined('GRACE_ASSET_VERSION')) {
-    define('GRACE_ASSET_VERSION', '0.15');
+    define('GRACE_ASSET_VERSION', '0.15.1');
 }
 $pageTitle = $pageTitle ?? 'GRACe';
 ?>
@@ -31,10 +31,13 @@ $pageTitle = $pageTitle ?? 'GRACe';
             } catch (e) { /* stay on the default dark theme */ }
         })();
     </script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+    <!-- Pico CSS and jQuery are self-hosted so the portal works on offline / air-gapped Home Assistant boxes -->
+    <link rel="stylesheet" href="css/vendor/pico.min.css?v=<?php echo GRACE_ASSET_VERSION; ?>">
     <link rel="stylesheet" href="css/growcart.css?v=<?php echo GRACE_ASSET_VERSION; ?>">
     <?php if (!empty($useJquery)): ?>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="js/vendor/jquery-3.6.0.min.js"></script>
     <?php endif; ?>
     <title><?php echo htmlspecialchars($pageTitle); ?></title>
 </head>

@@ -1,5 +1,4 @@
 <?php
-require_once 'auth.php';
 $pageTitle = 'GRACe - Add New Genetics';
 require 'header.php';
 ?>
@@ -41,7 +40,7 @@ require 'header.php';
             showStatusMessage(successMessage, 'success');
             form.reset(); // Clear the form
         } else if (errorMessage) {
-            alert(errorMessage, 'error');
+            showStatusMessage(errorMessage, 'error');
 
             // Pre-populate the form with the submitted data (if available)
             const submittedData = JSON.parse(urlParams.get('data') || '{}');

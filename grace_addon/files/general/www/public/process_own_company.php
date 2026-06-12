@@ -1,5 +1,4 @@
 <?php
-require_once 'auth.php';
 require_once 'init_db.php';
 
 // Check if the form was submitted

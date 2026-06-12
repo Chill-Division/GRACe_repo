@@ -1,5 +1,4 @@
 <?php
-require_once 'auth.php';
 $pageTitle = 'GRACe - Standard Operating Procedures (SOPs)';
 $useJquery = true;
 require 'header.php';

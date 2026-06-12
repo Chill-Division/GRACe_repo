@@ -15,8 +15,8 @@ try {
         header("Location: own_company.php");
         exit();
     } else {
-        // Redirect to tracking.php if company details are present
-        header("Location: tracking.php");
+        // Redirect to the dashboard if company details are present
+        header("Location: dashboard.php");
         exit();
     }
 } catch (PDOException $e) {

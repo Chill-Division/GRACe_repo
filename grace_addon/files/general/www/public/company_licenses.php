@@ -1,5 +1,4 @@
 <?php
-require_once 'auth.php';
 $pageTitle = 'GRACe - Company Licenses';
 $useJquery = true;
 require 'header.php';

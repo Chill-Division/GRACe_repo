@@ -143,6 +143,12 @@ header.app-header {
   max-width: 72rem;
   margin: 0 auto;
   min-height: 3.5rem;
+  /* Neutralise Pico's nav spacing: it pads each li and gives links matching
+     negative margins, which makes our pills overlap once li padding is gone */
+  --pico-nav-element-spacing-vertical: 0rem;
+  --pico-nav-element-spacing-horizontal: 0rem;
+  --pico-nav-link-spacing-vertical: 0rem;
+  --pico-nav-link-spacing-horizontal: 0rem;
 }
 
 .nav-brand {
@@ -217,6 +223,7 @@ header.app-header {
   display: flex;
   align-items: center;
   gap: 0.4rem;
+  margin: 0;
   padding: 0.5rem 0.85rem;
   border-radius: 0.55rem;
   color: var(--g-text-muted);
@@ -277,37 +284,48 @@ header.app-header {
     display: flex;
     align-items: center;
     justify-content: center;
+    flex-shrink: 0;
     width: 2.75rem;
     height: 2.75rem;
     border-radius: 0.55rem;
-    position: relative;
-    z-index: 2;
     margin: 0;
+    -webkit-tap-highlight-color: transparent;
   }
 
   .nav-toggle-label:active {
     background: var(--g-accent-soft);
   }
 
-  .hamburger,
+  /* The three bars are anchored to .hamburger itself (position: relative),
+     so they never depend on the label/header for positioning */
+  .hamburger {
+    position: relative;
+    display: block;
+    width: 22px;
+    height: 2px;
+    border-radius: 2px;
+    background: currentColor;
+    transition: background 0.25s ease;
+  }
+
   .hamburger::before,
   .hamburger::after {
     content: '';
-    display: block;
-    background: currentColor;
-    height: 2px;
-    width: 22px;
-    border-radius: 2px;
     position: absolute;
-    transition: transform 0.25s ease, background 0.25s ease;
+    left: 0;
+    width: 22px;
+    height: 2px;
+    border-radius: 2px;
+    background: currentColor;
+    transition: transform 0.25s ease, top 0.25s ease;
   }
 
   .hamburger::before {
-    transform: translateY(-7px);
+    top: -7px;
   }
 
   .hamburger::after {
-    transform: translateY(7px);
+    top: 7px;
   }
 
   .nav-toggle:checked + .nav-toggle-label .hamburger {
@@ -315,10 +333,12 @@ header.app-header {
   }
 
   .nav-toggle:checked + .nav-toggle-label .hamburger::before {
+    top: 0;
     transform: rotate(45deg);
   }
 
   .nav-toggle:checked + .nav-toggle-label .hamburger::after {
+    top: 0;
     transform: rotate(-45deg);
   }
 
@@ -674,8 +694,154 @@ article {
 }
 
 /* --------------------------------------------------------------------------
+   9b. Toast notifications
+   -------------------------------------------------------------------------- */
+
+#toastContainer {
+  position: fixed;
+  bottom: 1.25rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  z-index: 2000;
+  width: min(92vw, 26rem);
+  pointer-events: none;
+}
+
+.toast {
+  width: 100%;
+  padding: 0.8rem 1.1rem;
+  border-radius: var(--pico-border-radius);
+  border: 1px solid var(--g-border);
+  background: var(--g-surface-raised);
+  color: var(--g-text);
+  font-size: 0.92rem;
+  box-shadow: var(--g-shadow);
+  opacity: 0;
+  transform: translateY(0.75rem);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  pointer-events: auto;
+}
+
+.toast--visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.toast--success {
+  border-color: var(--g-accent-strong);
+  background: var(--g-surface-raised);
+  box-shadow: var(--g-shadow), inset 4px 0 0 var(--g-accent);
+}
+
+.toast--error {
+  border-color: var(--g-danger);
+  box-shadow: var(--g-shadow), inset 4px 0 0 var(--g-danger);
+}
+
+.toast--info {
+  border-color: var(--g-info);
+  box-shadow: var(--g-shadow), inset 4px 0 0 var(--g-info);
+}
+
+/* --------------------------------------------------------------------------
+   9c. Confirmation modal
+   -------------------------------------------------------------------------- */
+
+.grace-modal article {
+  max-width: 26rem;
+  margin: 1rem;
+  padding: 1.5rem;
+  border: 1px solid var(--g-border);
+  border-radius: var(--g-radius-lg);
+}
+
+.grace-modal h3 {
+  margin-bottom: 0.6rem;
+  font-size: 1.15rem;
+}
+
+.grace-modal p {
+  color: var(--g-text-muted);
+  font-size: 0.92rem;
+}
+
+.grace-modal-list {
+  max-height: 12rem;
+  overflow-y: auto;
+  margin: 0.75rem 0 1rem;
+  padding: 0.75rem 1rem 0.75rem 2rem;
+  border: 1px solid var(--g-border);
+  border-radius: var(--pico-border-radius);
+  background: var(--g-surface-raised);
+  font-size: 0.88rem;
+}
+
+.grace-modal-list li {
+  margin-bottom: 0.2rem;
+}
+
+.grace-modal article footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.6rem;
+  margin: 1.25rem -1.5rem -1.5rem;
+  padding: 1rem 1.5rem;
+}
+
+.grace-modal article footer button {
+  width: auto;
+  margin-bottom: 0;
+}
+
+.grace-modal .modal-danger {
+  --pico-background-color: #b91c1c;
+  --pico-border-color: #b91c1c;
+  --pico-color: #ffffff;
+  background: #b91c1c;
+  border-color: #b91c1c;
+  color: #ffffff;
+}
+
+.grace-modal .modal-danger:hover,
+.grace-modal .modal-danger:focus {
+  background: #991b1b;
+  border-color: #991b1b;
+}
+
+/* --------------------------------------------------------------------------
    10. Stat summary cards (transaction reports)
    -------------------------------------------------------------------------- */
+
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(10.5rem, 1fr));
+  gap: 0.9rem;
+  margin-bottom: 2.25rem;
+}
+
+.stat-grid .stat-card {
+  margin-bottom: 0;
+  min-width: 0;
+}
+
+a.stat-card {
+  color: inherit;
+  text-decoration: none;
+  transition: border-color var(--pico-transition), transform var(--pico-transition),
+    box-shadow var(--pico-transition);
+}
+
+a.stat-card:hover,
+a.stat-card:focus {
+  border-color: var(--g-accent);
+  box-shadow: var(--g-shadow);
+  transform: translateY(-2px);
+  text-decoration: none;
+}
 
 .stat-card {
   display: inline-flex;

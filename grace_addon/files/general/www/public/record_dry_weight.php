@@ -1,5 +1,4 @@
 <?php
-require_once 'auth.php';
 $pageTitle = 'GRACe - Record Flower Transaction';
 require 'header.php';
 ?>
