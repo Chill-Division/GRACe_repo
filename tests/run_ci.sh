@@ -36,6 +36,17 @@ else
     FAILures=$((FAILures+1))
 fi
 
+# Run Annual Stocktake Test
+echo ""
+echo "--- Annual Stocktake Test ---"
+php tests/test_annual_stocktake.php
+if [ $? -eq 0 ]; then
+    echo -e "${GREEN}[PASS]${NC} Annual stocktake logic verified"
+else
+    echo -e "${RED}[FAIL]${NC} Annual stocktake logic failed"
+    FAILures=$((FAILures+1))
+fi
+
 # Run Static Checks
 echo ""
 echo "--- Static Analysis ---"
