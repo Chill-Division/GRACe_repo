@@ -161,6 +161,12 @@ foreach ($flowerRows as $f) {
     $stmt->execute([$f[0], $f[1], $f[2], $f[3], "-{$f[4]} days", $f[5]]);
 }
 
+// Outbound flower mid-last-month, whatever month it is right now — so the
+// dashboard's monthly Agency report reminder always has something to show
+// during the first 7 days of the month (see DEVELOPMENT.md for demo tips)
+$pdo->exec("INSERT INTO Flower (genetics_id, weight, transaction_type, reason, transaction_date, company_id)
+            VALUES (1, -42.00, 'Subtract', 'Send external', datetime('now', 'start of month', '-1 month', '+14 days'), 2)");
+
 // --- Documents (with real files so downloads work) --------------------------
 seedDocument($pdo, $uploadDir, 'licenses', 'cultivation-license-2026.pdf', 320, date('Y-m-d', strtotime('+10 days')));  // triggers the expiry banner
 seedDocument($pdo, $uploadDir, 'licenses', 'supply-license-2026.pdf', 200, date('Y-m-d', strtotime('+9 months')));

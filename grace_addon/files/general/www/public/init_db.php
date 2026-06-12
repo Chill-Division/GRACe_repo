@@ -122,10 +122,22 @@ function initializeDatabase($dbPath = '/data/grace.db') {
             // Documents
             "CREATE TABLE IF NOT EXISTS Documents (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
-                category TEXT NOT NULL, 
+                category TEXT NOT NULL,
                 original_filename TEXT NOT NULL,
                 unique_filename TEXT NOT NULL,
                 upload_date DATETIME DEFAULT CURRENT_TIMESTAMP
+            );",
+
+            // ReportReminders — tracks Agency report reminders the user has
+            // dismissed or drafted (added in 0.17.0). period is '2026-05'
+            // for monthly reports or '2025' for the annual stocktake.
+            "CREATE TABLE IF NOT EXISTS ReportReminders (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                report_type TEXT NOT NULL CHECK(report_type IN ('monthly', 'annual')),
+                period TEXT NOT NULL,
+                status TEXT NOT NULL CHECK(status IN ('dismissed', 'drafted')),
+                actioned_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                UNIQUE(report_type, period)
             );"
 
         ];

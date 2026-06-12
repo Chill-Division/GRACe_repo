@@ -1,7 +1,9 @@
 <?php
 require_once 'init_db.php';
+require_once 'report_reminders_lib.php';
 
 // All dashboard queries are read-only summaries of the ledger
+$dueReminders = [];
 $stats = [
     'growing' => 0,
     'drying' => 0,
@@ -52,6 +54,13 @@ try {
                            ORDER BY expiry_date ASC");
     $stmt->execute([$horizon]);
     $expiringLicenses = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    // Agency report reminders (windowed — see report_reminders_lib.php).
+    // ?demo_date=YYYY-MM-DD pretends it's another day — read-only, used for
+    // demos/videos to show the banners outside their real windows.
+    $demoDate = (isset($_GET['demo_date']) && preg_match('/^\d{4}-\d{2}-\d{2}$/', $_GET['demo_date']))
+        ? $_GET['demo_date'] : null;
+    $dueReminders = getDueReportReminders($pdo, $demoDate);
 } catch (Exception $e) {
     error_log('Dashboard error: ' . $e->getMessage());
 }
@@ -69,6 +78,31 @@ require 'header.php';
             <h1>Dashboard</h1>
             <p><?php echo $companyName !== '' ? htmlspecialchars($companyName) . ' at a glance.' : 'Your grow at a glance.'; ?></p>
         </hgroup>
+
+        <?php foreach ($dueReminders as $reminder):
+            $isMonthly = $reminder['type'] === 'monthly';
+            $reportHref = $isMonthly
+                ? 'last_months_flower_transactions.php'
+                : 'annual_stocktake.php?year=' . urlencode($reminder['period']) . '&autorun=1';
+            $title = $isMonthly
+                ? 'Monthly materials out report due'
+                : 'Annual stocktake due';
+            $text = $isMonthly
+                ? "Your {$reminder['label']} materials-out report is ready to send to the Medicinal Cannabis Agency."
+                : "Your {$reminder['label']} annual stocktake is due to the Medicinal Cannabis Agency this month.";
+        ?>
+        <article class="reminder-banner" data-report-type="<?php echo $reminder['type']; ?>" data-report-period="<?php echo htmlspecialchars($reminder['period']); ?>">
+            <span class="nav-card-icon" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4Z"/></svg></span>
+            <div class="reminder-banner-body">
+                <strong><?php echo $title; ?></strong>
+                <small><?php echo htmlspecialchars($text); ?></small>
+            </div>
+            <div class="reminder-banner-actions">
+                <a href="<?php echo $reportHref; ?>" role="button" class="button">Open report</a>
+                <button type="button" class="secondary outline reminder-dismiss" aria-label="Dismiss this reminder">Dismiss</button>
+            </div>
+        </article>
+        <?php endforeach; ?>
 
         <div class="stat-grid">
             <a class="stat-card stat-card--link" href="current_plants.php">
@@ -154,4 +188,29 @@ require 'header.php';
         </section>
     </main>
 
+    <script>
+        // Dismissing a report reminder records it server-side so it stays
+        // dismissed on every device
+        document.querySelectorAll('.reminder-banner .reminder-dismiss').forEach(button => {
+            button.addEventListener('click', () => {
+                const banner = button.closest('.reminder-banner');
+                const body = new URLSearchParams({
+                    report_type: banner.dataset.reportType,
+                    period: banner.dataset.reportPeriod,
+                    status: 'dismissed'
+                });
+                fetch('handle_report_reminder.php', { method: 'POST', body: body })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            banner.remove();
+                            showToast('Reminder dismissed — it won\'t show again for this report.', 'info');
+                        } else {
+                            showToast('Could not dismiss the reminder: ' + (data.message || 'unknown error'), 'error');
+                        }
+                    })
+                    .catch(() => showToast('Could not dismiss the reminder. Please try again.', 'error'));
+            });
+        });
+    </script>
 <?php require 'footer.php'; ?>
