@@ -1,3 +1,7 @@
+## [0.16.1.1] - 2026-06-12
+### Fixed
+- **Mobile hamburger icon**: the icon could render in the top-left corner of its tap target (visibly misaligned from the highlighted outline when tapped) in some mobile WebViews, e.g. the Home Assistant companion app. The bars are now pinned to the exact centre of the tap target with absolute offsets instead of flex centring, which those WebViews failed to apply.
+
 ## [0.16.1] - 2026-06-12
 ### Fixed
 - **Annual Stocktake opening balance**: plants that left stock more than one year before the report year (destroyed / sent / legacy-harvested) kept appearing in the Start Amount and End columns forever. The old query only subtracted departures dated within the *immediately previous* year, so e.g. a plant destroyed in 2024 still showed as stock-on-hand in the 2026 report. The opening balance is now "created before 1 Jan and not departed before 1 Jan", regardless of which year the departure happened. The report's End total now reconciles exactly with live stock (Growing + Drying).

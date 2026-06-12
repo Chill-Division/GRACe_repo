@@ -7,7 +7,7 @@
  *   $useJquery  - set true on pages that use the jQuery document manager
  */
 if (!defined('GRACE_ASSET_VERSION')) {
-    define('GRACE_ASSET_VERSION', '0.16.1');
+    define('GRACE_ASSET_VERSION', '0.16.1.1');
 }
 $pageTitle = $pageTitle ?? 'GRACe';
 ?>
