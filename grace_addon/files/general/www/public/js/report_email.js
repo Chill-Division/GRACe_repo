@@ -32,9 +32,23 @@ function draftReportEmail(options) {
     const { subject, body, reminderType, reminderPeriod } = options;
 
     const openMailto = (mailBody) => {
-        window.location.href = 'mailto:' + GRACE_AGENCY_EMAIL
+        const url = 'mailto:' + GRACE_AGENCY_EMAIL
             + '?subject=' + encodeURIComponent(subject)
             + '&body=' + encodeURIComponent(mailBody);
+
+        // GRACe usually runs inside Home Assistant's ingress iframe.
+        // Navigating the iframe itself to a mailto: breaks when the
+        // browser's mail handler is webmail (e.g. Chrome rewrites it to a
+        // mail.google.com compose URL, and Gmail refuses to load inside a
+        // frame). Opening in a new browsing context works in both worlds:
+        // webmail handlers get their own tab, native mail apps just open.
+        const link = document.createElement('a');
+        link.href = url;
+        link.target = '_blank';
+        link.rel = 'noopener noreferrer';
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
     };
 
     if (body.length > GRACE_MAILTO_BODY_LIMIT && navigator.clipboard && navigator.clipboard.writeText) {

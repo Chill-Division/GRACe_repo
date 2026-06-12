@@ -1,5 +1,5 @@
-## [0.17.0] - 2026-06-13
-One big update — everything from 0.15 through 0.17.0 rolled together.
+## [0.17.1] - 2026-06-13
+One big update — everything from 0.15 through 0.17.1 rolled together.
 
 ### Features
 - **Fresh new look**: GRACe has been redesigned from top to bottom — a new Dashboard home page, tap-friendly menus and cards, dark & light themes, and a layout that works great on phones, tablets, and PCs.
@@ -23,6 +23,7 @@ One big update — everything from 0.15 through 0.17.0 rolled together.
 - Activity recorded on 31 December was missed by the annual report.
 - Manifests between two external companies recorded the wrong sender.
 - Refreshing the manifest result page could create a duplicate.
+- "Draft this in an email" now opens in a new tab, so webmail (like Gmail) works from inside the Home Assistant app.
 
 ### Under the hood
 - Removed old unused login code and bundled demo files; added a developer guide (`DEVELOPMENT.md`), a demo-data seeder, and more automated tests.
