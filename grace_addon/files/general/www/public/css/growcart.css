@@ -1,134 +1,759 @@
-    :root {
-      --background-color-rgb: 24, 26, 27; /* Dark mode background */
-      --color-rgb: 209, 205, 199; /* Dark mode text color */
-    }
+/* ==========================================================================
+   GRACe design system — layered on top of Pico CSS v2
+   Custom component classes are prefixed where practical; --g-* tokens hold
+   the palette so dark/light themes stay in sync.
+   ========================================================================== */
 
-    [data-theme="light"] {
-      --background-color-rgb: 255, 255, 255; /* Light mode background */
-      --color-rgb: 51, 51, 51; /* Light mode text color */
-    }
+/* --------------------------------------------------------------------------
+   1. Design tokens + Pico overrides
+   -------------------------------------------------------------------------- */
 
-    header nav li a svg {
-      width: var(--font-size);
-      height: var(--font-size);
-      color: var(--contrast);
-    }
+:root {
+  --pico-font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI",
+    Roboto, "Helvetica Neue", Arial, sans-serif;
+  --pico-border-radius: 0.625rem;
+  --pico-form-element-spacing-vertical: 0.65rem;
+  --pico-transition: 0.18s ease-in-out;
+  --g-radius-lg: 0.875rem;
+}
 
-    nav {
-      justify-content: space-around;
-      overflow: visible;
-    }
+[data-theme="dark"] {
+  --g-bg: #0f1512;
+  --g-surface: #161f1a;
+  --g-surface-raised: #1c2620;
+  --g-border: #27352d;
+  --g-text: #dbe4de;
+  --g-text-muted: #93a39a;
+  --g-accent: #4ade80;
+  --g-accent-strong: #22c55e;
+  --g-accent-soft: rgba(74, 222, 128, 0.12);
+  --g-danger: #f87171;
+  --g-danger-soft: rgba(248, 113, 113, 0.12);
+  --g-warning: #fbbf24;
+  --g-warning-soft: rgba(251, 191, 36, 0.14);
+  --g-info: #60a5fa;
+  --g-info-soft: rgba(96, 165, 250, 0.14);
+  --g-header-bg: rgba(15, 21, 18, 0.85);
+  --g-shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 24px rgba(0, 0, 0, 0.25);
 
-    .nav-toggle {
-      display: none;
-    }
+  --pico-background-color: var(--g-bg);
+  --pico-color: var(--g-text);
+  --pico-muted-color: var(--g-text-muted);
+  --pico-muted-border-color: var(--g-border);
+  --pico-card-background-color: var(--g-surface);
+  --pico-card-sectioning-background-color: var(--g-surface-raised);
+  --pico-primary: var(--g-accent);
+  --pico-primary-background: #15803d;
+  --pico-primary-border: #15803d;
+  --pico-primary-hover: #86efac;
+  --pico-primary-hover-background: #166534;
+  --pico-primary-hover-border: #166534;
+  --pico-primary-inverse: #ffffff;
+  --pico-primary-focus: rgba(74, 222, 128, 0.35);
+  --pico-primary-underline: rgba(74, 222, 128, 0.5);
+  --pico-form-element-background-color: #121a15;
+  --pico-form-element-border-color: var(--g-border);
+  --pico-form-element-active-border-color: var(--g-accent-strong);
+  --pico-form-element-focus-color: var(--pico-primary-focus);
+  --pico-table-border-color: var(--g-border);
+  --pico-table-row-stripped-background-color: rgba(255, 255, 255, 0.025);
+}
 
-    .nav-toggle-label {
-      display: none;
-      cursor: pointer;
-    }
+[data-theme="light"] {
+  --g-bg: #f4f7f5;
+  --g-surface: #ffffff;
+  --g-surface-raised: #fbfdfb;
+  --g-border: #dfe7e1;
+  --g-text: #1c2521;
+  --g-text-muted: #5c6b62;
+  --g-accent: #16a34a;
+  --g-accent-strong: #15803d;
+  --g-accent-soft: rgba(22, 163, 74, 0.1);
+  --g-danger: #dc2626;
+  --g-danger-soft: rgba(220, 38, 38, 0.08);
+  --g-warning: #b45309;
+  --g-warning-soft: rgba(217, 119, 6, 0.12);
+  --g-info: #2563eb;
+  --g-info-soft: rgba(37, 99, 235, 0.08);
+  --g-header-bg: rgba(255, 255, 255, 0.85);
+  --g-shadow: 0 1px 2px rgba(16, 24, 20, 0.06), 0 8px 24px rgba(16, 24, 20, 0.06);
 
-    @media (max-width: 768px) {
-      header.container-fluid {
-        padding: 0;
-      }
+  --pico-background-color: var(--g-bg);
+  --pico-color: var(--g-text);
+  --pico-muted-color: var(--g-text-muted);
+  --pico-muted-border-color: var(--g-border);
+  --pico-card-background-color: var(--g-surface);
+  --pico-card-sectioning-background-color: var(--g-surface-raised);
+  --pico-primary: var(--g-accent);
+  --pico-primary-background: #16a34a;
+  --pico-primary-border: #16a34a;
+  --pico-primary-hover: #15803d;
+  --pico-primary-hover-background: #15803d;
+  --pico-primary-hover-border: #15803d;
+  --pico-primary-inverse: #ffffff;
+  --pico-primary-focus: rgba(22, 163, 74, 0.3);
+  --pico-primary-underline: rgba(22, 163, 74, 0.5);
+  --pico-form-element-background-color: #ffffff;
+  --pico-form-element-border-color: var(--g-border);
+  --pico-form-element-active-border-color: var(--g-accent);
+  --pico-form-element-focus-color: var(--pico-primary-focus);
+  --pico-table-border-color: var(--g-border);
+  --pico-table-row-stripped-background-color: rgba(16, 24, 20, 0.025);
+}
 
-      nav {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 1rem;
-        position: relative;
-      }
+body {
+  -webkit-font-smoothing: antialiased;
+}
 
-      nav ul:first-of-type {
-        margin: 0;
-      }
+main.container {
+  padding-top: 1.5rem;
+  padding-bottom: 3rem;
+}
 
-      .nav-toggle-label {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 30px;
-        height: 30px;
-        position: relative;
-        z-index: 2;
-        margin: 0;
-        padding-top: 2px; /* Fine-tune alignment */
-      }
+h1 {
+  --pico-font-size: 1.65rem;
+  letter-spacing: -0.02em;
+}
 
-      .hamburger,
-      .hamburger::before,
-      .hamburger::after {
-        content: '';
-        display: block;
-        background: currentColor;
-        height: 2px;
-        width: 25px;
-        position: absolute;
-        transition: transform 0.3s;
-      }
+h2 {
+  --pico-font-size: 1.2rem;
+  letter-spacing: -0.01em;
+}
 
-      .hamburger::before {
-        transform: translateY(-7px);
-      }
+/* --------------------------------------------------------------------------
+   2. App header + navigation
+   -------------------------------------------------------------------------- */
 
-      .hamburger::after {
-        transform: translateY(7px);
-      }
+header.app-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--g-header-bg);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--g-border);
+  padding: 0 1rem;
+}
 
-      nav ul:nth-of-type(2) {
-        display: none;
-        position: fixed;
-        top: 60px; /* Adjust this value based on your header height */
-        left: 0;
-        right: 0;
-        background-color: rgba(var(--background-color-rgb), 0.95);
-        backdrop-filter: blur(10px);
-        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        z-index: 1000;
-        width: 100%;
-        padding: 1rem 0;
-        margin: 0;
-        max-height: calc(100vh - 60px);
-        overflow-y: auto;
-      }
+.app-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  max-width: 72rem;
+  margin: 0 auto;
+  min-height: 3.5rem;
+}
 
-      .nav-toggle:checked ~ ul:nth-of-type(2) {
-        display: block !important;
-      }
+.nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  text-decoration: none;
+  color: var(--g-text);
+  flex-shrink: 0;
+}
 
-      nav ul:nth-of-type(2) li {
-        display: block;
-        margin: 0;
-        padding: 0.5rem 1rem;
-        border-bottom: 1px solid rgba(var(--color-rgb), 0.1);
-      }
+.nav-brand:hover,
+.nav-brand:focus {
+  text-decoration: none;
+  color: var(--g-text);
+}
 
-      nav ul:nth-of-type(2) li:last-child {
-        border-bottom: none;
-      }
+.nav-brand-mark {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.1rem;
+  height: 2.1rem;
+  border-radius: 0.6rem;
+  background: var(--g-accent-soft);
+  color: var(--g-accent);
+}
 
-      .nav-toggle:checked + .nav-toggle-label .hamburger {
-        background: transparent;
-      }
+.nav-brand-mark svg {
+  width: 1.25rem;
+  height: 1.25rem;
+}
 
-      .nav-toggle:checked + .nav-toggle-label .hamburger::before {
-        transform: rotate(45deg) translate(5px, 5px);
-      }
+.nav-brand-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.15;
+}
 
-      .nav-toggle:checked + .nav-toggle-label .hamburger::after {
-        transform: rotate(-45deg) translate(5px, -5px);
-      }
-    }
+.nav-brand-text strong {
+  font-size: 1.05rem;
+  letter-spacing: -0.01em;
+}
 
-    @media (max-width: 768px) {
-      main.container {
-        padding: 0 1rem;
-      }
+.nav-brand-sub {
+  font-size: 0.68rem;
+  color: var(--g-text-muted);
+  white-space: nowrap;
+}
 
-      article {
-        width: 100% !important;
-        margin: 0 !important;
-      }
-    }
+.nav-brand-sub small {
+  font-size: inherit;
+  color: var(--g-accent);
+}
+
+.nav-menu {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-menu li {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-menu li a {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.5rem 0.85rem;
+  border-radius: 0.55rem;
+  color: var(--g-text-muted);
+  font-weight: 500;
+  font-size: 0.92rem;
+  text-decoration: none;
+  transition: background var(--pico-transition), color var(--pico-transition);
+}
+
+.nav-menu li a:hover,
+.nav-menu li a:focus {
+  color: var(--g-text);
+  background: var(--g-accent-soft);
+  text-decoration: none;
+}
+
+.nav-menu li a.active {
+  color: var(--g-accent);
+  background: var(--g-accent-soft);
+}
+
+.nav-menu li a.theme-toggle {
+  min-width: 2.4rem;
+  min-height: 2.4rem;
+  justify-content: center;
+  padding: 0.5rem;
+  margin: 0;
+  background: transparent;
+  border: 1px solid var(--g-border);
+  color: var(--g-text-muted);
+  box-shadow: none;
+}
+
+.nav-menu li a.theme-toggle:hover,
+.nav-menu li a.theme-toggle:focus {
+  background: var(--g-accent-soft);
+  color: var(--g-accent);
+  border-color: var(--g-accent);
+}
+
+.theme-toggle svg {
+  width: 1.15rem;
+  height: 1.15rem;
+}
+
+/* Hamburger (mobile only) */
+.nav-toggle {
+  display: none;
+}
+
+.nav-toggle-label {
+  display: none;
+  cursor: pointer;
+}
+
+@media (max-width: 768px) {
+  .nav-toggle-label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: 0.55rem;
+    position: relative;
+    z-index: 2;
+    margin: 0;
+  }
+
+  .nav-toggle-label:active {
+    background: var(--g-accent-soft);
+  }
+
+  .hamburger,
+  .hamburger::before,
+  .hamburger::after {
+    content: '';
+    display: block;
+    background: currentColor;
+    height: 2px;
+    width: 22px;
+    border-radius: 2px;
+    position: absolute;
+    transition: transform 0.25s ease, background 0.25s ease;
+  }
+
+  .hamburger::before {
+    transform: translateY(-7px);
+  }
+
+  .hamburger::after {
+    transform: translateY(7px);
+  }
+
+  .nav-toggle:checked + .nav-toggle-label .hamburger {
+    background: transparent;
+  }
+
+  .nav-toggle:checked + .nav-toggle-label .hamburger::before {
+    transform: rotate(45deg);
+  }
+
+  .nav-toggle:checked + .nav-toggle-label .hamburger::after {
+    transform: rotate(-45deg);
+  }
+
+  .nav-menu {
+    display: none;
+    position: fixed;
+    top: 3.5rem;
+    left: 0;
+    right: 0;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.15rem;
+    background: var(--g-bg);
+    border-bottom: 1px solid var(--g-border);
+    box-shadow: var(--g-shadow);
+    padding: 0.75rem 1rem 1rem;
+    margin: 0;
+    max-height: calc(100vh - 3.5rem);
+    overflow-y: auto;
+  }
+
+  .nav-toggle:checked ~ .nav-menu {
+    display: flex;
+  }
+
+  .nav-menu li a {
+    padding: 0.8rem 1rem;
+    font-size: 1rem;
+  }
+
+  .theme-toggle {
+    justify-content: flex-start;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   3. License expiry alert banner
+   -------------------------------------------------------------------------- */
+
+.license-alert {
+  max-width: 72rem;
+  margin: 0.75rem auto;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--g-danger);
+  border-left-width: 4px;
+  border-radius: var(--pico-border-radius);
+  background: var(--g-danger-soft);
+  color: var(--g-text);
+  font-size: 0.92rem;
+}
+
+.license-alert div + div {
+  margin-top: 0.4rem;
+}
+
+.license-alert strong {
+  color: var(--g-danger);
+}
+
+.license-alert a {
+  color: var(--g-danger);
+  font-weight: 600;
+  text-decoration: underline;
+}
+
+/* --------------------------------------------------------------------------
+   4. Page headers
+   -------------------------------------------------------------------------- */
+
+.page-header {
+  margin-bottom: 1.75rem;
+}
+
+.page-header h1 {
+  margin-bottom: 0.35rem;
+}
+
+.page-header p {
+  color: var(--g-text-muted);
+  font-size: 0.95rem;
+  margin-bottom: 0;
+  max-width: 60ch;
+}
+
+/* --------------------------------------------------------------------------
+   5. Hub cards (Plant Tracking / Reporting / Administration landing pages)
+   -------------------------------------------------------------------------- */
+
+.hub-section {
+  margin-bottom: 2.25rem;
+}
+
+.hub-section > h2 {
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--g-text-muted);
+  margin-bottom: 0.9rem;
+}
+
+.hub-section > p {
+  color: var(--g-text-muted);
+  font-size: 0.9rem;
+  margin-top: -0.5rem;
+  margin-bottom: 0.9rem;
+}
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(15.5rem, 1fr));
+  gap: 0.9rem;
+}
+
+.nav-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.85rem;
+  padding: 1.1rem;
+  background: var(--g-surface);
+  border: 1px solid var(--g-border);
+  border-radius: var(--g-radius-lg);
+  color: var(--g-text);
+  text-decoration: none;
+  transition: border-color var(--pico-transition), transform var(--pico-transition),
+    box-shadow var(--pico-transition);
+}
+
+a.nav-card:hover,
+a.nav-card:focus {
+  border-color: var(--g-accent);
+  box-shadow: var(--g-shadow);
+  transform: translateY(-2px);
+  text-decoration: none;
+  color: var(--g-text);
+}
+
+.nav-card-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 0.7rem;
+  background: var(--g-accent-soft);
+  color: var(--g-accent);
+}
+
+.nav-card-icon svg {
+  width: 1.3rem;
+  height: 1.3rem;
+}
+
+.nav-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  min-width: 0;
+}
+
+.nav-card-body strong {
+  font-size: 0.98rem;
+  line-height: 1.3;
+}
+
+.nav-card-body small {
+  color: var(--g-text-muted);
+  font-size: 0.82rem;
+  line-height: 1.45;
+}
+
+.nav-card.is-disabled {
+  border-style: dashed;
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.nav-card.is-disabled .nav-card-icon {
+  background: transparent;
+  border: 1px dashed var(--g-border);
+  color: var(--g-text-muted);
+}
+
+.badge-soon {
+  display: inline-block;
+  align-self: flex-start;
+  margin-top: 0.3rem;
+  padding: 0.1rem 0.5rem;
+  border-radius: 99px;
+  background: var(--g-warning-soft);
+  color: var(--g-warning);
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* --------------------------------------------------------------------------
+   6. Cards, forms
+   -------------------------------------------------------------------------- */
+
+article {
+  border: 1px solid var(--g-border);
+  border-radius: var(--g-radius-lg);
+  box-shadow: none;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.form-card {
+  max-width: 42rem;
+}
+
+.form-card h2 {
+  margin-bottom: 1rem;
+}
+
+/* Bigger touch targets for mobile */
+@media (max-width: 768px) {
+  input:not([type="checkbox"]):not([type="radio"]),
+  select,
+  textarea,
+  button,
+  [role="button"] {
+    font-size: 1rem;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   7. Tables
+   -------------------------------------------------------------------------- */
+
+.table-wrap {
+  margin: 0 0 1.5rem;
+  border: 1px solid var(--g-border);
+  border-radius: var(--g-radius-lg);
+  background: var(--g-surface);
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.table-wrap table {
+  margin-bottom: 0;
+  --pico-background-color: transparent;
+}
+
+.table-wrap th {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--g-text-muted);
+  white-space: nowrap;
+  background: var(--g-surface-raised);
+}
+
+.table-wrap th,
+.table-wrap td {
+  padding: 0.7rem 1rem;
+}
+
+.table-wrap tbody tr:nth-child(odd) td {
+  background: var(--pico-table-row-stripped-background-color);
+}
+
+.table-wrap tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.table-wrap tr.expiring td {
+  background: var(--g-danger-soft);
+}
+
+/* --------------------------------------------------------------------------
+   8. Badges (plant status etc.)
+   -------------------------------------------------------------------------- */
+
+.badge {
+  display: inline-block;
+  padding: 0.15rem 0.6rem;
+  border-radius: 99px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  line-height: 1.5;
+  white-space: nowrap;
+  background: var(--g-accent-soft);
+  color: var(--g-accent);
+}
+
+.badge--growing {
+  background: var(--g-accent-soft);
+  color: var(--g-accent);
+}
+
+.badge--drying {
+  background: var(--g-warning-soft);
+  color: var(--g-warning);
+}
+
+.badge--destroyed {
+  background: var(--g-danger-soft);
+  color: var(--g-danger);
+}
+
+.badge--sent {
+  background: var(--g-info-soft);
+  color: var(--g-info);
+}
+
+.badge--neutral {
+  background: rgba(128, 128, 128, 0.15);
+  color: var(--g-text-muted);
+}
+
+/* --------------------------------------------------------------------------
+   9. Status messages + floating selection counter
+   -------------------------------------------------------------------------- */
+
+.status-message {
+  padding: 0.75rem 1rem;
+  margin-bottom: 1.25rem;
+  border-radius: var(--pico-border-radius);
+  border: 1px solid transparent;
+  font-size: 0.92rem;
+}
+
+.status-message.success {
+  background: var(--g-accent-soft);
+  border-color: var(--g-accent-strong);
+  color: var(--g-accent);
+}
+
+.status-message.error {
+  background: var(--g-danger-soft);
+  border-color: var(--g-danger);
+  color: var(--g-danger);
+}
+
+#selectionCounter {
+  position: fixed;
+  bottom: 1.25rem;
+  right: 1.25rem;
+  padding: 0.65rem 1rem;
+  background: var(--pico-primary-background);
+  color: var(--pico-primary-inverse);
+  border-radius: 99px;
+  box-shadow: var(--g-shadow);
+  z-index: 1000;
+  font-weight: 600;
+  font-size: 0.9rem;
+  display: none;
+}
+
+/* --------------------------------------------------------------------------
+   10. Stat summary cards (transaction reports)
+   -------------------------------------------------------------------------- */
+
+.stat-card {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-width: 11rem;
+  padding: 1rem 1.25rem;
+  margin-bottom: 1.5rem;
+  background: var(--g-surface);
+  border: 1px solid var(--g-border);
+  border-radius: var(--g-radius-lg);
+}
+
+.stat-card .stat-value {
+  font-size: 1.6rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--g-accent);
+}
+
+.stat-card .stat-label {
+  font-size: 0.8rem;
+  color: var(--g-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* --------------------------------------------------------------------------
+   11. Misc / utilities
+   -------------------------------------------------------------------------- */
+
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.toolbar > * {
+  margin-bottom: 0;
+}
+
+.toolbar label {
+  font-size: 0.85rem;
+  color: var(--g-text-muted);
+}
+
+#sortContainer {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 1rem;
+}
+
+#sortContainer label {
+  margin-bottom: 0;
+  font-size: 0.85rem;
+  color: var(--g-text-muted);
+  white-space: nowrap;
+}
+
+#sortContainer select {
+  width: auto;
+  margin-bottom: 0;
+}
+
+@media (max-width: 768px) {
+  main.container {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  article {
+    padding: 1.1rem;
+  }
+
+  h1 {
+    --pico-font-size: 1.4rem;
+  }
+}

@@ -1,3 +1,21 @@
+## [0.15] - 2026-06-12
+### Changed (UI Revamp)
+- **Design**: New design system layered on Pico CSS — green brand palette, refreshed dark and light themes, sticky translucent header, and consistent cards/tables/forms across every page.
+- **Navigation**: Redesigned nav bar with brand mark, active-section highlighting, and a cleaner mobile slide-down menu.
+- **Hub pages**: Plant Tracking, Reporting, and Administration landing pages now use tappable icon cards with descriptions instead of bullet lists. "Coming soon" items are shown as disabled cards instead of links to missing pages.
+- **Theme**: Light/dark preference is now persisted (localStorage) and follows the device preference on first visit; no more flash of the wrong theme or focus-stealing tooltip on load.
+- **Tables**: All report tables are wrapped in horizontally scrollable cards for phones/tablets, with styled headers and zebra striping.
+- **Status badges**: Plant statuses (Growing / Drying / Destroyed / Sent) render as colour-coded badges on the plant list and harvest pages.
+- **Transaction reports**: "Total weight sent out" now displays as a summary stat card.
+- **License alerts**: Expiry banner restyled via stylesheet instead of inline styles.
+
+### Fixed
+- **List All Plants**: Restored the table population logic that was lost in the v0.14 JavaScript refactor (the page previously rendered an empty table).
+
+### Refactor (presentation layer only)
+- **Shared layout**: New `header.php`/`footer.php` partials replace per-page duplicated `<head>`/boilerplate; page titles and jQuery loading are driven by variables. CSS/JS now cache-busted by addon version.
+- **Dependencies**: Removed the Font Awesome CDN (download icon replaced with an inline SVG); document pages now load one less stylesheet.
+
 ## [0.14.1] - 2026-02-16
 ### Added
 - **Administration**: Added a tool to migrate legacy "Harvested" plants to "Harvested - Destroyed" status.

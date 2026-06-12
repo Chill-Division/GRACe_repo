@@ -1,34 +1,24 @@
-<?php require_once 'auth.php'; ?>
-<!doctype html>
-<html lang="en" data-theme="dark">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">   
-
-    <meta name="color-scheme" content="light dark">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">  
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> 
-
-    <link rel="stylesheet" href="css/growcart.css"> 
-    <title>GRACe - Offtake Agreements</title> 
-</head>
-<body>
-    <header class="container-fluid">
-	<?php require_once 'nav.php'; ?>
-    </header>
+<?php
+require_once 'auth.php';
+$pageTitle = 'GRACe - Offtake Agreements';
+$useJquery = true;
+require 'header.php';
+?>
 
     <main class="container">
-        <h1>Offtake Agreements</h1>
+        <hgroup class="page-header">
+            <h1>Offtake Agreements</h1>
+            <p>Keep signed buyer agreements on file. Images over 1MB are compressed automatically.</p>
+        </hgroup>
 
-        <section>
+        <article class="form-card">
             <h2>Upload New Agreement</h2>
             <form id="uploadForm">
                 <input type="file" name="file" required>
                 <input type="hidden" name="category" value="offtakes">
                 <button type="submit">Upload</button>
             </form>
-        </section>
+        </article>
 
         <section>
             <h2>Existing Agreements</h2>
@@ -39,22 +29,23 @@
                     <option value="name_asc">Name A-Z</option>
                 </select>
             </div>
-            <table>
-                <thead>
-                    <tr>
-                        <th>File Name</th>
-                        <th>Upload Date</th>
-                        <th>Download</th>
-                    </tr>
-                </thead>
-                <tbody id="fileList">
-                    <tr><td colspan="3">No records found.</td></tr>
-                </tbody>
-            </table>
+            <figure class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>File Name</th>
+                            <th>Upload Date</th>
+                            <th>Download</th>
+                        </tr>
+                    </thead>
+                    <tbody id="fileList">
+                        <tr><td colspan="3">No records found.</td></tr>
+                    </tbody>
+                </table>
+            </figure>
         </section>
     </main>
-    
-    <script src="js/growcart.js"></script> 
+
     <script src="js/image-compress.js"></script>
     <script src="js/documents.js"></script>
     <script>
@@ -66,5 +57,4 @@
             });
         });
     </script>
-</body>
-</html>
+<?php require 'footer.php'; ?>

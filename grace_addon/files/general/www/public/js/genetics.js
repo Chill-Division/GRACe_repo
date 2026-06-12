@@ -1,10 +1,59 @@
 /**
  * genetics.js
- * 
+ *
  * Called from:
- * - list_all_genetics.php: To display the list of all genetics (logic not yet extracted, but planned).
+ * - list_all_genetics.php: To display the list of all genetics with status filtering.
  * - receive_genetics.php: To handle the "Receive Genetics" form, including fetching genetics list and showing status messages.
  */
+
+// Function to list all genetics with status filter (from list_all_genetics.php)
+function initGeneticsList() {
+    const table = document.getElementById('geneticsListTable');
+    const statusFilter = document.getElementById('statusFilter');
+
+    if (!table || !statusFilter) {
+        console.warn('initGeneticsList called but elements not found');
+        return;
+    }
+
+    const tbody = table.getElementsByTagName('tbody')[0];
+
+    function fetchAndDisplayGenetics(statusFilterValue = '') {
+        tbody.innerHTML = '';
+
+        fetch('get_all_genetics.php' + (statusFilterValue ? `?status=${encodeURIComponent(statusFilterValue)}` : ''))
+            .then(response => response.json())
+            .then(geneticsData => {
+                if (!Array.isArray(geneticsData) || geneticsData.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="3">No plants found.</td></tr>';
+                    return;
+                }
+
+                // Sort by age (oldest to newest)
+                geneticsData.sort((a, b) => a.age - b.age);
+
+                geneticsData.forEach(genetics => {
+                    const row = tbody.insertRow();
+                    row.insertCell().textContent = genetics.geneticsName;
+                    row.insertCell().textContent = genetics.age;
+
+                    const statusCell = row.insertCell();
+                    if (typeof statusBadge === 'function') {
+                        statusCell.appendChild(statusBadge(genetics.status));
+                    } else {
+                        statusCell.textContent = genetics.status;
+                    }
+                });
+            })
+            .catch(error => console.error('Error fetching genetics data:', error));
+    }
+
+    fetchAndDisplayGenetics();
+
+    statusFilter.addEventListener('change', () => {
+        fetchAndDisplayGenetics(statusFilter.value);
+    });
+}
 
 // Function to handle receiving genetics (from receive_genetics.php)
 function initReceiveGenetics() {

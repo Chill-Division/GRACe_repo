@@ -35,33 +35,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['migrate'])) {
         $message = "Error during migration: " . $e->getMessage();
     }
 }
+$pageTitle = 'GRACe - Migrate Legacy Harvest Status';
+require 'header.php';
 ?>
-<!doctype html>
-<html lang="en" data-theme="dark">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
-    <link rel="stylesheet" href="css/growcart.css">
-    <title>Migrate Legacy Harvest Status</title>
-</head>
-<body>
-    <header class="container-fluid">
-        <?php require_once 'nav.php'; ?>
-    </header>
 
     <main class="container">
-        <h1>Migrate Legacy Harvest Status</h1>
-        <p>This tool migrates all plants with the legacy status <strong>'Harvested'</strong> to the new status <strong>'Harvested - Destroyed'</strong>.</p>
-        <p>Plants currently in 'Harvested - Drying' are not affected.</p>
+        <hgroup class="page-header">
+            <h1>Migrate Legacy Harvest Status</h1>
+            <p>This tool migrates all plants with the legacy status 'Harvested' to the new status 'Harvested - Destroyed'. Plants currently in 'Harvested - Drying' are not affected.</p>
+        </hgroup>
 
         <?php if ($message): ?>
-            <article>
+            <div class="status-message <?php echo strpos($message, 'Success') === 0 ? 'success' : 'error'; ?>">
                 <?php echo htmlspecialchars($message); ?>
-            </article>
+            </div>
         <?php endif; ?>
 
-        <article>
+        <article class="form-card">
             <header><strong>Migration Status</strong></header>
             <p>Plants pending migration (Status: 'Harvested'): <strong><?php echo $countToMigrate; ?></strong></p>
             
@@ -76,5 +66,4 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['migrate'])) {
         
         <p><a href="administration.php" role="button" class="secondary">Back to Administration</a></p>
     </main>
-</body>
-</html>
+<?php require 'footer.php'; ?>

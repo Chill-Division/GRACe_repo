@@ -1,52 +1,42 @@
-<?php require_once 'auth.php'; ?>
-<!doctype html>
-<html lang="en" data-theme="dark">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">   
-
-    <meta name="color-scheme" content="light dark">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">   
-
-    <link rel="stylesheet" href="css/growcart.css"> 
-    <title>GRACe - Add Verified Company</title> 
-</head>
-<body>
- <header class="container-fluid">
-	<?php require_once 'nav.php'; ?>
-    </header>
+<?php
+require_once 'auth.php';
+$pageTitle = 'GRACe - Add Verified Company';
+require 'header.php';
+?>
 
     <main class="container">
-        <div id="statusMessage" class="status-message" style="display: none;"></div> 
+        <div id="statusMessage" class="status-message" style="display: none;"></div>
 
-        <h1>Add Verified Company</h1>
+        <hgroup class="page-header">
+            <h1>Add Verified Company</h1>
+            <p>Companies added here will show up as a destination in the forms for CoC / Testing.</p>
+        </hgroup>
 
-        <p><small>Companies added here will show up as a destination in the forms for CoC / Testing.</small></p>
+        <article class="form-card">
+            <form id="addCompanyForm" class="form">
+                <label for="companyName">Company Name:</label>
+                <input type="text" id="companyName" name="companyName" class="input" required>
 
-        <form id="addCompanyForm" class="form">
-            <label for="companyName">Company Name:</label>
-            <input type="text" id="companyName" name="companyName" class="input" required>
+                <label for="licenseNumber">License #:</label>
+                <input type="text" id="licenseNumber" name="licenseNumber" class="input" required>
 
-            <label for="licenseNumber">License #:</label>
-            <input type="text" id="licenseNumber" name="licenseNumber" class="input" required>
+                <label for="address">Address:</label>
+                <textarea id="address" name="address" class="input" rows="3" required></textarea>
 
-            <label for="address">Address:</label>
-            <textarea id="address" name="address" class="input" rows="3" required></textarea>
+                <label for="contactName">Primary Contact Name:</label>
+                <input type="text" id="contactName" name="contactName" class="input" required>
 
-            <label for="contactName">Primary Contact Name:</label>
-            <input type="text" id="contactName" name="contactName" class="input" required>
+                <label for="contactEmail">Primary Contact Email:</label>
+                <input type="email" id="contactEmail" name="contactEmail" class="input" required>
 
-            <label for="contactEmail">Primary Contact Email:</label>
-            <input type="email" id="contactEmail" name="contactEmail" class="input" required>
+                <label for="contactPhone">Primary Contact Phone:</label>
+                <input type="tel" id="contactPhone" name="contactPhone" class="input" required>
 
-            <label for="contactPhone">Primary Contact Phone:</label>
-            <input type="tel" id="contactPhone" name="contactPhone" class="input" required>
-
-            <button type="submit" class="button">Add Company</button>
-        </form>
+                <button type="submit" class="button">Add Company</button>
+            </form>
+        </article>
     </main>
 
-     <script src="js/growcart.js"></script> 
     <script>
         const form = document.getElementById('addCompanyForm');
         const statusMessage = document.getElementById('statusMessage');
@@ -60,7 +50,7 @@
                 method: 'POST',
                 body: formData
             })
-            .then(response => response.text()) 
+            .then(response => response.text())
             .then(message => {
                     if (message.startsWith('Success')) {
                         showStatusMessage(message, 'success');
@@ -86,8 +76,7 @@
             setTimeout(() => {
                 statusMessage.style.display = 'none';
                 statusMessage.classList.remove(type);
-            }, 5000); 
+            }, 5000);
         }
-    </script> 
-</body>
-</html>
+    </script>
+<?php require 'footer.php'; ?>

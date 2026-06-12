@@ -16,65 +16,59 @@ $companies = $companiesStmt->fetchAll(PDO::FETCH_ASSOC);
 // Fetch genetics for dropdown, sorted alphabetically by name
 $geneticsStmt = $pdo->query("SELECT id, name FROM Genetics ORDER BY name ASC");
 $geneticsList = $geneticsStmt->fetchAll(PDO::FETCH_ASSOC);
+
+$pageTitle = 'GRACe - Generate Shipping Manifest';
+require 'header.php';
 ?>
 
-<!doctype html>
-<html lang="en" data-theme="dark">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="color-scheme" content="light dark">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
-    <link rel="stylesheet" href="css/growcart.css">
-    <title>GRACe - Generate Shipping Manifest</title>
-</head>
-<body>
-    <header class="container-fluid">
-        <?php require_once 'nav.php'; ?>
-    </header>
     <main class="container">
-        <h1>Generate Shipping Manifest</h1>
+        <hgroup class="page-header">
+            <h1>Generate Shipping Manifest</h1>
+            <p>Create a manifest for plants or flower moving between license holders.</p>
+        </hgroup>
 
-        <form id="shippingManifestForm" class="form" method="post" action="process_shipping_manifest.php">
-        <h2>Sending Party</h2>
-            <label for="sendingChoice">Choose:</label>
-            <select id="sendingChoice" name="sendingChoice" class="input" required>
-                <option value="us">Us</option>
-                <option value="external">External</option>
-            </select>
+        <article class="form-card">
+            <form id="shippingManifestForm" class="form" method="post" action="process_shipping_manifest.php">
+                <h2>Sending Party</h2>
+                <label for="sendingChoice">Choose:</label>
+                <select id="sendingChoice" name="sendingChoice" class="input" required>
+                    <option value="us">Us</option>
+                    <option value="external">External</option>
+                </select>
 
-            <div id="sendingDetails"></div>
+                <div id="sendingDetails"></div>
 
-            <h2>Receiving Party</h2>
-            <label for="receivingChoice">Choose:</label>
-            <select id="receivingChoice" name="receivingChoice" class="input" required>
-                <option value="us">Us</option>
-                <option value="external">External</option>
-            </select>
+                <h2>Receiving Party</h2>
+                <label for="receivingChoice">Choose:</label>
+                <select id="receivingChoice" name="receivingChoice" class="input" required>
+                    <option value="us">Us</option>
+                    <option value="external">External</option>
+                </select>
 
-            <div id="receivingDetails"></div>
+                <div id="receivingDetails"></div>
 
-            <h2>Product Details</h2>
-            <label for="productType">Product Type:</label>
-            <select id="productType" name="productType" class="input" required>
-                <option value="flower">Flower</option>
-                <option value="plant">Plant</option>
-            </select>
+                <h2>Product Details</h2>
+                <label for="productType">Product Type:</label>
+                <select id="productType" name="productType" class="input" required>
+                    <option value="flower">Flower</option>
+                    <option value="plant">Plant</option>
+                </select>
 
-            <label for="quantity">Quantity or Weight:</label>
-            <input type="number" id="quantity" name="quantity" class="input" min="1" step="0.01" required>
+                <label for="quantity">Quantity or Weight:</label>
+                <input type="number" id="quantity" name="quantity" class="input" min="1" step="0.01" required>
 
-            <label for="geneticsName">Genetics:</label>
-            <select id="geneticsName" name="geneticsName" class="input" required>
-                <?php foreach ($geneticsList as $genetic): ?>
-                    <option value="<?php echo htmlspecialchars($genetic['name']); ?>">
-                        <?php echo htmlspecialchars($genetic['name']); ?>
-                    </option>
-                <?php endforeach; ?>
-            </select>
+                <label for="geneticsName">Genetics:</label>
+                <select id="geneticsName" name="geneticsName" class="input" required>
+                    <?php foreach ($geneticsList as $genetic): ?>
+                        <option value="<?php echo htmlspecialchars($genetic['name']); ?>">
+                            <?php echo htmlspecialchars($genetic['name']); ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
 
-            <button type="submit" class="button">Generate Manifest</button>
-        </form>
+                <button type="submit" class="button">Generate Manifest</button>
+            </form>
+        </article>
     </main>
 
     <script>
@@ -157,6 +151,4 @@ $geneticsList = $geneticsStmt->fetchAll(PDO::FETCH_ASSOC);
         populateDetails(sendingChoice.value, 'sendingDetails');
         populateDetails(receivingChoice.value, 'receivingDetails');
     </script>
-       <script src="js/growcart.js"></script> 
-</body>
-</html>
+<?php require 'footer.php'; ?>

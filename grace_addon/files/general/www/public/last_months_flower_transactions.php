@@ -21,58 +21,55 @@ try {
     error_log("Database error: " . $e->getMessage());
     echo "Error: An unexpected error occurred. Please try again later.";
 }
+
+$reportHeading = $pageTitle;
+$pageTitle = "GRACe - $pageTitle";
+require 'header.php';
 ?>
 
-<!doctype html>
-<html lang="en" data-theme="dark">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="color-scheme" content="light dark">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
-    <link rel="stylesheet" href="css/growcart.css">
-    <title>GRACe - <?php echo $pageTitle; ?></title>
-</head>
-<body>
-    <header class="container-fluid">
-        <?php require_once 'nav.php'; ?>
-    </header>
-
     <main class="container" data-endpoint="get_last_months_flower_transactions.php">
-        <h1><?php echo $pageTitle; ?></h1>
+        <hgroup class="page-header">
+            <h1><?php echo $reportHeading; ?></h1>
+            <p>Pre-formatted and ready to send to the Agency.</p>
+        </hgroup>
 
-        <p>Total Weight Sent Out: <span id="totalWeightSent">0</span> grams</p>
+        <div class="stat-card">
+            <span class="stat-value"><span id="totalWeightSent">0</span> g</span>
+            <span class="stat-label">Total weight sent out</span>
+        </div>
 
         <h2>Flower Transactions</h2>
-        <table id="flowerTransactionsTable" class="table">
-            <thead>
-                <tr>
-                    <th>Genetics Name</th>
-                    <th>Weight (grams)</th>
-                    <th>Transaction Date</th>
-                    <th>Company</th>
-                </tr>
-            </thead>
-            <tbody>
-            </tbody>
-        </table>
+        <figure class="table-wrap">
+            <table id="flowerTransactionsTable" class="table">
+                <thead>
+                    <tr>
+                        <th>Genetics Name</th>
+                        <th>Weight (grams)</th>
+                        <th>Transaction Date</th>
+                        <th>Company</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </figure>
 
         <h2>Plant Transactions</h2>
-        <table id="plantTransactionsTable" class="table">
-            <thead>
-                <tr>
-                    <th>Genetics Name</th>
-                    <th># of Plants</th>
-                    <th>Transaction Date</th>
-                    <th>Company</th>
-                </tr>
-            </thead>
-            <tbody>
-            </tbody>
-        </table>
+        <figure class="table-wrap">
+            <table id="plantTransactionsTable" class="table">
+                <thead>
+                    <tr>
+                        <th>Genetics Name</th>
+                        <th># of Plants</th>
+                        <th>Transaction Date</th>
+                        <th>Company</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </figure>
     </main>
-    <script src="js/transactions.js"></script>
 
-<script src="js/growcart.js"></script>
-</body>
-</html>
+    <script src="js/transactions.js"></script>
+<?php require 'footer.php'; ?>

@@ -1,55 +1,51 @@
-<?php require_once 'auth.php'; ?>
-<!doctype html>
-<html lang="en" data-theme="dark">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="color-scheme" content="light dark">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
-    <link rel="stylesheet" href="css/growcart.css">
-    <title>GRACe - Harvest/Destroy/Send Plants</title>
-</head>
-<body>
-    <header class="container-fluid">
-        <?php require_once 'nav.php'; ?>
-    </header>
+<?php
+require_once 'auth.php';
+$pageTitle = 'GRACe - Harvest/Destroy/Send Plants';
+require 'header.php';
+?>
 
     <main class="container">
-        <h1>Harvest/Destroy/Send Plants</h1>
+        <hgroup class="page-header">
+            <h1>Harvest / Destroy / Send Plants</h1>
+            <p>Select the plants below, choose an action, and process them in one go.</p>
+        </hgroup>
 
-        <p><small>Manage plant actions here.</small></p>
+        <div class="toolbar">
+            <div>
+                <label for="action">Action:</label>
+                <select id="action" name="action" class="input" required>
+                    <option value="harvest">Harvested - Drying</option>
+                    <option value="destroy">Harvested - Destroyed</option>
+                    <option value="send">Send External</option>
+                </select>
+            </div>
 
-        <label for="action">Action:</label>
-        <select id="action" name="action" class="input" required>
-            <option value="harvest">Harvested - Drying</option>
-            <option value="destroy">Harvested - Destroyed</option>
-            <option value="send">Send External</option>
-        </select>
-
-        <div id="companySelection" style="display: none;">
-            <label for="companyId">Company:</label>
-            <select id="companyId" name="companyId" class="input">
-                <option value="" disabled selected>Select Company</option>
-            </select>
+            <div id="companySelection" style="display: none;">
+                <label for="companyId">Company:</label>
+                <select id="companyId" name="companyId" class="input">
+                    <option value="" disabled selected>Select Company</option>
+                </select>
+            </div>
         </div>
 
-        <table id="plantsTable" class="table">
-            <thead>
-                <tr>
-                    <th><input type="checkbox" id="selectAllCheckbox"></th>
-                    <th>Genetics Name</th>
-                    <th>Age (Days)</th>
-                    <th>Status</th>
-                </tr>
-            </thead>
-            <tbody>
-            </tbody>
-        </table>
+        <figure class="table-wrap">
+            <table id="plantsTable" class="table">
+                <thead>
+                    <tr>
+                        <th><input type="checkbox" id="selectAllCheckbox" aria-label="Select all plants"></th>
+                        <th>Genetics Name</th>
+                        <th>Age (Days)</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </figure>
 
         <button type="button" class="button" id="processSelectedButton">Process Selected</button>
     </main>
 
-    <script src="js/growcart.js"></script>
     <script>
         const plantsTable = document.getElementById('plantsTable').getElementsByTagName('tbody')[0];
         const selectAllCheckbox = document.getElementById('selectAllCheckbox');
@@ -78,32 +74,25 @@
 
                     nameCell.textContent = plant.geneticsName;
                     ageCell.textContent = plant.age;
-                    statusCell.textContent = plant.status;
+                    if (typeof statusBadge === 'function') {
+                        statusCell.appendChild(statusBadge(plant.status));
+                    } else {
+                        statusCell.textContent = plant.status;
+                    }
                 });
             })
             .catch(error => console.error('Error fetching plant data:', error));
 
 
-        // Create selection counter element
+        // Create selection counter element (styled via #selectionCounter in growcart.css)
         const selectionCounter = document.createElement('div');
         selectionCounter.id = 'selectionCounter';
-        selectionCounter.style.position = 'fixed';
-        selectionCounter.style.bottom = '20px';
-        selectionCounter.style.right = '20px';
-        selectionCounter.style.padding = '10px 15px';
-        selectionCounter.style.backgroundColor = 'var(--pico-primary-background)';
-        selectionCounter.style.color = 'var(--pico-primary-inverse)';
-        selectionCounter.style.borderRadius = '8px';
-        selectionCounter.style.boxShadow = '0 2px 10px rgba(0,0,0,0.2)';
-        selectionCounter.style.zIndex = '1000';
-        selectionCounter.style.display = 'none'; // Hidden by default
-        selectionCounter.style.fontWeight = 'bold';
         document.body.appendChild(selectionCounter);
 
         function updateSelectionCount() {
             const selectedCheckboxes = plantsTable.querySelectorAll('input[type="checkbox"]:checked');
             const count = selectedCheckboxes.length;
-            
+
             if (count > 0) {
                 selectionCounter.textContent = `${count} plant${count !== 1 ? 's' : ''} selected`;
                 selectionCounter.style.display = 'block';
@@ -186,5 +175,4 @@
             })
             .catch(error => console.error('Error fetching companies:', error));
     </script>
-</body>
-</html>
+<?php require 'footer.php'; ?>

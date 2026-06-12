@@ -15,28 +15,18 @@ try {
 } catch (PDOException $e) {
     echo "Error fetching company information: " . htmlspecialchars($e->getMessage());
 }
+
+$pageTitle = 'GRACe - Your Company Information';
+require 'header.php';
 ?>
 
-<!doctype html>
-<html lang="en" data-theme="dark">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="color-scheme" content="light dark">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
-    <link rel="stylesheet" href="css/growcart.css">
-    <title>Own Company Information</title>
-</head>
-<body>
-    <header class="container-fluid">
-        <?php require_once 'nav.php'; ?>
-    </header>
     <main class="container">
-        <article class="" style="width: 60%;margin: auto;">
-            <h2>Your Company Information</h2>
+        <hgroup class="page-header">
+            <h1>Your Company Information</h1>
+            <p>Enter your own company information. This is used to generate information for emailing to the Agency, as well as Chain of Custody documents.</p>
+        </hgroup>
 
-            <p><small>Enter your own company information. This is used to generate information for emailing to the Agency, as well as Chain of Custody documents.</small></p>
-
+        <article class="form-card">
             <form id="companyInfoForm" action="process_own_company.php" method="post" class="form">
                 <label for="companyName">Company Name:</label>
                 <input type="text" id="companyName" name="companyName" class="input" required value="<?php echo htmlspecialchars($companyInfo['company_name'] ?? ''); ?>">
@@ -54,6 +44,4 @@ try {
             </form>
         </article>
     </main>
-    <script src="js/growcart.js"></script>
-</body>
-</html>
+<?php require 'footer.php'; ?>
