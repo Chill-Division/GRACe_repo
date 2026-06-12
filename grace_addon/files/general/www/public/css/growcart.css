@@ -281,9 +281,8 @@ header.app-header {
 
 @media (max-width: 768px) {
   .nav-toggle-label {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    display: block;
+    position: relative;
     flex-shrink: 0;
     width: 2.75rem;
     height: 2.75rem;
@@ -296,13 +295,18 @@ header.app-header {
     background: var(--g-accent-soft);
   }
 
-  /* The three bars are anchored to .hamburger itself (position: relative),
-     so they never depend on the label/header for positioning */
+  /* The middle bar is pinned to the exact centre of the label with
+     absolute 50% offsets + negative margins (half its 22x2 size), and the
+     outer bars hang off it. No flex/grid centring involved — some mobile
+     WebViews (e.g. the HA companion app) failed to centre the flex child,
+     leaving the icon stuck in the label's top-left corner. */
   .hamburger {
-    position: relative;
-    display: block;
+    position: absolute;
+    top: 50%;
+    left: 50%;
     width: 22px;
     height: 2px;
+    margin: -1px 0 0 -11px;
     border-radius: 2px;
     background: currentColor;
     transition: background 0.25s ease;
