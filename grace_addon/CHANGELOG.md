@@ -1,3 +1,45 @@
+## [0.15.1] - 2026-06-12
+### Added
+- **Dashboard**: New landing page with at-a-glance stats (plants growing/drying, dried flower on hand, materials out this month), license renewal warnings, and quick actions. The portal now opens here instead of Plant Tracking.
+- **Confirmation step**: Harvest / Destroy / Send now shows a review modal summarising exactly which plants are affected before writing to the ledger (records cannot be edited afterwards).
+- **Toasts**: All browser `alert()` / `confirm()` popups replaced with inline toast notifications and styled confirmation modals; success messages now survive the page reload.
+- **PWA**: Web app manifest + home-screen icons so GRACe can be pinned to a phone like an app.
+- **Branding**: Home Assistant addon icon and logo regenerated with the new leaf brand mark.
+
+### Changed
+- **Offline support**: Pico CSS and jQuery are now self-hosted (no CDN), so the portal renders correctly on offline / air-gapped Home Assistant boxes. Font Awesome CDN already removed in 0.15.
+- **Auth**: Removed the vestigial `auth.php` (and all references) — authentication is handled by Home Assistant itself. It only started a session; the login redirect had been disabled for some time.
+- **Backup**: "Dump database" is now "Download backup" — the full ledger downloads as a timestamped JSON file instead of rendering raw JSON in the browser.
+- **Developer experience**: New `DEVELOPMENT.md` (local dev server, demo data, release checklist, notes for AI assistants) and `tests/seed_demo_data.php` to fill a dev database with realistic demo data including downloadable documents.
+
+### Removed
+- **Dead auth code**: `login.php`, `logout.php`, `config.php`, `get_users.php` (legacy MySQL login flow — `login.php` contained injectable string-interpolated SQL and `config.php` held unused MySQL credentials), plus the orphaned `get_rooms.php`, `phpinfo.php` (information disclosure), and a stale `public/README.md` documenting the pre-addon setup.
+- **TCPDF bloat**: pruned `examples/`, `tests/`, `tools/`, and `scripts/` from the vendored TCPDF — hundreds of web-executable demo PHP files are gone from the public web root.
+
+### Security / Fixed (additional)
+- **Shipping manifest PDF**: fixed `require_once 'tcpdf/tcpdf.php'` (lowercase) to match the actual `TCPDF/` directory — on the case-sensitive container filesystem this include could not resolve.
+
+### Fixed
+- **Navigation**: Nav links no longer overlap (horizontally on desktop, vertically in the mobile menu) — Pico's negative link margins are now neutralised. Mobile menu panel is fully opaque, the hamburger icon is positioned reliably, and the menu state resets after back/forward navigation.
+
+## [0.15] - 2026-06-12
+### Changed (UI Revamp)
+- **Design**: New design system layered on Pico CSS — green brand palette, refreshed dark and light themes, sticky translucent header, and consistent cards/tables/forms across every page.
+- **Navigation**: Redesigned nav bar with brand mark, active-section highlighting, and a cleaner mobile slide-down menu.
+- **Hub pages**: Plant Tracking, Reporting, and Administration landing pages now use tappable icon cards with descriptions instead of bullet lists. "Coming soon" items are shown as disabled cards instead of links to missing pages.
+- **Theme**: Light/dark preference is now persisted (localStorage) and follows the device preference on first visit; no more flash of the wrong theme or focus-stealing tooltip on load.
+- **Tables**: All report tables are wrapped in horizontally scrollable cards for phones/tablets, with styled headers and zebra striping.
+- **Status badges**: Plant statuses (Growing / Drying / Destroyed / Sent) render as colour-coded badges on the plant list and harvest pages.
+- **Transaction reports**: "Total weight sent out" now displays as a summary stat card.
+- **License alerts**: Expiry banner restyled via stylesheet instead of inline styles.
+
+### Fixed
+- **List All Plants**: Restored the table population logic that was lost in the v0.14 JavaScript refactor (the page previously rendered an empty table).
+
+### Refactor (presentation layer only)
+- **Shared layout**: New `header.php`/`footer.php` partials replace per-page duplicated `<head>`/boilerplate; page titles and jQuery loading are driven by variables. CSS/JS now cache-busted by addon version.
+- **Dependencies**: Removed the Font Awesome CDN (download icon replaced with an inline SVG); document pages now load one less stylesheet.
+
 ## [0.14.1] - 2026-02-16
 ### Added
 - **Administration**: Added a tool to migrate legacy "Harvested" plants to "Harvested - Destroyed" status.

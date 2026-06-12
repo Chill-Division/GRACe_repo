@@ -47,7 +47,7 @@ function initDocumentManager(options) {
                 warningDate.setDate(today.getDate() + 3);
 
                 files.forEach(file => {
-                    let rowStyle = '';
+                    let rowClass = '';
                     let expiryCell = '';
                     let actionCell = '';
 
@@ -59,7 +59,7 @@ function initDocumentManager(options) {
 
                         if (expiryDate) {
                             if (expiryDate <= warningDate) {
-                                rowStyle = 'style="background-color: rgba(217, 53, 38, 0.1);"'; // Light red hint
+                                rowClass = 'class="expiring"'; // Red hint, styled in growcart.css
                                 if (!isAck) {
                                     showAck = true;
                                 }
@@ -76,12 +76,13 @@ function initDocumentManager(options) {
                         }
                     }
 
+                    const downloadIcon = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:1em;height:1em;vertical-align:-0.125em;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>';
                     fileListBody.append(`
-                        <tr ${rowStyle}>
+                        <tr ${rowClass}>
                             <td>${file.original_filename}</td>
                             <td>${file.upload_date}</td>
                             ${expiryCell}
-                            <td><a href="download.php?category=${category}&file=${encodeURIComponent(file.unique_filename)}" download><i class="fa-solid fa-download"></i> Download</a></td>
+                            <td><a href="download.php?category=${category}&file=${encodeURIComponent(file.unique_filename)}" download>${downloadIcon} Download</a></td>
                             ${actionCell}
                         </tr>
                     `);
@@ -106,7 +107,7 @@ function initDocumentManager(options) {
         const originalButtonText = submitButton.textContent;
 
         if (!fileInput.files || !fileInput.files[0]) {
-            alert('Please select a file to upload');
+            showToast('Please select a file to upload', 'error');
             return;
         }
 
@@ -148,11 +149,11 @@ function initDocumentManager(options) {
                 success: function (response) {
                     const result = typeof response === 'string' ? JSON.parse(response) : response;
                     if (result.success) {
-                        alert('File uploaded successfully');
+                        showToast('File uploaded successfully', 'success');
                         form.reset();
                         loadFiles();
                     } else {
-                        alert('Upload failed: ' + (result.message || 'Unknown error'));
+                        showToast('Upload failed: ' + (result.message || 'Unknown error'), 'error');
                     }
                 },
                 error: function (xhr, status, error) {
@@ -165,7 +166,7 @@ function initDocumentManager(options) {
                             errorMsg = xhr.responseText || errorMsg;
                         }
                     }
-                    alert('Upload error: ' + errorMsg);
+                    showToast('Upload error: ' + errorMsg, 'error');
                 },
                 complete: function () {
                     submitButton.disabled = false;
@@ -173,7 +174,7 @@ function initDocumentManager(options) {
                 }
             });
         } catch (error) {
-            alert('Error processing file: ' + error.message);
+            showToast('Error processing file: ' + error.message, 'error');
             submitButton.disabled = false;
             submitButton.textContent = originalButtonText;
         }
@@ -183,16 +184,21 @@ function initDocumentManager(options) {
     // A clearer way would be to use event delegation, but for now we'll match existing behavior
     // or attach it to window.
     window.acknowledgeAlert = function (id) {
-        if (confirm('Acknowledge this expiry alert? It will disappear from the top banner.')) {
+        confirmAction({
+            title: 'Acknowledge expiry alert?',
+            message: 'It will disappear from the banner at the top of every page.',
+            confirmLabel: 'Acknowledge'
+        }).then(function (confirmed) {
+            if (!confirmed) return;
             $.post('acknowledge_license.php', { id: id }, function (res) {
                 const data = JSON.parse(res);
                 if (data.success) {
-                    loadFiles(); // Reload to update UI
+                    flashToast('Expiry alert acknowledged', 'success');
                     location.reload(); // Reload to update banner
                 } else {
-                    alert('Error: ' + (data.message || 'Unknown error'));
+                    showToast('Error: ' + (data.message || 'Unknown error'), 'error');
                 }
             });
-        }
+        });
     };
 }

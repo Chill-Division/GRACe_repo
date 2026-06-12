@@ -1,29 +1,20 @@
-<?php require_once 'auth.php'; ?>
-<!doctype html>
-<html lang="en" data-theme="dark">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="color-scheme" content="light dark">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
-    <link rel="stylesheet" href="css/growcart.css">
-    <title>GRACe - Annual Stocktake</title>
-</head>
-<body>
-    <header class="container-fluid">
-        <?php require_once 'nav.php'; ?>
-    </header>
+<?php
+$pageTitle = 'GRACe - Annual Stocktake';
+require 'header.php';
+?>
 
     <main class="container">
-        <h1>Annual Stocktake</h1>
+        <hgroup class="page-header">
+            <h1>Annual Stocktake</h1>
+            <p>This will generate a full in / out of plants / flower for you to stock-take, and reconcile against prior to sending details through to the Medicinal Cannabis Agency in January.</p>
+        </hgroup>
 
-        <p><small>This will generate a full in / out of plants / flower for you to stock-take, and reconcile against prior to sending details through to the Medicinal Cannabis Agency in January.</small></p>
-
-        <label for="year">Select Year:</label>
-        <input type="number" id="year" name="year" class="input" value="<?php echo date('Y') - 1; ?>" min="2000" max="<?php echo date('Y'); ?>" required>
-        <button type="button" class="button" id="generateReportButton">Generate Report</button>
-
-        <div class="grid">
+        <div class="toolbar">
+            <div>
+                <label for="year">Select Year:</label>
+                <input type="number" id="year" name="year" class="input" value="<?php echo date('Y') - 1; ?>" min="2000" max="<?php echo date('Y'); ?>" required>
+            </div>
+            <button type="button" class="button" id="generateReportButton">Generate Report</button>
             <label>
                 <input type="checkbox" id="hideZeroRowsCheckbox"> Hide rows with all zero values
             </label>
@@ -31,43 +22,46 @@
 
         <section id="plantStocktakeSection" style="display: none;">
             <h2>Plant Stocktake</h2>
-            <table id="plantStocktakeTable" class="table">
-                <thead>
-                    <tr>
-                        <th>Genetics Name</th>
-                        <th>Start Amount</th>
-                        <th>In</th>
-                        <th>Out</th>
-			            <th>Harvested</th>
-                        <th>Destroyed</th>
-                        <th>End</th>
-                    </tr>
-                </thead>
-                <tbody>
-                </tbody>
-            </table>
+            <figure class="table-wrap">
+                <table id="plantStocktakeTable" class="table">
+                    <thead>
+                        <tr>
+                            <th>Genetics Name</th>
+                            <th>Start Amount</th>
+                            <th>In</th>
+                            <th>Out</th>
+                            <th>Harvested</th>
+                            <th>Destroyed</th>
+                            <th>End</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </figure>
         </section>
 
         <section id="flowerStocktakeSection" style="display: none;">
             <h2>Flower Stocktake</h2>
-            <table id="flowerStocktakeTable" class="table">
-                <thead>
-                    <tr>
-                        <th>Genetics Name</th>
-                        <th>Start Weight (g)</th>
-                        <th>In (g)</th>
-                        <th>Out (g)</th>
-                        <th>Destroyed (g)</th>
-                        <th>End (g)</th>
-                    </tr>
-                </thead>
-                <tbody>
-                </tbody>
-            </table>
+            <figure class="table-wrap">
+                <table id="flowerStocktakeTable" class="table">
+                    <thead>
+                        <tr>
+                            <th>Genetics Name</th>
+                            <th>Start Weight (g)</th>
+                            <th>In (g)</th>
+                            <th>Out (g)</th>
+                            <th>Destroyed (g)</th>
+                            <th>End (g)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </figure>
         </section>
     </main>
 
-    <script src="js/growcart.js"></script>
     <script>
         const yearInput = document.getElementById('year');
         const generateReportButton = document.getElementById('generateReportButton');
@@ -115,7 +109,7 @@
         function populateStocktakeTable(tableId, data) {
             const tableBody = document.getElementById(tableId).getElementsByTagName('tbody')[0];
             tableBody.innerHTML = ''; // Clear existing rows
-            
+
             // Initialize totals array (size based on first row, assuming all rows have same columns)
             let totals = [];
             if (data.length > 0) {
@@ -127,7 +121,7 @@
                 Object.values(item).forEach((value, index) => {
                     const cell = row.insertCell();
                     cell.textContent = value;
-                    
+
                     // Add to total if index > 0 (assuming first column 'Genetics Name' is not numeric to sum)
                     if (index > 0) {
                         totals[index] += parseFloat(value) || 0;
@@ -140,13 +134,13 @@
                 const footerRow = tableBody.insertRow();
                 footerRow.style.fontWeight = 'bold';
                 footerRow.classList.add('stocktake-total'); // Class for identification if needed
-                
+
                 totals.forEach((total, index) => {
                     const cell = footerRow.insertCell();
                     if (index === 0) {
                         cell.textContent = 'Totals';
                     } else {
-                        // Check if integer (plant counts) or float (weights). 
+                        // Check if integer (plant counts) or float (weights).
                         // Simplistic check: if rounded total equals total, show integer, else fixed(2)
                         // Or safer: just fixed(2) for weight tables, but plant tables are ints.
                         // Let's use simple logic: if sum % 1 === 0 show int, else fixed(2)
@@ -166,7 +160,7 @@
                 for (const row of rows) {
                     const cells = row.getElementsByTagName('td');
                     let allZero = true;
-                    for (let i = 1; i < cells.length; i++) { 
+                    for (let i = 1; i < cells.length; i++) {
                         const value = cells[i].textContent.trim();
                         if (value !== '' && !isNaN(value) && parseFloat(value) !== 0) {
                             allZero = false;
@@ -181,5 +175,4 @@
         // Call filterStocktakeTables initially to apply filtering based on the checkbox's default state
         filterStocktakeTables();
     </script>
-</body>
-</html>
+<?php require 'footer.php'; ?>

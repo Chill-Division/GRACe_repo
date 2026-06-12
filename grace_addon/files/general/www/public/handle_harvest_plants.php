@@ -1,4 +1,3 @@
-<?php require_once 'auth.php'; ?>
 <?php
 require_once 'init_db.php';
 

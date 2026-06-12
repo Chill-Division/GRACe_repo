@@ -1,59 +1,50 @@
-<?php require_once 'auth.php'; ?>
-<!doctype html>
-<html lang="en" data-theme="dark">                                              
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">   
-
-    <meta name="color-scheme" content="light dark">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">   
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-    <link rel="stylesheet" href="css/growcart.css"> 
-    <title>GRACe - Police Vet Check Records</title> 
-</head>
-<body>
-    <header class="container-fluid">
-	<?php require_once 'nav.php'; ?>
-    </header>
+<?php
+$pageTitle = 'GRACe - Police Vet Check Records';
+$useJquery = true;
+require 'header.php';
+?>
 
     <main class="container">
-        <h1>Police Vet Check Records</h1>
+        <hgroup class="page-header">
+            <h1>Police Vet Check Records</h1>
+            <p>Store vetting records for staff and key personnel. Images over 1MB are compressed automatically.</p>
+        </hgroup>
 
-        <section>
+        <article class="form-card">
             <h2>Upload New Record</h2>
             <form id="uploadForm">
                 <input type="file" name="file" required>
                 <input type="hidden" name="category" value="other_records">
                 <button type="submit">Upload</button>
             </form>
-        </section>
+        </article>
 
         <section>
             <h2>Existing Records</h2>
             <div id="sortContainer">
-            <label>Sort by:</label>
-            <select id="sortOrder">
-                <option value="date_desc">Newest First</option>
-                <option value="name_asc">Name A-Z</option>
-            </select>
+                <label>Sort by:</label>
+                <select id="sortOrder">
+                    <option value="date_desc">Newest First</option>
+                    <option value="name_asc">Name A-Z</option>
+                </select>
             </div>
-            <table>
-                <thead>
-                    <tr>
-                        <th>File Name</th>
-                        <th>Upload Date</th>
-                        <th>Download</th>
-                    </tr>
-                </thead>
-                <tbody id="fileList">
-                    <tr><td colspan="3">No records found.</td></tr>
-                </tbody>
-            </table>
+            <figure class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>File Name</th>
+                            <th>Upload Date</th>
+                            <th>Download</th>
+                        </tr>
+                    </thead>
+                    <tbody id="fileList">
+                        <tr><td colspan="3">No records found.</td></tr>
+                    </tbody>
+                </table>
+            </figure>
         </section>
     </main>
 
-    <script src="js/growcart.js"></script> 
     <script src="js/image-compress.js"></script>
     <script src="js/documents.js"></script>
     <script>
@@ -65,5 +56,4 @@
             });
         });
     </script>
-</body>
-</html>
+<?php require 'footer.php'; ?>
