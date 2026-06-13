@@ -1,5 +1,5 @@
 /* ==========================================================================
-   GRACe design system — layered on top of Pico CSS v2
+   GRACe design system, layered on top of Pico CSS v2
    Custom component classes are prefixed where practical; --g-* tokens hold
    the palette so dark/light themes stay in sync.
    ========================================================================== */
@@ -297,7 +297,7 @@ header.app-header {
 
   /* The middle bar is pinned to the exact centre of the label with
      absolute 50% offsets + negative margins (half its 22x2 size), and the
-     outer bars hang off it. No flex/grid centring involved — some mobile
+     outer bars hang off it. No flex/grid centring involved, some mobile
      WebViews (e.g. the HA companion app) failed to centre the flex child,
      leaving the icon stuck in the label's top-left corner. */
   .hamburger {

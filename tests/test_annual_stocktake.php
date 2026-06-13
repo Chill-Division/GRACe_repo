@@ -24,7 +24,7 @@ function check($label, $actual, $expected)
     if ($actual === $expected) {
         echo "[PASS] $label\n";
     } else {
-        echo "[FAIL] $label — expected " . var_export($expected, true) . ", got " . var_export($actual, true) . "\n";
+        echo "[FAIL] $label, expected " . var_export($expected, true) . ", got " . var_export($actual, true) . "\n";
         $failures++;
     }
 }
@@ -34,7 +34,7 @@ $year = 2026;
 
 $pdo->exec("INSERT INTO Genetics (name) VALUES ('Alpha'), ('Bravo')");
 
-// Alpha (genetics_id 1) — plant scenarios
+// Alpha (genetics_id 1), plant scenarios
 $pdo->exec("INSERT INTO Plants (genetics_id, status, date_created, date_harvested) VALUES
     -- 1. THE BUG: destroyed two years before the report year -> must not be in 2026 at all
     (1, 'Destroyed',             '2024-03-01 10:00:00', '2024-10-20 02:26:58'),
@@ -55,7 +55,7 @@ $pdo->exec("INSERT INTO Plants (genetics_id, status, date_created, date_harveste
     -- 9. legacy 'Harvested' before the report year -> left stock, not in start
     (1, 'Harvested',             '2023-01-01 10:00:00', '2023-09-09 10:00:00')");
 
-// Bravo (genetics_id 2) — entirely departed before the report year (the 'Medicine Girl' case)
+// Bravo (genetics_id 2), entirely departed before the report year (the 'Medicine Girl' case)
 $pdo->exec("INSERT INTO Plants (genetics_id, status, date_created, date_harvested) VALUES
     (2, 'Destroyed', '2023-02-02 10:00:00', '2024-01-15 10:00:00'),
     (2, 'Sent',      '2023-02-02 10:00:00', '2024-02-20 10:00:00')");

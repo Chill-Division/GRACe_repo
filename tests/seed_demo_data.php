@@ -1,13 +1,13 @@
 <?php
 /**
- * seed_demo_data.php — populate a local dev database with realistic demo data.
+ * seed_demo_data.php, populate a local dev database with realistic demo data.
  *
  * Usage (from the repo root):
  *   php tests/seed_demo_data.php           # seeds an empty database
  *   php tests/seed_demo_data.php --force   # wipes /data/grace.db first, then seeds
  *
  * Requires the persistent dirs used by the app: /data and /data/uploads
- * (see DEVELOPMENT.md). Never run this against a real production database —
+ * (see DEVELOPMENT.md). Never run this against a real production database
  * it refuses to touch a DB that already has company info unless --force is given.
  */
 
@@ -161,7 +161,7 @@ foreach ($flowerRows as $f) {
     $stmt->execute([$f[0], $f[1], $f[2], $f[3], "-{$f[4]} days", $f[5]]);
 }
 
-// Outbound flower mid-last-month, whatever month it is right now — so the
+// Outbound flower mid-last-month, whatever month it is right now, so the
 // dashboard's monthly Agency report reminder always has something to show
 // during the first 7 days of the month (see DEVELOPMENT.md for demo tips)
 $pdo->exec("INSERT INTO Flower (genetics_id, weight, transaction_type, reason, transaction_date, company_id)

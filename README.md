@@ -93,7 +93,7 @@ Files are stored in `/data/uploads`, which is a permanent storage volume in Home
 
 ## Local Testing
 
-See [DEVELOPMENT.md](DEVELOPMENT.md) for how to spin up a local dev server, seed demo data into the database, and preview UI changes before committing. It also contains important notes for AI assistants (e.g. no service worker / offline-first support is wanted — users always reach GRACe over the LAN via their Home Assistant server).
+See [DEVELOPMENT.md](DEVELOPMENT.md) for how to spin up a local dev server, seed demo data into the database, and preview UI changes before committing. It also contains important notes for AI assistants (e.g. no service worker / offline-first support is wanted, users always reach GRACe over the LAN via their Home Assistant server).
 
 This repository includes a manual CI testing suite for local development.
 

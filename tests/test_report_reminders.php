@@ -4,7 +4,7 @@
  * (grace_addon/files/general/www/public/report_reminders_lib.php).
  *
  * The date is injected, so every scenario below is deterministic. Each case
- * prints a one-line story of what it proves — handy for demos.
+ * prints a one-line story of what it proves, handy for demos.
  */
 
 define('GRACE_TEST_MODE', true);
@@ -20,7 +20,7 @@ function check($story, $actual, $expected)
     if ($actual === $expected) {
         echo "[PASS] $story\n";
     } else {
-        echo "[FAIL] $story — expected " . var_export($expected, true) . ", got " . var_export($actual, true) . "\n";
+        echo "[FAIL] $story, expected " . var_export($expected, true) . ", got " . var_export($actual, true) . "\n";
         $failures++;
     }
 }
@@ -32,7 +32,7 @@ function summarise($due)
 }
 
 // ---------------------------------------------------------------------------
-// Scenario A: a brand-new install — empty database, no company yet
+// Scenario A: a brand-new install, empty database, no company yet
 // ---------------------------------------------------------------------------
 $tmpA = tempnam(sys_get_temp_dir(), 'grace_rem_a_') . '.db';
 $pdoA = initializeDatabase($tmpA);
@@ -68,7 +68,7 @@ check('Day 3 of July: June shipped nothing -> no reminder', summarise(getDueRepo
 actionReportReminder($pdoB, 'monthly', '2026-05', 'dismissed');
 check('After dismissing May: day 3 of June is silent', summarise(getDueReportReminders($pdoB, '2026-06-03')), '');
 
-// January: annual + monthly (December shipped) can both be due — the maximum
+// January: annual + monthly (December shipped) can both be due, the maximum
 check('3 January: December report AND annual stocktake both due (the max of two)', summarise(getDueReportReminders($pdoB, '2027-01-03')), 'monthly:2026-12 annual:2026');
 check('20 January: monthly window closed, annual still due all month', summarise(getDueReportReminders($pdoB, '2027-01-20')), 'annual:2026');
 
@@ -80,7 +80,7 @@ check('After drafting the annual email: January is silent', summarise(getDueRepo
 check('Next June (May 2027 shipped nothing): silent', summarise(getDueReportReminders($pdoB, '2027-06-03')), '');
 
 // ---------------------------------------------------------------------------
-// Scenario C: company exists but the ledger only starts THIS year —
+// Scenario C: company exists but the ledger only starts THIS year
 // no annual reminder for a year GRACe wasn't tracking
 // ---------------------------------------------------------------------------
 $tmpC = tempnam(sys_get_temp_dir(), 'grace_rem_c_') . '.db';

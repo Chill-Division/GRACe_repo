@@ -100,7 +100,7 @@ require 'header.php';
 
                 const flowerLines = reportTableLines(
                     document.getElementById('flowerTransactionsTable'),
-                    // cells: genetics, weight, date, company — skip the bold totals row
+                    // cells: genetics, weight, date, company, skip the bold totals row
                     cells => cells[0] === 'Total' ? null : `- ${cells[0]}: ${cells[1]} g on ${cells[2]} to ${cells[3]}`
                 ).filter(Boolean);
 

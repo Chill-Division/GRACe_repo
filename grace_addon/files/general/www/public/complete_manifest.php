@@ -98,7 +98,7 @@ require 'header.php';
                 <?php if (!empty($availableCocDocs)): ?>
                 <label for="existingDocId">…or attach one already uploaded on the Chain of Custody page:</label>
                 <select id="existingDocId" name="existing_document_id">
-                    <option value="">— Select an uploaded document —</option>
+                    <option value="">Select an uploaded document</option>
                     <?php foreach ($availableCocDocs as $doc): ?>
                     <option value="<?php echo (int) $doc['id']; ?>">
                         <?php echo htmlspecialchars($doc['original_filename'] . ' (uploaded ' . $doc['upload_date'] . ')'); ?>

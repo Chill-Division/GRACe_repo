@@ -16,7 +16,7 @@
 
 const GRACE_AGENCY_EMAIL = 'medicinal_cannabis@health.govt.nz';
 
-// Conservative limit for mailto body length — beyond this some mail clients
+// Conservative limit for mailto body length, beyond this some mail clients
 // silently cut the message off, so we switch to the clipboard instead
 const GRACE_MAILTO_BODY_LIMIT = 1800;
 
@@ -52,12 +52,12 @@ function draftReportEmail(options) {
     };
 
     if (body.length > GRACE_MAILTO_BODY_LIMIT && navigator.clipboard && navigator.clipboard.writeText) {
-        // Too long for a reliable mailto body — clipboard fallback
+        // Too long for a reliable mailto body, clipboard fallback
         navigator.clipboard.writeText(body).then(() => {
-            openMailto('(The report was too long to pre-fill — it has been copied to your clipboard. Paste it here.)');
-            showToast('Report copied to your clipboard — paste it into the email body.', 'info', 8000);
+            openMailto('(The report was too long to pre-fill, so it has been copied to your clipboard. Paste it here.)');
+            showToast('Report copied to your clipboard. Paste it into the email body.', 'info', 8000);
         }).catch(() => {
-            // Clipboard unavailable — best effort with the full body anyway
+            // Clipboard unavailable, best effort with the full body anyway
             openMailto(body);
             showToast('Heads up: long reports can be cut off by some mail apps. Double-check the email body.', 'info', 8000);
         });
@@ -66,7 +66,7 @@ function draftReportEmail(options) {
         showToast('Email draft opened in your mail app.', 'success');
     }
 
-    // Mark the dashboard reminder as drafted (fire and forget — drafting
+    // Mark the dashboard reminder as drafted (fire and forget, drafting
     // the email is the action we wanted, even if this recording fails)
     if (reminderType && reminderPeriod) {
         const params = new URLSearchParams({

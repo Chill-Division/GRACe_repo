@@ -132,7 +132,7 @@ require 'header.php';
                 return;
             }
 
-            // Build a per-genetics summary of what's about to happen — the ledger
+            // Build a per-genetics summary of what's about to happen, the ledger
             // can't be edited afterwards, so make the user review it first
             const countsByGenetics = {};
             selectedCheckboxes.forEach(checkbox => {

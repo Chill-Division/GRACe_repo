@@ -1,12 +1,12 @@
-# GRACe Portal — Local Development Guide
+# GRACe Portal: Local Development Guide
 
 How to run the portal on your own machine, fill it with demo data, and check
-your changes before committing — no Home Assistant install required.
+your changes before committing, no Home Assistant install required.
 
 ## Prerequisites
 
 - PHP 8.1+ CLI with the SQLite extension
-  (`sudo apt install php-cli php-sqlite3` on Debian/Ubuntu — WSL works fine)
+  (`sudo apt install php-cli php-sqlite3` on Debian/Ubuntu, WSL works fine)
 - The app **hard-codes** its persistent paths (see the warning in
   [README.md](README.md)), so you need a local `/data` directory:
 
@@ -20,7 +20,7 @@ sudo chown -R "$(whoami)" /data
 
 ## Spin up a dev server
 
-PHP's built-in server is all you need — the addon's nginx/php-fpm stack is
+PHP's built-in server is all you need, the addon's nginx/php-fpm stack is
 only for production packaging:
 
 ```bash
@@ -47,7 +47,7 @@ Tips:
 
 To explore the UI with realistic content (plants in every status, flower
 ledger entries this month and last, companies, and downloadable demo
-documents including a license that's about to expire — which exercises the
+documents including a license that's about to expire, which exercises the
 red banner and the dashboard warning):
 
 ```bash
@@ -73,7 +73,7 @@ can only see them at the right time of month. Two demo aids:
 
 ```bash
 # What would the dashboard show on any given day (or range)? Runs against
-# your dev database — perfect for screen recordings:
+# your dev database, perfect for screen recordings:
 php tests/demo_report_reminders.php 2027-01-01 2027-01-10
 
 # Or render the real dashboard as if it were another day:
@@ -119,15 +119,15 @@ CSS/JS.
   HA server, so "device is offline" is not a scenario we design for. The
   reason Pico CSS and jQuery are vendored locally (`css/vendor/`,
   `js/vendor/`) is that the *HA server itself* may be air-gapped from the
-  internet — that's an offline-server concern, not an offline-client one.
+  internet, that's an offline-server concern, not an offline-client one.
   Don't add a service worker, app-state caching, or background sync.
 - The portal is normally served through **Home Assistant ingress**, which
   mounts it under a deep path. Always use **relative URLs** for links,
-  assets, and fetch calls — never absolute paths starting with `/`.
+  assets, and fetch calls, never absolute paths starting with `/`.
 - Authentication is Home Assistant's job. There is intentionally no login
   system in the app (the old `auth.php`/`login.php` were removed in 0.15.1).
 - The ledger is intentionally **append-only**: no UI for editing or deleting
   historical plant/flower records should be added. Corrections happen via
   compensating entries.
-- Persistent-path rules (`/data/grace.db`, `/data/uploads/`) are absolute —
-  see the "CRITICAL DEVELOPER NOTES" section in [README.md](README.md).
+- Persistent-path rules (`/data/grace.db`, `/data/uploads/`) are absolute.
+  See the "CRITICAL DEVELOPER NOTES" section in [README.md](README.md).

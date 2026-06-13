@@ -10,6 +10,47 @@ require 'header.php';
         </hgroup>
 
         <section class="hub-section">
+            <h2>Record Management</h2>
+            <div class="card-grid">
+                <a class="nav-card" href="chain_of_custody_documents.php">
+                    <span class="nav-card-icon" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 17H7A5 5 0 0 1 7 7h2"/><path d="M15 7h2a5 5 0 1 1 0 10h-2"/><path d="M8 12h8"/></svg></span>
+                    <span class="nav-card-body">
+                        <strong>Chain of Custody Documents</strong>
+                        <small>Store signed CoC paperwork for every transfer</small>
+                    </span>
+                </a>
+                <a class="nav-card" href="company_licenses.php">
+                    <span class="nav-card-icon" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="m9 15 2 2 4-4"/></svg></span>
+                    <span class="nav-card-body">
+                        <strong>Company Licenses</strong>
+                        <small>Upload licenses with expiry tracking and renewal alerts</small>
+                    </span>
+                </a>
+                <a class="nav-card" href="sops.php">
+                    <span class="nav-card-icon" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></svg></span>
+                    <span class="nav-card-body">
+                        <strong>Manage SOPs</strong>
+                        <small>Upload and track your Standard Operating Procedures</small>
+                    </span>
+                </a>
+                <a class="nav-card" href="police_vet_check_records.php">
+                    <span class="nav-card-icon" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1 1 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1Z"/><path d="m9 12 2 2 4-4"/></svg></span>
+                    <span class="nav-card-body">
+                        <strong>Police Vet Check Records</strong>
+                        <small>Store vetting records for staff and key personnel</small>
+                    </span>
+                </a>
+                <a class="nav-card" href="offtake_agreements.php">
+                    <span class="nav-card-icon" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M16 13H8"/><path d="M16 17H8"/><path d="M10 9H8"/></svg></span>
+                    <span class="nav-card-body">
+                        <strong>Offtake Agreements</strong>
+                        <small>Keep signed buyer agreements on file</small>
+                    </span>
+                </a>
+            </div>
+        </section>
+
+        <section class="hub-section">
             <h2>Contact Management</h2>
             <div class="card-grid">
                 <a class="nav-card" href="add_verified_company.php">
@@ -30,47 +71,6 @@ require 'header.php';
                     <span class="nav-card-body">
                         <strong>Add New Genetics</strong>
                         <small>Any genetics you'll have as either plants or flower</small>
-                    </span>
-                </a>
-            </div>
-        </section>
-
-        <section class="hub-section">
-            <h2>Record Management</h2>
-            <div class="card-grid">
-                <a class="nav-card" href="police_vet_check_records.php">
-                    <span class="nav-card-icon" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1 1 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1Z"/><path d="m9 12 2 2 4-4"/></svg></span>
-                    <span class="nav-card-body">
-                        <strong>Police Vet Check Records</strong>
-                        <small>Store vetting records for staff and key personnel</small>
-                    </span>
-                </a>
-                <a class="nav-card" href="sops.php">
-                    <span class="nav-card-icon" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></svg></span>
-                    <span class="nav-card-body">
-                        <strong>Manage SOPs</strong>
-                        <small>Upload and track your Standard Operating Procedures</small>
-                    </span>
-                </a>
-                <a class="nav-card" href="offtake_agreements.php">
-                    <span class="nav-card-icon" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M16 13H8"/><path d="M16 17H8"/><path d="M10 9H8"/></svg></span>
-                    <span class="nav-card-body">
-                        <strong>Offtake Agreements</strong>
-                        <small>Keep signed buyer agreements on file</small>
-                    </span>
-                </a>
-                <a class="nav-card" href="company_licenses.php">
-                    <span class="nav-card-icon" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="m9 15 2 2 4-4"/></svg></span>
-                    <span class="nav-card-body">
-                        <strong>Company Licenses</strong>
-                        <small>Upload licenses with expiry tracking and renewal alerts</small>
-                    </span>
-                </a>
-                <a class="nav-card" href="chain_of_custody_documents.php">
-                    <span class="nav-card-icon" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 17H7A5 5 0 0 1 7 7h2"/><path d="M15 7h2a5 5 0 1 1 0 10h-2"/><path d="M8 12h8"/></svg></span>
-                    <span class="nav-card-body">
-                        <strong>Chain of Custody Documents</strong>
-                        <small>Store signed CoC paperwork for every transfer</small>
                     </span>
                 </a>
             </div>

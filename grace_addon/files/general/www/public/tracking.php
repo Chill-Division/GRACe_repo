@@ -6,7 +6,7 @@ require 'header.php';
     <main class="container">
         <hgroup class="page-header">
             <h1>Plant Tracking</h1>
-            <p>Day-to-day plant and dried flower movements — every change in your ledger starts here.</p>
+            <p>Day-to-day plant and dried flower movements. Every change in your ledger starts here.</p>
         </hgroup>
 
         <section class="hub-section">
@@ -30,7 +30,7 @@ require 'header.php';
                     <span class="nav-card-icon" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M20 4 8.12 15.88"/><path d="M14.47 14.48 20 20"/><path d="M8.12 8.12 12 12"/></svg></span>
                     <span class="nav-card-body">
                         <strong>Harvest / Destroy / Send plants</strong>
-                        <small>Process whole plants out of the grow — harvest for drying, destroy, or send externally</small>
+                        <small>Process whole plants out of the grow: harvest for drying, destroy, or send externally</small>
                     </span>
                 </a>
                 <a class="nav-card" href="record_dry_weight.php">
@@ -60,20 +60,6 @@ require 'header.php';
                         <small>Attach the signed Chain of Custody and close out a manifest in transit</small>
                     </span>
                 </a>
-            </div>
-        </section>
-
-        <section class="hub-section">
-            <h2>Recalls</h2>
-            <div class="card-grid">
-                <div class="nav-card is-disabled" aria-disabled="true">
-                    <span class="nav-card-icon" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg></span>
-                    <span class="nav-card-body">
-                        <strong>Initiate Recall</strong>
-                        <small>Start a product recall and notify affected parties</small>
-                        <span class="badge-soon">Coming soon</span>
-                    </span>
-                </div>
             </div>
         </section>
 

@@ -6,7 +6,7 @@
  *
  * Date handling: date_created / date_harvested / transaction_date are stored
  * as 'YYYY-MM-DD HH:MM:SS' datetimes, so all comparisons wrap them in DATE()
- * and compare against exclusive year boundaries — a plain string BETWEEN
+ * and compare against exclusive year boundaries, a plain string BETWEEN
  * '...-01-01' AND '...-12-31' silently drops anything timestamped on
  * 31 December after midnight.
  */
@@ -19,7 +19,7 @@ const GRACE_PLANT_DEPARTED_STATUSES = ['Sent', 'Harvested', 'Harvested - Destroy
  * Per-genetics plant stocktake for one calendar year.
  *
  * Start amount = plants created before 1 Jan that had not left stock before
- * 1 Jan — regardless of WHICH earlier year they left in. (Pre-0.16.1 this
+ * 1 Jan, regardless of WHICH earlier year they left in. (Pre-0.16.1 this
  * only subtracted departures dated in the immediately-previous year, so a
  * plant destroyed two or more years ago kept appearing in the opening
  * balance forever.)

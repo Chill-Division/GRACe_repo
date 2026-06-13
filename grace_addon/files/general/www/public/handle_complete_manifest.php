@@ -66,7 +66,7 @@ if ($hasUpload) {
     $stmt->execute([$file['name'], $uniqueName, date('Y-m-d H:i:s')]);
     $cocDocumentId = (int) $pdo->lastInsertId();
 } else {
-    // Attach an existing manually-uploaded CoC document — it must exist and
+    // Attach an existing manually-uploaded CoC document, it must exist and
     // not already be covering another manifest
     $stmt = $pdo->prepare("SELECT id FROM Documents
                            WHERE id = ? AND category = 'coc'
@@ -85,7 +85,7 @@ $stmt = $pdo->prepare("UPDATE ShippingManifests
 $stmt->execute([$cocDocumentId, date('Y-m-d H:i:s'), $manifestId]);
 
 if ($stmt->rowCount() === 0) {
-    respond(false, 'Manifest could not be completed — it may have been completed already.');
+    respond(false, 'Manifest could not be completed. It may have been completed already.');
 }
 
 respond(true, 'Manifest completed', ['manifest_id' => $manifestId]);
