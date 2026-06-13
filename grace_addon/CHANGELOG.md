@@ -1,17 +1,17 @@
-## [0.17.1] - 2026-06-13
-One big update — everything from 0.15 through 0.17.1 rolled together.
+## [0.17.2] - 2026-06-13
+One big update. Everything from 0.15 through 0.17.2 rolled together.
 
 ### Features
-- **Fresh new look**: GRACe has been redesigned from top to bottom — a new Dashboard home page, tap-friendly menus and cards, dark & light themes, and a layout that works great on phones, tablets, and PCs.
-- **Dashboard**: your grow at a glance — plants growing and drying, dried flower on hand, what went out this month, manifests awaiting paperwork, and license renewal reminders.
-- **Agency report reminders**: in the first week of each month, the Dashboard reminds you to send last month's materials-out report — but only if you actually sent materials out, so quiet months stay quiet. In January it also reminds you about the annual stocktake. Reminders can be dismissed and never pile up.
-- **One-tap report emails**: a "Draft this in an email" button on the monthly materials-out and annual stocktake reports opens a ready-to-send email to the Medicinal Cannabis Agency — subject line, your company details, and the full report already filled in. No more copy/paste.
+- **Fresh new look**: GRACe has been redesigned from top to bottom, with a new Dashboard home page, tap-friendly menus and cards, dark & light themes, and a layout that works great on phones, tablets, and PCs.
+- **Dashboard**: your grow at a glance, showing plants growing and drying, dried flower on hand, what went out this month, manifests awaiting paperwork, and license renewal reminders.
+- **Agency report reminders**: in the first week of each month, the Dashboard reminds you to send last month's materials-out report, but only if you actually sent materials out, so quiet months stay quiet. In January it also reminds you about the annual stocktake. Reminders can be dismissed and never pile up.
+- **One-tap report emails**: a "Draft this in an email" button on the monthly materials-out and annual stocktake reports opens a ready-to-send email to the Medicinal Cannabis Agency, with the subject line, your company details, and the full report already filled in. No more copy/paste.
 - **Smarter shipping manifests**: a manifest now stays "In Progress" until the signed Chain of Custody is attached, shipped flower is automatically deducted from your inventory, and every exchange has its own summary page with the PDF and CoC.
-- **Annual report fix**: plants destroyed or sent in past years no longer show up as stock in later years' annual stocktake — the report's totals now match your real live stock.
+- **Annual report fix**: plants destroyed or sent in past years no longer show up as stock in later years' annual stocktake, so the report's totals now match your real live stock.
 - **Install like an app**: pin GRACe to your phone's home screen.
 
 ### Improvements
-- A double-check screen before harvesting, destroying, or sending plants — because the ledger can't be edited afterwards.
+- A double-check screen before harvesting, destroying, or sending plants, because the ledger can't be edited afterwards.
 - Friendlier in-app messages instead of browser pop-ups.
 - "Download backup" saves your whole ledger as a single file.
 - Works on Home Assistant boxes with no internet connection.
@@ -24,6 +24,7 @@ One big update — everything from 0.15 through 0.17.1 rolled together.
 - Manifests between two external companies recorded the wrong sender.
 - Refreshing the manifest result page could create a duplicate.
 - "Draft this in an email" now opens in a new tab, so webmail (like Gmail) works from inside the Home Assistant app.
+- Tidied up the menus: removed the empty "Recalls" placeholder from Plant Tracking, and put Record Management at the top of the Administration page in a more sensible order.
 
 ### Under the hood
 - Removed old unused login code and bundled demo files; added a developer guide (`DEVELOPMENT.md`), a demo-data seeder, and more automated tests.

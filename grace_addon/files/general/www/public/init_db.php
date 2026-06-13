@@ -128,7 +128,7 @@ function initializeDatabase($dbPath = '/data/grace.db') {
                 upload_date DATETIME DEFAULT CURRENT_TIMESTAMP
             );",
 
-            // ReportReminders — tracks Agency report reminders the user has
+            // ReportReminders, tracks Agency report reminders the user has
             // dismissed or drafted (added in 0.17.0). period is '2026-05'
             // for monthly reports or '2025' for the annual stocktake.
             "CREATE TABLE IF NOT EXISTS ReportReminders (

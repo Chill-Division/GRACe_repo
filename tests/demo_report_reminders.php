@@ -1,6 +1,6 @@
 <?php
 /**
- * demo_report_reminders.php — show what the dashboard reminders would do on
+ * demo_report_reminders.php, show what the dashboard reminders would do on
  * any date, against your local dev database (/data/grace.db). Great for
  * demos and videos: walk through a month without touching the system clock.
  *

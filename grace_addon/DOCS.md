@@ -38,10 +38,10 @@ When product physically leaves your site, generate a manifest under Tracking →
 
 Two things happen automatically at that moment:
 
-- If you're sending flower to an external company, the shipped weight is deducted from your dried-flower inventory straight away — you don't need to make a separate "Record dry weight change" entry, and it shows up in your monthly materials-out report like any other send.
+- If you're sending flower to an external company, the shipped weight is deducted from your dried-flower inventory straight away. You don't need to make a separate "Record dry weight change" entry, and it shows up in your monthly materials-out report like any other send.
 - The manifest is recorded as "In Progress". It stays that way while the product is in transit.
 
-Once the shipment has been received and you have the signed Chain of Custody back (a photo of the signed paperwork is fine, or a scanned PDF), go to Tracking → "Complete Manifest". You'll see every manifest still awaiting completion with its date, destination and what was shipped — choose the right one, attach the Chain of Custody, and complete it. GRACe will not let a manifest be closed off without a Chain of Custody attached.
+Once the shipment has been received and you have the signed Chain of Custody back (a photo of the signed paperwork is fine, or a scanned PDF), go to Tracking → "Complete Manifest". You'll see every manifest still awaiting completion with its date, destination and what was shipped, so you can choose the right one, attach the Chain of Custody, and complete it. GRACe will not let a manifest be closed off without a Chain of Custody attached.
 
 You can still upload standalone Chain of Custody paperwork on the Administration → "Chain of Custody Documents" page like before, and anything uploaded there can be attached to a manifest later from the Complete Manifest page. Each exchange also has a summary page (linked from both pages) showing the source, destination, shipment details, inventory deduction and the attached paperwork.
 

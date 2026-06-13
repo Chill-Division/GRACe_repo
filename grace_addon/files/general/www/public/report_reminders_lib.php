@@ -6,7 +6,7 @@
  * rule is that reminders are WINDOWS, not queues: we only ever evaluate the
  * current window (the first 7 days of this month for last month's materials
  * out, or any day in January for the annual stocktake). We never scan
- * history for "unreported" periods, so a user can see at most two banners —
+ * history for "unreported" periods, so a user can see at most two banners
  * and a fresh install is never flooded with reminders about the past.
  *
  * Dismissals/drafts are stored per period in the ReportReminders table, so
@@ -30,7 +30,7 @@ function getDueReportReminders(PDO $pdo, $today = null)
     $due = [];
 
     // Reminders only make sense once company details exist (set during first
-    // run) — the report email needs the company name and license number.
+    // run), the report email needs the company name and license number.
     $hasCompany = (int) $pdo->query("SELECT COUNT(*) FROM OwnCompany")->fetchColumn() > 0;
     if (!$hasCompany) {
         return $due;

@@ -1,7 +1,7 @@
 <?php
 require_once 'init_db.php';
 
-// Downloads the full ledger as a timestamped JSON file — useful for backups
+// Downloads the full ledger as a timestamped JSON file, useful for backups
 // and audits. Read-only; the SQLite file itself lives at /data/grace.db.
 try {
     $pdo = initializeDatabase();

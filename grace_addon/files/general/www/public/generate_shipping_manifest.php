@@ -37,8 +37,8 @@ require 'header.php';
         <article class="form-card">
             <p><strong>How this works:</strong> generating a manifest records it as <span class="badge badge--drying">In Progress</span>.
             If you are sending <strong>flower</strong> to an external company, the shipped weight is
-            <strong>automatically deducted from your dried-flower inventory</strong> the moment the manifest is generated —
-            no separate ledger entry is needed. The manifest stays In Progress until the signed Chain of Custody
+            <strong>automatically deducted from your dried-flower inventory</strong> the moment the manifest is generated,
+            so no separate ledger entry is needed. The manifest stays In Progress until the signed Chain of Custody
             (photo or PDF) is attached on the <a href="complete_manifest.php">Complete Manifest</a> page.</p>
         </article>
 
@@ -178,7 +178,7 @@ require 'header.php';
             const grams = flowerStock[geneticsSelect.value] || 0;
             const name = geneticsSelect.options[geneticsSelect.selectedIndex].text.trim();
             stockHint.textContent = `Recorded dried-flower stock for ${name}: ${grams} g` +
-                (deductionApplies ? ' — the manifest weight will be deducted from this automatically.' : '');
+                (deductionApplies ? '. The manifest weight will be deducted from this automatically.' : '');
         };
 
         [productType, geneticsSelect].forEach(el => el.addEventListener('change', updateStockHint));

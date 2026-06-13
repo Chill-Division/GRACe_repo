@@ -37,7 +37,7 @@ require 'header.php';
                                 <?php if ($manifest['flower_transaction_id']): ?>
                                     <?php echo htmlspecialchars(abs((float) $manifest['deducted_weight']) . ' g deducted from the dried-flower ledger on ' . $manifest['deduction_date']); ?>
                                 <?php elseif ($manifest['product_type'] === 'flower'): ?>
-                                    None — this shipment was not sent from our inventory.
+                                    None. This shipment was not sent from our inventory.
                                 <?php else: ?>
                                     n/a (plants are processed out via Harvest / Destroy / Send)
                                 <?php endif; ?>
@@ -55,14 +55,14 @@ require 'header.php';
                                 <?php endif; ?>
                             </td>
                         </tr>
-                        <tr><td><strong>Completed</strong></td><td><?php echo $manifest['date_completed'] ? htmlspecialchars($manifest['date_completed']) : '—'; ?></td></tr>
+                        <tr><td><strong>Completed</strong></td><td><?php echo $manifest['date_completed'] ? htmlspecialchars($manifest['date_completed']) : 'Not yet'; ?></td></tr>
                         <tr>
                             <td><strong>Manifest PDF</strong></td>
                             <td>
                                 <?php if ($manifest['manifest_file']): ?>
                                     <a href="download.php?category=manifests&file=<?php echo urlencode($manifest['manifest_file']); ?>" download>Download manifest PDF</a>
                                 <?php else: ?>
-                                    —
+                                    None
                                 <?php endif; ?>
                             </td>
                         </tr>
@@ -85,13 +85,13 @@ require 'header.php';
             document.addEventListener('DOMContentLoaded', () => {
                 if (urlParams.get('created')) {
                     <?php if ($manifest['flower_transaction_id']): ?>
-                    showToast('Manifest #<?php echo (int) $manifest['id']; ?> created — <?php echo abs((float) $manifest['deducted_weight']); ?> g deducted from dried-flower inventory. Attach the Chain of Custody to complete it.', 'success', 8000);
+                    showToast('Manifest #<?php echo (int) $manifest['id']; ?> created. <?php echo abs((float) $manifest['deducted_weight']); ?> g deducted from dried-flower inventory. Attach the Chain of Custody to complete it.', 'success', 8000);
                     <?php else: ?>
                     showToast('Manifest #<?php echo (int) $manifest['id']; ?> created as In Progress. Attach the Chain of Custody to complete it.', 'success', 8000);
                     <?php endif; ?>
                 }
                 if (urlParams.get('completed')) {
-                    showToast('Manifest #<?php echo (int) $manifest['id']; ?> completed — Chain of Custody attached.', 'success');
+                    showToast('Manifest #<?php echo (int) $manifest['id']; ?> completed. Chain of Custody attached.', 'success');
                 }
             });
         </script>

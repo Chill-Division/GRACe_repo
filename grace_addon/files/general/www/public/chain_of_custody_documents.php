@@ -24,7 +24,7 @@ require 'header.php';
                 <button type="submit">Upload</button>
             </form>
             <p><small>Uploads here are stored as standalone documents. To close out a manifest in transit,
-            attach its CoC on the <a href="complete_manifest.php">Complete Manifest</a> page — documents
+            attach its CoC on the <a href="complete_manifest.php">Complete Manifest</a> page. Documents
             uploaded here can be selected there too.</small></p>
         </article>
 

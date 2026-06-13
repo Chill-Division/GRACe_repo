@@ -7,7 +7,7 @@ require 'header.php';
     <main class="container">
         <hgroup class="page-header">
             <h1>Company Licenses</h1>
-            <p>Upload licenses with an expiry date — GRACe alerts you before they lapse.</p>
+            <p>Upload licenses with an expiry date so GRACe can alert you before they lapse.</p>
         </hgroup>
 
         <article class="form-card">

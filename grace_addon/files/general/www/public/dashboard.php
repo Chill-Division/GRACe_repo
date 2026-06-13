@@ -28,7 +28,7 @@ try {
     $stats['drying'] = (int) $pdo->query("SELECT COUNT(*) FROM Plants WHERE status = 'Harvested - Drying'")->fetchColumn();
     $stats['flowerOnHand'] = (float) $pdo->query("SELECT COALESCE(SUM(weight), 0) FROM Flower")->fetchColumn();
 
-    // Materials out this month — same definitions as the monthly Agency report
+    // Materials out this month, same definitions as the monthly Agency report
     $startDate = date('Y-m-01');
     $endDate = date('Y-m-t 23:59:59');
 
@@ -55,8 +55,8 @@ try {
     $stmt->execute([$horizon]);
     $expiringLicenses = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    // Agency report reminders (windowed — see report_reminders_lib.php).
-    // ?demo_date=YYYY-MM-DD pretends it's another day — read-only, used for
+    // Agency report reminders (windowed, see report_reminders_lib.php).
+    // ?demo_date=YYYY-MM-DD pretends it's another day, read-only, used for
     // demos/videos to show the banners outside their real windows.
     $demoDate = (isset($_GET['demo_date']) && preg_match('/^\d{4}-\d{2}-\d{2}$/', $_GET['demo_date']))
         ? $_GET['demo_date'] : null;
@@ -204,7 +204,7 @@ require 'header.php';
                     .then(data => {
                         if (data.success) {
                             banner.remove();
-                            showToast('Reminder dismissed — it won\'t show again for this report.', 'info');
+                            showToast('Reminder dismissed. It won\'t show again for this report.', 'info');
                         } else {
                             showToast('Could not dismiss the reminder: ' + (data.message || 'unknown error'), 'error');
                         }

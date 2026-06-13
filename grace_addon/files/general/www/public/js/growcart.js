@@ -23,7 +23,7 @@
         button.innerHTML = currentTheme() === 'light' ? moon : sun;
     }
 
-    // Make sure the mobile menu is closed after back/forward navigation —
+    // Make sure the mobile menu is closed after back/forward navigation
     // the checkbox state can otherwise be restored as "open" by the bfcache
     window.addEventListener('pageshow', () => {
         const navToggle = document.getElementById('nav-toggle');
@@ -42,7 +42,7 @@
             html.setAttribute('data-theme', next);
             try {
                 localStorage.setItem('grace-theme', next);
-            } catch (err) { /* private browsing etc. — toggle still works for this page */ }
+            } catch (err) { /* private browsing etc., toggle still works for this page */ }
             renderIcon(switchTheme);
         });
     });
@@ -84,13 +84,13 @@ function showToast(message, type = 'info', duration = 4500) {
 }
 
 /**
- * Queue a toast to be shown after the next page load — use before
+ * Queue a toast to be shown after the next page load, use before
  * location.reload() / navigation so the message isn't lost.
  */
 function flashToast(message, type = 'success') {
     try {
         sessionStorage.setItem('grace-flash', JSON.stringify({ message: message, type: type }));
-    } catch (e) { /* sessionStorage unavailable — message is lost, not fatal */ }
+    } catch (e) { /* sessionStorage unavailable, message is lost, not fatal */ }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -125,7 +125,7 @@ function confirmAction(options) {
     const danger = !!opts.danger;
 
     if (typeof HTMLDialogElement === 'undefined') {
-        // Very old browser — fall back to the native dialog
+        // Very old browser, fall back to the native dialog
         return Promise.resolve(window.confirm(title + (message ? '\n\n' + message : '')));
     }
 

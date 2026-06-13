@@ -6,7 +6,7 @@ require 'header.php';
     <main class="container">
         <hgroup class="page-header">
             <h1>List All Genetics</h1>
-            <p>Current and historical plants — live, harvested, destroyed, and sent.</p>
+            <p>Current and historical plants: live, harvested, destroyed, and sent.</p>
         </hgroup>
 
         <div class="toolbar">

@@ -6,7 +6,7 @@ require_once 'init_db.php';
 $pdo = initializeDatabase();
 
 // Manifests are only ever created from the generate form (POST). A stray GET
-// (refresh, bookmark) just goes back to the form — nothing is written twice.
+// (refresh, bookmark) just goes back to the form, nothing is written twice.
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     header('Location: generate_shipping_manifest.php');
     exit();
