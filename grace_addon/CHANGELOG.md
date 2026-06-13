@@ -8,7 +8,6 @@ One big update. Everything from 0.15 through 0.17.2 rolled together.
 - **One-tap report emails**: a "Draft this in an email" button on the monthly materials-out and annual stocktake reports opens a ready-to-send email to the Medicinal Cannabis Agency, with the subject line, your company details, and the full report already filled in. No more copy/paste.
 - **Smarter shipping manifests**: a manifest now stays "In Progress" until the signed Chain of Custody is attached, shipped flower is automatically deducted from your inventory, and every exchange has its own summary page with the PDF and CoC.
 - **Annual report fix**: plants destroyed or sent in past years no longer show up as stock in later years' annual stocktake, so the report's totals now match your real live stock.
-- **Install like an app**: pin GRACe to your phone's home screen.
 
 ### Improvements
 - A double-check screen before harvesting, destroying, or sending plants, because the ledger can't be edited afterwards.
