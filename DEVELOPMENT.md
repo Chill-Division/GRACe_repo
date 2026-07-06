@@ -129,5 +129,9 @@ CSS/JS.
 - The ledger is intentionally **append-only**: no UI for editing or deleting
   historical plant/flower records should be added. Corrections happen via
   compensating entries.
+- **Verified companies must never be deletable.** The ledger, manifests, and
+  Chain of Custody history reference them by id. Editing is fine (license
+  numbers change annually, staff contacts change); deletion is not. Don't
+  add a delete button, endpoint, or cascade.
 - Persistent-path rules (`/data/grace.db`, `/data/uploads/`) are absolute.
   See the "CRITICAL DEVELOPER NOTES" section in [README.md](README.md).

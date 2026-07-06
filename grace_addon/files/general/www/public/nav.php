@@ -16,7 +16,7 @@ $navSections = [
     ],
     'administration.php' => [
         'label' => 'Administration',
-        'pages' => ['administration', 'add_verified_company', 'add_new_genetics', 'police_vet_check_records', 'sops', 'offtake_agreements', 'company_licenses', 'chain_of_custody_documents', 'own_company', 'admin_migrate_harvested'],
+        'pages' => ['administration', 'add_verified_company', 'verified_companies', 'edit_verified_company', 'add_new_genetics', 'police_vet_check_records', 'sops', 'offtake_agreements', 'company_licenses', 'chain_of_custody_documents', 'own_company', 'admin_migrate_harvested'],
     ],
 ];
 ?>
@@ -27,7 +27,7 @@ $navSections = [
                 </span>
                 <span class="nav-brand-text">
                     <strong>GRACe</strong>
-                    <span class="nav-brand-sub">by Chill Division <small>v0.17.2</small></span>
+                    <span class="nav-brand-sub">by Chill Division <small>v0.18.0</small></span>
                 </span>
             </a>
             <input type="checkbox" id="nav-toggle" class="nav-toggle">

@@ -8,7 +8,7 @@ require 'header.php';
 
         <hgroup class="page-header">
             <h1>Add Verified Company</h1>
-            <p>Companies added here will show up as a destination in the forms for CoC / Testing.</p>
+            <p>Companies added here will show up as a destination in the forms for CoC / Testing. Already added? You can <a href="verified_companies.php">view and edit existing companies</a> instead.</p>
         </hgroup>
 
         <article class="form-card">

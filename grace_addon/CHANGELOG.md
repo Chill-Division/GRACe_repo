@@ -1,3 +1,10 @@
+## [0.18.0] - 2026-07-06
+### Features
+- **Edit Verified Companies**: Administration now has an "Edit Verified Companies" page. Pick any company you've added and update its license number (they change every year), address, or staff contact. New manifests and Chain of Custody paperwork use the updated details straight away, while your existing ledger history stays exactly as it was recorded. Companies can be edited but never deleted, because your records reference them.
+
+### Fixes
+- Licenses you've already acknowledged no longer keep showing in the Dashboard's "License Renewals Due" list. Acknowledge an expired license once on the Company Licenses page and it disappears from the Dashboard too.
+
 ## [0.17.2] - 2026-06-13
 One big update. Everything from 0.15 through 0.17.2 rolled together.
 
