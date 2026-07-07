@@ -25,6 +25,28 @@ require 'header.php';
                     <option value="" disabled selected>Select Company</option>
                 </select>
             </div>
+
+            <div>
+                <label for="quickSelectGenetics">Quick select:</label>
+                <select id="quickSelectGenetics" class="input">
+                    <option value="" disabled selected>Genetics</option>
+                </select>
+            </div>
+
+            <div>
+                <label for="quickSelectCount">How many:</label>
+                <input type="number" id="quickSelectCount" class="input" min="1" step="1" style="width: 7rem;">
+            </div>
+
+            <div>
+                <label for="quickSelectOrder">Starting with:</label>
+                <select id="quickSelectOrder" class="input">
+                    <option value="oldest">Oldest first</option>
+                    <option value="youngest">Youngest first</option>
+                </select>
+            </div>
+
+            <button type="button" class="button" id="quickSelectButton">Select</button>
         </div>
 
         <figure class="table-wrap">
@@ -52,6 +74,10 @@ require 'header.php';
         const actionDropdown = document.getElementById('action');
         const companySelection = document.getElementById('companySelection');
         const companyDropdown = document.getElementById('companyId');
+        const quickSelectGenetics = document.getElementById('quickSelectGenetics');
+        const quickSelectCount = document.getElementById('quickSelectCount');
+        const quickSelectOrder = document.getElementById('quickSelectOrder');
+        const quickSelectButton = document.getElementById('quickSelectButton');
 
         // Fetch plant data from the server
         fetch('get_plants_for_harvest.php')
@@ -78,6 +104,14 @@ require 'header.php';
                     } else {
                         statusCell.textContent = plant.status;
                     }
+                });
+
+                // Offer each genetics in the list for quick selection
+                [...new Set(plantsData.map(plant => plant.geneticsName))].sort().forEach(name => {
+                    const option = document.createElement('option');
+                    option.value = name;
+                    option.textContent = name;
+                    quickSelectGenetics.appendChild(option);
                 });
             })
             .catch(error => console.error('Error fetching plant data:', error));
@@ -114,6 +148,48 @@ require 'header.php';
              if (event.target.type === 'checkbox' && event.target.name === 'selectedPlants[]') {
                  updateSelectionCount();
              }
+        });
+
+        // Quick select: tick N plants of one genetics in age order. It only
+        // pre-fills the checkboxes, so individual plants can still be ticked
+        // or unticked by hand before processing (e.g. to hold back a mother
+        // plant that would otherwise be picked as one of the oldest).
+        quickSelectButton.addEventListener('click', () => {
+            const genetics = quickSelectGenetics.value;
+            const wanted = parseInt(quickSelectCount.value, 10);
+
+            if (!genetics) {
+                showToast('Choose a genetics to quick select.', 'error');
+                return;
+            }
+            if (!wanted || wanted < 1) {
+                showToast('Enter how many plants to select.', 'error');
+                return;
+            }
+
+            const rows = [...plantsTable.rows].filter(row => row.cells[1].textContent === genetics);
+            // Oldest first means highest age first; equal ages keep their table order
+            rows.sort((a, b) => {
+                const ageA = parseInt(a.cells[2].textContent, 10) || 0;
+                const ageB = parseInt(b.cells[2].textContent, 10) || 0;
+                return quickSelectOrder.value === 'oldest' ? ageB - ageA : ageA - ageB;
+            });
+
+            // Re-running replaces this genetics' previous selection, so
+            // "select 88" always means exactly 88. Other genetics keep
+            // whatever is already ticked.
+            rows.forEach((row, index) => {
+                row.querySelector('input[type="checkbox"]').checked = index < wanted;
+            });
+            updateSelectionCount();
+
+            if (rows.length === 0) {
+                showToast(`No ${genetics} plants in the list.`, 'error');
+            } else if (wanted > rows.length) {
+                showToast(`Only ${rows.length} ${genetics} available. Selected all ${rows.length}.`, 'info');
+            } else {
+                showToast(`Selected ${wanted} of ${rows.length} ${genetics}, ${quickSelectOrder.value} first.`, 'success');
+            }
         });
 
         // Handle "Process Selected" button click
