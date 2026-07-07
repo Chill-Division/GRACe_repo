@@ -1,6 +1,7 @@
 <?php
 require_once 'init_db.php';
 require_once 'report_reminders_lib.php';
+require_once 'license_alerts_lib.php';
 
 // All dashboard queries are read-only summaries of the ledger
 $dueReminders = [];
@@ -49,13 +50,7 @@ try {
 
     // Licenses expiring within 30 days (or already expired), skipping any
     // the user has already acknowledged on the Company Licenses page
-    $horizon = date('Y-m-d', strtotime('+30 days'));
-    $stmt = $pdo->prepare("SELECT original_filename, expiry_date FROM Documents
-                           WHERE category = 'licenses' AND expiry_date IS NOT NULL AND expiry_date <= ?
-                             AND (acknowledged IS NULL OR acknowledged = 0)
-                           ORDER BY expiry_date ASC");
-    $stmt->execute([$horizon]);
-    $expiringLicenses = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $expiringLicenses = getUnacknowledgedExpiringLicenses($pdo, 30);
 
     // Agency report reminders (windowed, see report_reminders_lib.php).
     // ?demo_date=YYYY-MM-DD pretends it's another day, read-only, used for

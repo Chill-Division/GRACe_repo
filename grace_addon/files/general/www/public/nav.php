@@ -44,19 +44,12 @@ $navSections = [
         </nav>
         <?php
         require_once 'init_db.php';
+        require_once 'license_alerts_lib.php';
         try {
             $pdo_nav = initializeDatabase();
-            // Check for expiring licenses (within 72 hours) or expired, and not acknowledged
-            // SQLite ignores time zone in string comparison if not strict, but 'now' is UTC usually.
-            // init_db sets timezone to Pacific/Auckland.
-            // Using logic: expiry_date <= date('Y-m-d', strtotime('+72 hours'))
-
-            $alertDate = date('Y-m-d', strtotime('+3 days'));
-            $today = date('Y-m-d');
-
-            $stmt = $pdo_nav->prepare("SELECT original_filename, expiry_date FROM Documents WHERE category = 'licenses' AND expiry_date IS NOT NULL AND expiry_date <= ? AND (acknowledged IS NULL OR acknowledged = 0)");
-            $stmt->execute([$alertDate]);
-            $expiringDocs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            // Banner for licenses expiring within 72 hours (or expired) that
+            // haven't been acknowledged on the Company Licenses page
+            $expiringDocs = getUnacknowledgedExpiringLicenses($pdo_nav, 3);
 
             if ($expiringDocs) {
                 echo '<div class="license-alert" role="alert">';
