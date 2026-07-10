@@ -1,7 +1,12 @@
-## [0.18.0] - 2026-07-06
+## [1.0.0] - 2026-07-10
+GRACe's first stable release!
+
 ### Features
 - **Edit Verified Companies**: Administration now has an "Edit Verified Companies" page. Pick any company you've added and update its license number (they change every year), address, or staff contact. New manifests and Chain of Custody paperwork use the updated details straight away, while your existing ledger history stays exactly as it was recorded. Companies can be edited but never deleted, because your records reference them.
 - **Quick select on Harvest / Destroy / Send**: got 90 plants of one genetics but only sending 88? Choose the genetics, type 88, and GRACe ticks them for you, starting from the oldest (or youngest, your choice). You can still tick or untick individual plants afterwards, for example to hold back a mother plant, and nothing is written until you confirm as usual.
+
+### Changes
+- **Light theme is now the default.** The first visit opens in light mode; the sun/moon toggle still remembers whichever theme you pick.
 
 ### Fixes
 - Licenses you've already acknowledged no longer keep showing in the Dashboard's "License Renewals Due" list. Acknowledge an expired license once on the Company Licenses page and it disappears from the Dashboard too.

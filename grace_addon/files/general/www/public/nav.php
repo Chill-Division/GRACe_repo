@@ -27,7 +27,7 @@ $navSections = [
                 </span>
                 <span class="nav-brand-text">
                     <strong>GRACe</strong>
-                    <span class="nav-brand-sub">by Chill Division <small>v0.18.0</small></span>
+                    <span class="nav-brand-sub">by Chill Division <small>v1.0.0</small></span>
                 </span>
             </a>
             <input type="checkbox" id="nav-toggle" class="nav-toggle">
