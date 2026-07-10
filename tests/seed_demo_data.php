@@ -68,7 +68,7 @@ function buildDemoPdf($title)
 }
 
 /** Insert a document row + matching file on disk so download links work. Returns the document id. */
-function seedDocument($pdo, $uploadDir, $category, $originalName, $daysAgoUploaded, $expiryDate = null)
+function seedDocument($pdo, $uploadDir, $category, $originalName, $daysAgoUploaded, $expiryDate = null, $acknowledged = 0)
 {
     $uniqueName = uniqid('demo_', true) . '.pdf';
     $dir = $uploadDir . $category;
@@ -78,8 +78,8 @@ function seedDocument($pdo, $uploadDir, $category, $originalName, $daysAgoUpload
     file_put_contents($dir . '/' . $uniqueName, buildDemoPdf($originalName));
 
     $stmt = $pdo->prepare("INSERT INTO Documents (category, original_filename, unique_filename, upload_date, expiry_date, acknowledged)
-                           VALUES (?, ?, ?, datetime('now', ?), ?, 0)");
-    $stmt->execute([$category, $originalName, $uniqueName, "-$daysAgoUploaded days", $expiryDate]);
+                           VALUES (?, ?, ?, datetime('now', ?), ?, ?)");
+    $stmt->execute([$category, $originalName, $uniqueName, "-$daysAgoUploaded days", $expiryDate, $acknowledged]);
     return (int) $pdo->lastInsertId();
 }
 
@@ -170,6 +170,9 @@ $pdo->exec("INSERT INTO Flower (genetics_id, weight, transaction_type, reason, t
 // --- Documents (with real files so downloads work) --------------------------
 seedDocument($pdo, $uploadDir, 'licenses', 'cultivation-license-2026.pdf', 320, date('Y-m-d', strtotime('+10 days')));  // triggers the expiry banner
 seedDocument($pdo, $uploadDir, 'licenses', 'supply-license-2026.pdf', 200, date('Y-m-d', strtotime('+9 months')));
+// Expired but already acknowledged: must NOT appear in the nav banner or the
+// dashboard's License Renewals Due list (regression check for 0.18.0)
+seedDocument($pdo, $uploadDir, 'licenses', 'cultivation-license-2025.pdf', 500, date('Y-m-d', strtotime('-80 days')), 1);
 seedDocument($pdo, $uploadDir, 'sops', 'SOP-pest-management.pdf', 90);
 seedDocument($pdo, $uploadDir, 'sops', 'SOP-harvest-procedure.pdf', 60);
 seedDocument($pdo, $uploadDir, 'offtakes', 'offtake-agreement-aotearoa.pdf', 150);
@@ -208,6 +211,7 @@ echo "Demo data seeded into $dbPath\n";
 echo "  - 1 own company, 3 external companies, 5 genetics\n";
 echo "  - " . count($plantRows) . " plants (growing / drying / destroyed / sent)\n";
 echo "  - " . (count($flowerRows) + 1) . " flower ledger entries\n";
-echo "  - 7 documents with downloadable demo PDFs in {$uploadDir}\n";
+echo "  - 8 documents with downloadable demo PDFs in {$uploadDir}\n";
 echo "  - 2 shipping manifests (1 completed with CoC attached, 1 awaiting completion)\n";
 echo "  - 1 license expiring in ~10 days (exercises the expiry banner + dashboard warning)\n";
+echo "  - 1 expired-but-acknowledged license (must stay hidden from dashboard alerts)\n";

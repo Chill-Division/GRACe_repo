@@ -58,6 +58,28 @@ else
     FAILures=$((FAILures+1))
 fi
 
+# Run Company Editing Test
+echo ""
+echo "--- Company Editing Test ---"
+php tests/test_company_editing.php
+if [ $? -eq 0 ]; then
+    echo -e "${GREEN}[PASS]${NC} Company editing logic verified"
+else
+    echo -e "${RED}[FAIL]${NC} Company editing logic failed"
+    FAILures=$((FAILures+1))
+fi
+
+# Run License Alerts Test
+echo ""
+echo "--- License Alerts Test ---"
+php tests/test_license_alerts.php
+if [ $? -eq 0 ]; then
+    echo -e "${GREEN}[PASS]${NC} License alert logic verified"
+else
+    echo -e "${RED}[FAIL]${NC} License alert logic failed"
+    FAILures=$((FAILures+1))
+fi
+
 # Run Static Checks
 echo ""
 echo "--- Static Analysis ---"
