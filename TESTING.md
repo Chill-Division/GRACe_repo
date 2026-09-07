@@ -51,7 +51,12 @@ bash tests/run_ci.sh
 *   **Shared windows:** the nav banner (3 days) and Dashboard list (30 days) use one helper; each returns the right licenses for its window.
 *   **Acknowledgment:** acknowledged licenses disappear from both surfaces; other document categories and licenses without expiry dates are never alerted.
 
-### 7. Static Code Analysis (`tests/static_checks.sh`)
+### 7. Download Filenames (`tests/test_download_names.php`)
+*   **Original names:** uploaded documents download under the name they were uploaded as; generated manifests lose their `uniqid()` prefix.
+*   **Header safety:** the `Content-Disposition` value is a single quoted filename with no trailing semicolon, and matches the parser Android's download manager (used by the Home Assistant app) relies on. A malformed header made phones save licenses as `download-2.php`.
+*   **MIME types:** correct types for PDFs and images.
+
+### 8. Static Code Analysis (`tests/static_checks.sh`)
 *   **Critical Paths:**
     *   Verifies Database path is `/data/grace.db`
     *   Verifies Upload path is `/data/uploads/`
@@ -60,13 +65,13 @@ bash tests/run_ci.sh
 *   **Security:** Scans for dangerous relative path usage (`__DIR__ . '/uploads'`).
 *   **Duplicates:** Scans for duplicate `<script src="...">` tags in PHP files (prevent redeclaration errors).
 
-### 8. Version Consistency (`tests/test_version_consistency.php`)
+### 9. Version Consistency (`tests/test_version_consistency.php`)
 *   **Why:** Ensures the version number is identical across:
     *   `config.yaml` (Home Assistant)
     *   `nav.php` (UI Display)
     *   `CHANGELOG.md` (Release Notes)
 
-### 9. PHP Syntax Check (`tests/syntax_check.sh`)
+### 10. PHP Syntax Check (`tests/syntax_check.sh`)
 *   **Linting:** Runs `php -l` on all PHP files in `grace_addon/files/general/www/public/` to catch syntax errors before runtime.
 
 ## Demo / Development Helpers (not part of CI)

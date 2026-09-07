@@ -1,4 +1,6 @@
 <?php
+require_once 'init_db.php';
+require_once 'download_lib.php';
 
 $uploadDir = '/data/uploads/';
 $category = $_GET['category'] ?? '';
@@ -19,35 +21,28 @@ if (!in_array($category, $allowedCategories)) {
 $filename = basename($filename);
 $path = $uploadDir . $category . '/' . $filename;
 
-if (file_exists($path)) {
-    // Determine content type (optional, can depend on extension)
-    $ext = strtolower(pathinfo($path, PATHINFO_EXTENSION));
-    switch ($ext) {
-        case "pdf": $ctype = "application/pdf"; break;
-        case "exe": $ctype = "application/octet-stream"; break;
-        case "zip": $ctype = "application/zip"; break;
-        case "doc": $ctype = "application/msword"; break;
-        case "xls": $ctype = "application/vnd.ms-excel"; break;
-        case "ppt": $ctype = "application/vnd.ms-powerpoint"; break;
-        case "gif": $ctype = "image/gif"; break;
-        case "png": $ctype = "image/png"; break;
-        case "jpeg":
-        case "jpg": $ctype = "image/jpg"; break;
-        default: $ctype = "application/octet-stream";
-    }
-
-    header("Pragma: public"); 
-    header("Expires: 0");
-    header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
-    header("Cache-Control: private",false); 
-    header("Content-Type: $ctype");
-    header("Content-Disposition: attachment; filename=\"" . $filename . "\";");
-    header("Content-Transfer-Encoding: binary");
-    header("Content-Length: " . filesize($path));
-    readfile($path);
-    exit;
-} else {
+if (!file_exists($path)) {
     http_response_code(404);
     die("File not found.");
 }
+
+$ext = strtolower(pathinfo($path, PATHINFO_EXTENSION));
+
+// Serve the file under the name the user uploaded it as (or a clean
+// manifest name), never the uniqid-prefixed storage name
+try {
+    $pdo = initializeDatabase();
+} catch (Exception $e) {
+    $pdo = null;
+}
+$downloadName = sanitizeDownloadName(resolveDownloadName($pdo, $category, $filename), $ext);
+
+header("Cache-Control: private, must-revalidate");
+header("Pragma: public");
+header("Expires: 0");
+header("Content-Type: " . contentTypeForExtension($ext));
+header("Content-Disposition: " . downloadDispositionHeader($downloadName));
+header("Content-Length: " . filesize($path));
+readfile($path);
+exit;
 ?>

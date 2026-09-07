@@ -53,7 +53,7 @@ require 'header.php';
                             <td><?php echo manifestStatusBadge($manifest); ?></td>
                             <td>
                                 <?php if ($manifest['coc_document_id']): ?>
-                                    <a href="download.php?category=coc&file=<?php echo urlencode($manifest['coc_unique_filename']); ?>" download>Attached</a>
+                                    <a href="download.php?category=coc&file=<?php echo urlencode($manifest['coc_unique_filename']); ?>" download="<?php echo htmlspecialchars($manifest['coc_filename']); ?>">Attached</a>
                                 <?php else: ?>
                                     <a href="complete_manifest.php?id=<?php echo (int) $manifest['id']; ?>">Pending</a>
                                 <?php endif; ?>

@@ -47,7 +47,7 @@ require 'header.php';
                             <td><strong>Chain of Custody</strong></td>
                             <td>
                                 <?php if ($manifest['coc_document_id']): ?>
-                                    <a href="download.php?category=coc&file=<?php echo urlencode($manifest['coc_unique_filename']); ?>" download>
+                                    <a href="download.php?category=coc&file=<?php echo urlencode($manifest['coc_unique_filename']); ?>" download="<?php echo htmlspecialchars($manifest['coc_filename']); ?>">
                                         <?php echo htmlspecialchars($manifest['coc_filename']); ?>
                                     </a>
                                 <?php else: ?>
@@ -60,7 +60,7 @@ require 'header.php';
                             <td><strong>Manifest PDF</strong></td>
                             <td>
                                 <?php if ($manifest['manifest_file']): ?>
-                                    <a href="download.php?category=manifests&file=<?php echo urlencode($manifest['manifest_file']); ?>" download>Download manifest PDF</a>
+                                    <a href="download.php?category=manifests&file=<?php echo urlencode($manifest['manifest_file']); ?>" download="shipping-manifest-<?php echo (int) $manifest['id']; ?>.pdf">Download manifest PDF</a>
                                 <?php else: ?>
                                     None
                                 <?php endif; ?>
