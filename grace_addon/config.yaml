@@ -1,7 +1,7 @@
 name: "GRACe Portal"
 description: "Growers Regulatory Assistance & Compliance engine"
 url: "https://www.chilldivision.co.nz"
-version: "1.0.0"
+version: "1.0.1"
 slug: "grace_addon"
 panel_icon: mdi:cannabis
 init: false

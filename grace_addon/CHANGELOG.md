@@ -1,3 +1,7 @@
+## [1.0.1] - 2026-09-08
+### Fixes
+- Downloads on your phone now have the right file name. A license (or any other document) downloaded through the Home Assistant app used to show up as "download.php". It now saves with its proper name, like "cultivation-license-2026.pdf".
+
 ## [1.0.0] - 2026-07-10
 GRACe's first stable release!
 

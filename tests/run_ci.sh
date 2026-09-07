@@ -80,6 +80,17 @@ else
     FAILures=$((FAILures+1))
 fi
 
+# Run Download Filename Test
+echo ""
+echo "--- Download Filename Test ---"
+php tests/test_download_names.php
+if [ $? -eq 0 ]; then
+    echo -e "${GREEN}[PASS]${NC} Download filename logic verified"
+else
+    echo -e "${RED}[FAIL]${NC} Download filename logic failed"
+    FAILures=$((FAILures+1))
+fi
+
 # Run Static Checks
 echo ""
 echo "--- Static Analysis ---"
