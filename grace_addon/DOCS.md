@@ -1,14 +1,16 @@
-# GRACe overview
+# GRACe Portal: first-time user guide
 
-GRACe has been designed to take as minimal "clicks" as possible to give you all the regulatory reporting you need, and as little extra as possible.
+GRACe is a ledger for your plants and your dried flower. When something comes in (clones taken, plants received, flower harvested) you **add** it. When something goes out (harvested, destroyed, sent away, tested) you **subtract** it. That's the whole idea. Everything you report to the Medicinal Cannabis Agency is worked out from that ledger, so a few seconds of data entry when things happen replaces the spreadsheet at the end of the month.
 
-It's intention is to replace spreadsheets that some license holders have been using, with a faster system that is also more reliable. If data is entered incorrectly, it's a "feature" and not a "bug" that it can't easily be edited. Caution is expected.
+One thing to know up front: history can't be edited. Once a plant is recorded as destroyed, or 200 g is recorded as sent, that line stays. This is deliberate, because your ledger is your compliance record. If you make a mistake, you fix it with another entry (there's a section on that at the end), so take a second to check before you confirm.
 
-However, because the amount of time required is so minimal (genuinely in the "seconds" per day realm), it should be able to be done relatively consistently by staff.
+GRACe works the same on a PC, a tablet, or a phone through the Home Assistant app. This guide shows both.
 
-Backups are also taken as part of the Home Assistant backup regime, but ensuring that those are then sent externally to something such as Google Drive is the responsibility of the individual system administrator.
+<img src="https://raw.githubusercontent.com/Chill-Division/GRACe_repo/main/docs/screenshots/desktop-dashboard.png" alt="The GRACe dashboard on a PC" width="900">
 
-# Installation instructions
+<img src="https://raw.githubusercontent.com/Chill-Division/GRACe_repo/main/docs/screenshots/mobile-dashboard.png" alt="The GRACe dashboard on a phone" width="300"> <img src="https://raw.githubusercontent.com/Chill-Division/GRACe_repo/main/docs/screenshots/mobile-menu-open.png" alt="The phone menu" width="300">
+
+# Installation
 
 - Install the add-on
 - Select "Show in sidebar" for easier access
@@ -16,43 +18,129 @@ Backups are also taken as part of the Home Assistant backup regime, but ensuring
 - Tap "Start" to start the add-on
 - Tap "Open WebUI" to go to the GRACe Portal
 
-# First-run setup
+# First-run setup (about five minutes)
 
-When you first launch GRACe you'll be asked to enter your own company data. This is important because this data is used elsewhere in the Chain of Custody documents etc, so fill it out accurately. You can modify it later on, but it's best to start out with the correct information.
+**1. Your company details.** The first time GRACe opens it asks for your company name, license number, address and contact email. These are printed on every Chain of Custody document and go in the subject line of your Agency emails, so get them right. You can change them later under Administration → "Update company information".
 
-Next, on the Administration page, you will probably want to add some of the genetics that you're going to be working with. Go through and enter in all of the genetics you've got right now, or have flower from, or are likely to have in the future.
+**2. Your genetics.** Go to Administration → "Add New Genetics" and add every strain you have as plants or flower, or expect to have. You can't record a plant until its genetics exist.
 
-Finally, adding in a couple of verified companies is probably your "setup" step. Add in any external testing labs, and your offtake buyers details. These will be able to be selected from a drop-down list later on for when you go to send product.
+**3. Your verified companies.** Administration → "Add Verified Company" is where you add the testing labs and buyers you send product to. They then show up in a drop-down whenever you send something. Their license numbers change every year, so when that happens use "Edit Verified Companies" to update them (companies can be edited but never deleted, because your records refer to them).
 
-# Getting started
+<img src="https://raw.githubusercontent.com/Chill-Division/GRACe_repo/main/docs/screenshots/desktop-administration.png" alt="The Administration page" width="900">
 
-Next you'll want to go in and receipt in some plants in the Tracking page. This is for any clones you take, any clones/plants received from another license holder, or declared under Form D.
+<img src="https://raw.githubusercontent.com/Chill-Division/GRACe_repo/main/docs/screenshots/desktop-verified-companies.png" alt="Verified companies list" width="900">
 
-Then when you go to harvest them at the end of the season, go into the "Harvest/Destroy/Send plants", select the number you're harvesting and choose "Process selected". It may be faster to tap the "select all" checkbox, and then uncheck a few mother-plants.
+# The Dashboard
 
-Next, once you've dried them, you can go into "Record dry weight change", select your genetics name, type in the weight you've harvested, choose "add" because we're adding weight to the running tally, and then choose "Harvested". If you'd received flower from another license holder (say, to see a sample of it before you got some genetics from them) you'd choose "Other".
+The Dashboard is your home page. At a glance it shows plants growing, plants drying, dried flower on hand, what has gone out this month, any manifests still waiting for their Chain of Custody, and any licenses coming up for renewal.
 
-# Shipping & Chain of Custody
+It also tells you when a report is due:
 
-When product physically leaves your site, generate a manifest under Tracking → "Generate Shipping Manifest". Pick the sending and receiving parties, the product type, the genetics and the quantity, and GRACe produces the manifest PDF for you to print and send with the shipment.
+- In the **first week of each month**, if you sent anything out last month, a banner reminds you to send the monthly materials-out report. Quiet months get no banner.
+- In **January**, a banner reminds you about the annual stocktake.
 
-Two things happen automatically at that moment:
+"Open report" takes you straight to the right page. "Dismiss" hides that reminder until the next one is due. Reminders never pile up.
 
-- If you're sending flower to an external company, the shipped weight is deducted from your dried-flower inventory straight away. You don't need to make a separate "Record dry weight change" entry, and it shows up in your monthly materials-out report like any other send.
-- The manifest is recorded as "In Progress". It stays that way while the product is in transit.
+# Adding product
 
-Once the shipment has been received and you have the signed Chain of Custody back (a photo of the signed paperwork is fine, or a scanned PDF), go to Tracking → "Complete Manifest". You'll see every manifest still awaiting completion with its date, destination and what was shipped, so you can choose the right one, attach the Chain of Custody, and complete it. GRACe will not let a manifest be closed off without a Chain of Custody attached.
+## Plants coming in
 
-You can still upload standalone Chain of Custody paperwork on the Administration → "Chain of Custody Documents" page like before, and anything uploaded there can be attached to a manifest later from the Complete Manifest page. Each exchange also has a summary page (linked from both pages) showing the source, destination, shipment details, inventory deduction and the attached paperwork.
+Plant Tracking → **"Receive plants or take clones"**. Use this for clones you take from a mother plant, plants received from another license holder, and plants declared under Form D. Enter how many and which genetics, then "Add plants". Each one becomes a plant in your ledger with today's date, and you'll see it counted under "Plants growing" on the Dashboard.
 
-# Reporting
+<img src="https://raw.githubusercontent.com/Chill-Division/GRACe_repo/main/docs/screenshots/desktop-receive-plants.png" alt="Receive plants form" width="900">
 
-To take care of your monthly reporting obligations, you'll need to go to Reporting and then choose "This months materials out (Flower+Plants)". If you're doing it after the end of the month has rolled over (but within the first 7 days of the new month) you'll want to choose last months option.
+## Flower coming in
 
-You will be automatically generated two tables:
-- The first with all the flower out, including externally sent for testing
-- The second with all the plants out, which is likely to be predominantly empty unless you're acting as a remote nursery and providing clones to another license holder.
+Once harvested plants have dried, weigh the flower and record it: Plant Tracking → **"Record dry weight change"**, choose the genetics, enter the weight in grams, choose **Add**, and pick the reason **Harvest**. That weight is now in your dried-flower inventory.
 
-It will automatically populate the address details that the Agency wants to see in the monthly report, along with all the other required information, so you can copy / paste it into an email to the Agency.
+If flower arrives from someone else (a sample from another grower, say), use Add with the reason **Other**.
 
-They will also want an annual stocktake as of the 1st January. You can simply choose "Annual Stocktake" under the Reporting page, select the year, and it will generate it all for you. You can even preview the current years by changing the date (though, we default to last year).
+# Subtracting product
+
+## Whole plants going out
+
+Plant Tracking → **"Harvest / Destroy / Send plants"** lists every live plant. Tick the plants, choose what happened to them, and press "Process Selected":
+
+- **Harvested - Drying**: the plants have been cut and are drying. They still count as stock until you record the dry weight.
+- **Harvested - Destroyed** (or destroyed for any other reason): the plants are gone.
+- **Send External**: the plants went to another license holder. You'll be asked which company.
+
+Ticking 88 boxes out of 90 is tedious, so use **Quick select**: choose the genetics, type how many, and choose whether to start from the oldest or the youngest plants. GRACe ticks them for you. You can still untick a mother plant you want to keep, or tick extra ones, before you process.
+
+<img src="https://raw.githubusercontent.com/Chill-Division/GRACe_repo/main/docs/screenshots/desktop-harvest-quick-select.png" alt="Quick select on the harvest page" width="900">
+
+<img src="https://raw.githubusercontent.com/Chill-Division/GRACe_repo/main/docs/screenshots/mobile-harvest.png" alt="Quick select on a phone" width="300">
+
+Before anything is written, GRACe shows you exactly what is about to happen and asks you to confirm. This is your chance to catch a mistake.
+
+<img src="https://raw.githubusercontent.com/Chill-Division/GRACe_repo/main/docs/screenshots/desktop-harvest-confirm.png" alt="The confirmation step before plants are processed" width="900">
+
+## Flower going out
+
+Plant Tracking → **"Record dry weight change"** again, but this time choose **Subtract** and a reason:
+
+- **Testing**: sent to a lab. You'll be asked which lab.
+- **Send external**: sold or sent to another license holder. You'll be asked which company.
+- **Destroy**: destroyed on site.
+- **Other**: anything else, with a note.
+
+Testing and Send external are what appear in your monthly materials-out report.
+
+<img src="https://raw.githubusercontent.com/Chill-Division/GRACe_repo/main/docs/screenshots/desktop-record-dry-weight.png" alt="Recording flower sent out" width="900">
+
+<img src="https://raw.githubusercontent.com/Chill-Division/GRACe_repo/main/docs/screenshots/mobile-record-dry-weight.png" alt="Recording flower sent out on a phone" width="300">
+
+## Shipping with a manifest
+
+When product physically leaves your site, Plant Tracking → **"Generate Shipping Manifest"** produces the manifest PDF to print and send with it. Pick the sending and receiving parties, the product type, the genetics and the quantity.
+
+If you're sending flower to an external company, the shipped weight is **deducted from your dried-flower inventory automatically** when the manifest is generated, so you don't need a separate "Record dry weight change" entry. It shows in your monthly report like any other send.
+
+<img src="https://raw.githubusercontent.com/Chill-Division/GRACe_repo/main/docs/screenshots/desktop-generate-manifest.png" alt="Generating a shipping manifest" width="900">
+
+The manifest stays "In Progress" while the product is in transit. When you have the signed Chain of Custody back (a photo of the signed paperwork is fine), go to **"Complete Manifest"**, pick the shipment, attach the Chain of Custody, and complete it. GRACe won't let a manifest be closed without one. Every shipment has its own summary page showing where it went, what was deducted, and the paperwork.
+
+<img src="https://raw.githubusercontent.com/Chill-Division/GRACe_repo/main/docs/screenshots/desktop-complete-manifest.png" alt="Completing a manifest" width="900">
+
+<img src="https://raw.githubusercontent.com/Chill-Division/GRACe_repo/main/docs/screenshots/desktop-manifest-summary.png" alt="A shipment summary" width="900">
+
+# Checking your numbers
+
+Plant Tracking → **"List all plants"** shows every plant you've ever recorded with its age and what happened to it, colour-coded so you can see at a glance what's growing, drying, destroyed or sent. Filter by status to narrow it down.
+
+<img src="https://raw.githubusercontent.com/Chill-Division/GRACe_repo/main/docs/screenshots/desktop-list-all-plants.png" alt="List of all plants with status badges" width="900">
+
+Reporting → **"Current Plants"** and **"Current Dried Flower"** give you today's totals by genetics, which is what to check against what's actually in the room.
+
+# Reporting to the Agency
+
+## Monthly materials out
+
+Reporting → **"Last month's materials out"** is the monthly report, laid out the way the Agency wants it: flower sent out (including testing), plants sent out, and the total weight. Press **"Draft this in an email"** and GRACe opens a new email to the Agency with the subject line and the whole report already filled in. Check it and send.
+
+Use this in the first week of the new month. "This month's materials out" is only a preview of the month so far; never email a partial month.
+
+<img src="https://raw.githubusercontent.com/Chill-Division/GRACe_repo/main/docs/screenshots/desktop-last-months-report.png" alt="Last month's materials out report" width="900">
+
+<img src="https://raw.githubusercontent.com/Chill-Division/GRACe_repo/main/docs/screenshots/mobile-last-months-report.png" alt="The monthly report on a phone" width="300">
+
+## Annual stocktake
+
+Every January the Agency wants a stocktake as at midnight on 31 December. Reporting → **"Annual Stocktake"**, pick the year, and GRACe works out the opening stock, everything in and out, and the closing stock for plants and for flower. Tick "Hide rows with all zero values" to keep it tidy, then "Draft this in an email" as above. If you arrive here from the January reminder on the Dashboard, the report is generated for you already.
+
+<img src="https://raw.githubusercontent.com/Chill-Division/GRACe_repo/main/docs/screenshots/desktop-annual-stocktake.png" alt="Annual stocktake report" width="900">
+
+# Keeping your records
+
+Administration → **"Record Management"** holds your paperwork: Chain of Custody documents, company licenses, SOPs, police vet checks and offtake agreements. Upload a photo or PDF and it's stored with your Home Assistant backups.
+
+Give each **license** its expiry date when you upload it. GRACe warns you on the Dashboard a month before it expires and shows a red banner on every page in the last three days. Once you've renewed it, press "Acknowledge Alert" and the warning goes away.
+
+<img src="https://raw.githubusercontent.com/Chill-Division/GRACe_repo/main/docs/screenshots/desktop-company-licenses.png" alt="Company licenses with expiry tracking" width="900">
+
+# Good to know
+
+- **Fixing a mistake.** History can't be edited, so correct it with another entry. Recorded 10 clones but only took 8? Process the 2 extras as destroyed. Typed 250 g instead of 25 g? Subtract 225 g with the reason Other and a note saying why. The correction is part of your record too.
+- **Light or dark.** The sun/moon button in the top right switches themes, and GRACe remembers your choice.
+- **Backups.** Administration → "Download backup" saves your whole ledger as a single file. Your data is also included in Home Assistant's own backups; getting those off-site (Google Drive, a USB drive) is up to you.
+- **Phone tip.** Everything in this guide works from the Home Assistant app on your phone, so record harvests and sends while you're standing in the room.

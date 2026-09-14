@@ -9,7 +9,13 @@ GRACe is a simple ledger for your plants and dried flower. If you take a clone, 
 * Monthly summaries for the Medicinal Cannabis Agency
 * Minimal effort for plant tracking
 * Easy Chain of Custody creation
-* Automatic emails (coming soon)
+* Report reminders on the Dashboard, and one-tap email drafts to the Agency
+
+## First-time user guide
+
+New to GRACe? Read the [first-time user guide](grace_addon/DOCS.md) (it's also shown on the add-on's Documentation tab inside Home Assistant). It walks through setup, adding and subtracting product, shipping, and reporting, with screenshots for PC and phone.
+
+<img src="docs/screenshots/desktop-dashboard.png" alt="The GRACe dashboard on a PC" width="720"> <img src="docs/screenshots/mobile-dashboard.png" alt="The GRACe dashboard on a phone" width="220">
 
 ## Installation and getting started video
 
