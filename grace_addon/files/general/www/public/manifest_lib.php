@@ -38,8 +38,9 @@ function fetchManifests($pdo, $status = null) {
 }
 
 /**
- * Check a manifest quantity as typed: above 0, and whole plants for a
- * plant manifest. Returns an error message, or null if it's fine.
+ * Check a manifest quantity as typed: above 0, whole plants for a plant
+ * manifest, and grams to one decimal place for flower (like every weight in
+ * GRACe, see AGENTS.md). Returns an error message, or null if it's fine.
  */
 function validateManifestQuantity($productType, $quantity)
 {
@@ -49,6 +50,9 @@ function validateManifestQuantity($productType, $quantity)
     }
     if ($productType === 'plant' && !preg_match('/^\d+(\.0*)?$/D', $text)) {
         return 'Plants are counted in whole numbers.';
+    }
+    if ($productType === 'flower' && preg_match('/\.\d{2,}$/D', rtrim($text, '0'))) {
+        return 'Weights are recorded to one decimal place, like 12.5 g.';
     }
     return null;
 }

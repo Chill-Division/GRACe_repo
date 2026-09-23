@@ -11,7 +11,13 @@
 
 const GRACE_DEFAULT_LARGE_PLANT_ENTRY = 100;
 const GRACE_DEFAULT_LARGE_FLOWER_ENTRY_GRAMS = 5000;
-const GRACE_MAX_ENTRY_WARNING_LIMIT = 1000000;
+
+// One Receive plants entry adds at most this many plants (receive_lib.php),
+// so a typo like 10000 can't flood the ledger. NZ cultivators are small:
+// even the largest spreads bigger intakes over several days and people.
+// The plant warning limit can't go above it (see AGENTS.md).
+const GRACE_MAX_PLANTS_PER_ENTRY = 1000;
+const GRACE_MAX_ENTRY_WARNING_GRAMS = 1000000;
 
 /** A saved setting, or $default if it has never been set. */
 function getSetting(PDO $pdo, $name, $default = null)
@@ -45,14 +51,14 @@ function getEntryWarningLimits(PDO $pdo)
 function saveEntryWarningLimits(PDO $pdo, array $input)
 {
     $limits = [
-        'largePlantEntry' => 'Enter the plant limit as a whole number of plants',
-        'largeFlowerEntryGrams' => 'Enter the flower limit as a whole number of grams',
+        'largePlantEntry' => ['Enter the plant limit as a whole number of plants', GRACE_MAX_PLANTS_PER_ENTRY],
+        'largeFlowerEntryGrams' => ['Enter the flower limit as a whole number of grams', GRACE_MAX_ENTRY_WARNING_GRAMS],
     ];
     $values = [];
-    foreach ($limits as $name => $message) {
+    foreach ($limits as $name => [$message, $max]) {
         $text = trim((string) ($input[$name] ?? ''));
-        if (!preg_match('/^[0-9]+$/D', $text) || (int) $text < 1 || (int) $text > GRACE_MAX_ENTRY_WARNING_LIMIT) {
-            return ['success' => false, 'message' => $message . ', from 1 to ' . number_format(GRACE_MAX_ENTRY_WARNING_LIMIT) . '.'];
+        if (!preg_match('/^[0-9]+$/D', $text) || (int) $text < 1 || (int) $text > $max) {
+            return ['success' => false, 'message' => $message . ', from 1 to ' . number_format($max) . '.'];
         }
         $values[$name] = (int) $text;
     }

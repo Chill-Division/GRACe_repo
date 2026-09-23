@@ -76,7 +76,7 @@ require 'header.php';
                 </select>
 
                 <label for="quantity">Quantity or Weight (grams for flower):</label>
-                <input type="number" id="quantity" name="quantity" class="input" min="0.01" step="0.01" required>
+                <input type="number" id="quantity" name="quantity" class="input" min="0.1" step="0.1" inputmode="decimal" required>
 
                 <label for="geneticsId">Genetics:</label>
                 <select id="geneticsId" name="geneticsId" class="input" required>
@@ -210,12 +210,12 @@ require 'header.php';
 
         [productType, geneticsSelect].forEach(el => el.addEventListener('change', updateStockHint));
 
-        // Plants are counted in whole numbers; flower is weighed to 0.01 g
+        // Plants are counted in whole numbers; flower is weighed to 0.1 g
         const quantityInput = document.getElementById('quantity');
         const updateQuantityStep = () => {
             const wholePlants = productType.value === 'plant';
-            quantityInput.step = wholePlants ? '1' : '0.01';
-            quantityInput.min = wholePlants ? '1' : '0.01';
+            quantityInput.step = wholePlants ? '1' : '0.1';
+            quantityInput.min = wholePlants ? '1' : '0.1';
         };
         productType.addEventListener('change', updateQuantityStep);
         updateQuantityStep();

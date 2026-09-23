@@ -71,8 +71,9 @@ bash tests/run_ci.sh
 *   **Manual:** there's no JavaScript test runner, so see "Confirm steps" in the manual checklist below.
 
 ### 10. Entry Limits (`tests/test_entry_limits.php`)
-*   **Whole plants:** receiving plants refuses "2.5", "1e3", text, zero and negatives (receiving used to turn "2.5" into 3 plants), and plant shipping manifests refuse part plants. One entry can add at most 10,000 plants, so a runaway typo can't flood the ledger.
-*   **Warning limits:** Administration → Entry warning limits saves whole-number thresholds in the `Settings` table (default 100 plants and 5,000 g; the page recommends about half of what one flower room usually holds). Bad values are refused and change nothing.
+*   **Whole plants:** receiving plants refuses "2.5", "1e3", text, zero and negatives (receiving used to turn "2.5" into 3 plants), and plant shipping manifests refuse part plants. One entry can add at most 1,000 plants (`GRACE_MAX_PLANTS_PER_ENTRY`), so a typo like 10000 adds nothing: NZ cultivators are small, and even the largest spreads bigger intakes over several days and people.
+*   **Flower manifests:** grams to one decimal place, like every weight ("12.25" is refused), and the form steps in 0.1 g.
+*   **Warning limits:** Administration → Entry warning limits saves whole-number thresholds in the `Settings` table (default 100 plants and 5,000 g; the page recommends about half of what one flower room usually holds). The plant limit can't go above the 1,000-plant cap. Bad values are refused and change nothing.
 *   **Wiring:** Receive plants, Record dry weight and Generate Shipping Manifest hand the limits to the page, and above them the confirm pop-up shows a warning whose tick box must be ticked before Confirm works (`confirmAction()`'s `warning` option).
 
 ### 11. Annual Stocktake Logic (`tests/test_annual_stocktake.php`)

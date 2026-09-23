@@ -89,7 +89,10 @@ if ($deductFlower) {
     $stockStmt = $pdo->prepare("SELECT COALESCE(SUM(weight), 0) FROM Flower WHERE genetics_id = ?");
     $stockStmt->execute([$geneticsId]);
     $stock = (float) $stockStmt->fetchColumn();
-    if ($quantity > $stock) {
+    // Compared at 0.1 g, the precision weights are entered in (like
+    // recordFlowerTransaction()), so an older balance with hundredths can
+    // still be shipped in full
+    if ($quantity > round($stock, 1) + 0.0001) {
         backToFormWithError(sprintf(
             'Insufficient dried flower for %s: %.2f g recorded, manifest needs %.2f g. Correct the ledger before generating the manifest.',
             $genetics['name'], $stock, $quantity

@@ -4,9 +4,8 @@
  * handle_receive_genetics.php), tested by tests/test_entry_messages.php.
  */
 
-// A runaway typo (1000000 instead of 100) can't flood the ledger. Big
-// entries below this still get an "are you sure?" (settings_lib.php).
-const GRACE_MAX_PLANTS_PER_ENTRY = 10000;
+// GRACE_MAX_PLANTS_PER_ENTRY, the most plants one entry can add
+require_once __DIR__ . '/settings_lib.php';
 
 /**
  * Add new plants to the ledger, stamped with today's NZ time.

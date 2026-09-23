@@ -43,10 +43,10 @@ require 'header.php';
         <article class="form-card">
             <form method="post" class="form">
                 <label for="largePlantEntry">Warn when adding or shipping more than this many plants at once:</label>
-                <input type="number" id="largePlantEntry" name="largePlantEntry" class="input" min="1" max="<?php echo GRACE_MAX_ENTRY_WARNING_LIMIT; ?>" step="1" inputmode="numeric" required value="<?php echo htmlspecialchars($plantsValue); ?>">
+                <input type="number" id="largePlantEntry" name="largePlantEntry" class="input" min="1" max="<?php echo GRACE_MAX_PLANTS_PER_ENTRY; ?>" step="1" inputmode="numeric" required value="<?php echo htmlspecialchars($plantsValue); ?>">
 
                 <label for="largeFlowerEntryGrams">Warn when recording or shipping more than this many grams of flower at once:</label>
-                <input type="number" id="largeFlowerEntryGrams" name="largeFlowerEntryGrams" class="input" min="1" max="<?php echo GRACE_MAX_ENTRY_WARNING_LIMIT; ?>" step="1" inputmode="numeric" required value="<?php echo htmlspecialchars($gramsValue); ?>">
+                <input type="number" id="largeFlowerEntryGrams" name="largeFlowerEntryGrams" class="input" min="1" max="<?php echo GRACE_MAX_ENTRY_WARNING_GRAMS; ?>" step="1" inputmode="numeric" required value="<?php echo htmlspecialchars($gramsValue); ?>">
 
                 <p><small>We recommend about half of what one of your flower rooms usually holds. They start at <?php echo GRACE_DEFAULT_LARGE_PLANT_ENTRY; ?> plants and <?php echo number_format(GRACE_DEFAULT_LARGE_FLOWER_ENTRY_GRAMS); ?> g.</small></p>
 

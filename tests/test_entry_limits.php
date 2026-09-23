@@ -4,8 +4,10 @@
  *
  * - Plant counts are whole numbers only: receiving plants and plant
  *   shipping manifests refuse 2.5 plants (receiving used to turn "2.5" into
- *   3 plants). One entry can add at most 10,000 plants, so a runaway typo
- *   can't flood the ledger.
+ *   3 plants). One entry can add at most 1,000 plants, so a runaway typo
+ *   can't flood the ledger: NZ cultivators are small, and even the largest
+ *   spreads bigger intakes over several days and people.
+ * - Flower manifests are grams to one decimal place, like every weight.
  * - A large entry gets an extra "are you sure?" in the confirm step. The
  *   thresholds are set in Administration → Entry warning limits (default
  *   100 plants and 5,000 g, recommended: about half of what one flower room
@@ -61,13 +63,20 @@ $bad = [
     'part of a plant' => ['largePlantEntry' => '2.5'],
     'text' => ['largeFlowerEntryGrams' => 'lots'],
     'a negative weight' => ['largeFlowerEntryGrams' => '-5'],
-    'an absurd plant number' => ['largePlantEntry' => '1000001'],
+    'more plants than one entry can add (1,000)' => ['largePlantEntry' => '1001'],
+    'an absurd weight' => ['largeFlowerEntryGrams' => '1000001'],
 ];
 foreach ($bad as $story => $input) {
     check("A limit of $story is refused",
         saveEntryWarningLimits($pdo, $input + ['largePlantEntry' => '250', 'largeFlowerEntryGrams' => '12000'])['success'], false);
 }
 check('Refused limits change nothing', getEntryWarningLimits($pdo), ['plants' => 250, 'grams' => 12000]);
+check('A plant limit above the per-entry cap says why',
+    saveEntryWarningLimits($pdo, ['largePlantEntry' => '1001', 'largeFlowerEntryGrams' => '12000'])['message'],
+    'Enter the plant limit as a whole number of plants, from 1 to 1,000.');
+check('A plant limit right at the cap is fine',
+    saveEntryWarningLimits($pdo, ['largePlantEntry' => '1000', 'largeFlowerEntryGrams' => '12000'])['success'], true);
+saveEntryWarningLimits($pdo, ['largePlantEntry' => '250', 'largeFlowerEntryGrams' => '12000']);
 
 // --- Plant counts are whole numbers -------------------------------------------------
 $receive = fn($count) => receivePlants($pdo, ['plantCount' => $count, 'geneticsName' => '1']);
@@ -78,16 +87,21 @@ foreach (['2.5', '1e3', '12 plants', '-3', '0', ''] as $count) {
 check('A part plant gets a clear message', $receive('2.5')['message'], 'Please enter a whole number of plants (1 or more).');
 check('Nothing was added by any of those', $plants(), 0);
 check('A whole number with stray spaces is fine', [$receive(' 12 ')['success'], $plants()], [true, 12]);
-check('One entry can add 10,000 plants', $receive('10000')['success'], true);
-check('...but not more, so a runaway typo can\'t flood the ledger', $receive('10001')['message'],
-    'One entry can add at most 10,000 plants. Split it up if you really received more.');
+check('One entry can add 1,000 plants', $receive('1000')['success'], true);
+check('...but not more, so a runaway typo can\'t flood the ledger', $receive('1001')['message'],
+    'One entry can add at most 1,000 plants. Split it up if you really received more.');
+check('A typo like 10000 adds nothing', [$receive('10000')['success'], $plants()], [false, 1012]);
 @unlink($tmpDb);
 
 // --- Plant manifests are whole numbers too -------------------------------------------
 check('A plant manifest for 2.5 plants is refused',
     validateManifestQuantity('plant', '2.5'), 'Plants are counted in whole numbers.');
 check('A plant manifest for 5 plants is fine', validateManifestQuantity('plant', '5'), null);
-check('A flower manifest can still be 12.5 g', validateManifestQuantity('flower', '12.5'), null);
+check('A flower manifest can be 12.5 g', validateManifestQuantity('flower', '12.5'), null);
+check('...but not 12.25 g: weights are grams to one decimal place',
+    validateManifestQuantity('flower', '12.25'), 'Weights are recorded to one decimal place, like 12.5 g.');
+check('The manifest form weighs flower in steps of 0.1 g',
+    strpos(source($publicDir, 'generate_shipping_manifest.php'), "quantityInput.step = wholePlants ? '1' : '0.1'") !== false, true);
 check('A manifest for nothing is refused', validateManifestQuantity('flower', '0'), 'Please enter a quantity above 0.');
 
 // --- Wiring ----------------------------------------------------------------------------
