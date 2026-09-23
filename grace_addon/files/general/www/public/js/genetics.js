@@ -115,6 +115,28 @@ function initReceiveGenetics() {
             + (drying ? `, plus ${drying} drying.` : '.');
     }
     geneticsDropdown.addEventListener('change', showStock);
+
+    // Show exactly what's about to be recorded before saving it: the ledger
+    // can't be edited afterwards. (The browser has already checked the
+    // required fields by the time this runs.)
+    form.addEventListener('submit', (event) => {
+        event.preventDefault();
+        const count = parseInt(form.plantCount.value, 10);
+        const plants = `plant${count === 1 ? '' : 's'}`;
+        const geneticsName = geneticsDropdown.options[geneticsDropdown.selectedIndex].textContent;
+        const growing = stock[geneticsDropdown.value] ? stock[geneticsDropdown.value].growing : 0;
+
+        confirmAction({
+            title: `Add ${count} ${geneticsName} ${plants}?`,
+            message: "They're recorded in the ledger with today's date and can't be edited afterwards.",
+            items: [`${count} × ${geneticsName}`, `Growing after this: ${growing + count}`],
+            confirmLabel: `Add ${count} ${plants}`
+        }).then(confirmed => {
+            if (!confirmed) return;
+            form.submit();
+        });
+    });
+
     fetch('get_stock_on_hand.php')
         .then(response => response.json())
         .then(data => { stock = data || {}; showStock(); })

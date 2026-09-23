@@ -45,7 +45,7 @@ It also tells you when a report is due:
 
 ## Plants coming in
 
-Plant Tracking → **"Receive plants or take clones"**. Use this for clones you take from a mother plant, plants received from another license holder, and plants declared under Form D. Enter how many and which genetics, then "Add plants". Each one becomes a plant in your ledger with today's date, and you'll see it counted under "Plants growing" on the Dashboard.
+Plant Tracking → **"Receive plants or take clones"**. Use this for clones you take from a mother plant, plants received from another license holder, and plants declared under Form D. Enter how many and which genetics, then "Add plants", check the summary GRACe shows you and confirm. Each one becomes a plant in your ledger with today's date, and you'll see it counted under "Plants growing" on the Dashboard.
 
 New genetics that isn't in the list yet? Choose **"+ Add new genetics…"** at the bottom of the list, type the name and it's added and selected, without leaving the page. The same works on "Record dry weight change".
 
@@ -55,7 +55,7 @@ New genetics that isn't in the list yet? Choose **"+ Add new genetics…"** at t
 
 Once harvested plants have dried, weigh the flower and record it: Plant Tracking → **"Record dry weight change"**, choose the genetics, enter the weight in grams (to one decimal place, like 612.5), choose **Add**, and pick the reason **Harvest**. That weight is now in your dried-flower inventory.
 
-While you fill in the form, GRACe shows how much of that genetics is on hand and what it will be after this entry. Once it's saved, it tells you exactly what was recorded. Receive plants does the same with how many are growing.
+While you fill in the form, GRACe shows how much of that genetics is on hand and what it will be after this entry. Before anything is saved it shows a summary for you to confirm, and afterwards it tells you exactly what was recorded. Receive plants does the same with how many are growing.
 
 If flower arrives from someone else (a sample from another grower, say), use Add with the reason **Other**.
 
