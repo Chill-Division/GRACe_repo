@@ -5,9 +5,14 @@
  * Usage (from the repo root):
  *   php tests/seed_demo_data.php           # seeds an empty database
  *   php tests/seed_demo_data.php --force   # wipes /data/grace.db first, then seeds
+ *   php tests/seed_demo_data.php --force --legacy
+ *       seeds a database shaped like GRACe 1.0.x, with the old Breeder and
+ *       Genetic Lineage columns filled in on some genetics, so you can watch
+ *       the 1.1 upgrade happen: load any page and they are removed, with the
+ *       filled-in values kept in LegacyGeneticsDetails
  *
  * Requires the persistent dirs used by the app: /data and /data/uploads
- * (see DEVELOPMENT.md). Never run this against a real production database
+ * (see DEVELOPMENT.md). Never run this against a real production database:
  * it refuses to touch a DB that already has company info unless --force is given.
  */
 
@@ -16,6 +21,7 @@ $dbPath = '/data/grace.db';
 $uploadDir = '/data/uploads/';
 
 $force = in_array('--force', $argv ?? [], true);
+$legacy = in_array('--legacy', $argv ?? [], true);
 
 if (!is_dir('/data') || !is_writable('/data')) {
     fwrite(STDERR, "ERROR: /data does not exist or is not writable.\n");
@@ -108,12 +114,19 @@ $pdo->exec("INSERT INTO Companies (name, license_number, address, primary_contac
             ('South Island Genetics', 'MCA-2026-0007', '2 Alpine Way, Christchurch 8011', 'Clive Clone', 'genetics@demo.example', '03 555 0007')");
 
 // --- Genetics ----------------------------------------------------------------
-$pdo->exec("INSERT INTO Genetics (name, breeder, genetic_lineage) VALUES
-            ('Northern Lights', 'Sensi Seeds', 'Afghani x Thai'),
-            ('White Widow', 'Green House Seeds', 'Brazilian x South Indian'),
-            ('GG4', 'GG Strains', 'Chem Sis x Sour Dubb x Chocolate Diesel'),
-            ('Wedding Cake', 'Seed Junky', 'Triangle Kush x Animal Mints'),
-            ('Aotearoa Haze', 'Local', 'NZ landrace cross')");
+$pdo->exec("INSERT INTO Genetics (name) VALUES
+            ('Northern Lights'), ('White Widow'), ('GG4'), ('Wedding Cake'), ('Aotearoa Haze')");
+
+if ($legacy) {
+    // Recreate the pre-1.1 shape: Breeder and Genetic Lineage columns, filled
+    // in on SOME genetics and blank on others, like a real 1.0.x install
+    $pdo->exec("ALTER TABLE Genetics ADD COLUMN breeder TEXT");
+    $pdo->exec("ALTER TABLE Genetics ADD COLUMN genetic_lineage TEXT");
+    $pdo->exec("UPDATE Genetics SET breeder = 'Sensi Seeds', genetic_lineage = 'Afghani x Thai' WHERE name = 'Northern Lights'");
+    $pdo->exec("UPDATE Genetics SET breeder = 'Green House Seeds' WHERE name = 'White Widow'");
+    $pdo->exec("UPDATE Genetics SET genetic_lineage = 'Chem Sis x Sour Dubb x Chocolate Diesel' WHERE name = 'GG4'");
+    $pdo->exec("UPDATE Genetics SET breeder = '', genetic_lineage = '' WHERE name = 'Wedding Cake'");
+}
 
 // --- Plants in a spread of statuses and ages -------------------------------
 $plantRows = [
@@ -215,3 +228,8 @@ echo "  - 8 documents with downloadable demo PDFs in {$uploadDir}\n";
 echo "  - 2 shipping manifests (1 completed with CoC attached, 1 awaiting completion)\n";
 echo "  - 1 license expiring in ~10 days (exercises the expiry banner + dashboard warning)\n";
 echo "  - 1 expired-but-acknowledged license (must stay hidden from dashboard alerts)\n";
+if ($legacy) {
+    echo "\nLegacy mode: Genetics still has the old Breeder and Genetic Lineage columns,\n";
+    echo "filled in on 3 of the 5 genetics. Load any page and GRACe upgrades the database:\n";
+    echo "the columns are removed and those 3 entries are kept in LegacyGeneticsDetails.\n";
+}

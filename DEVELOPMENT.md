@@ -7,8 +7,8 @@ your changes before committing, no Home Assistant install required.
 
 - PHP 8.1+ CLI with the SQLite extension
   (`sudo apt install php-cli php-sqlite3` on Debian/Ubuntu, WSL works fine)
-- The app **hard-codes** its persistent paths (see the warning in
-  [README.md](README.md)), so you need a local `/data` directory:
+- The app **hard-codes** its persistent paths (see rule 1 in
+  [AGENTS.md](AGENTS.md)), so you need a local `/data` directory:
 
 ```bash
 sudo mkdir -p /data/uploads
@@ -59,6 +59,18 @@ php tests/seed_demo_data.php --force   # wipe /data/grace.db and reseed
 The script refuses to touch a database that already contains company data
 unless you pass `--force`, so it can't clobber real records by accident.
 
+To try an upgrade the way an existing install experiences it, add
+`--legacy`. That seeds a database shaped like GRACe 1.0.x, with the old
+Breeder and Genetic Lineage columns filled in on some genetics:
+
+```bash
+php tests/seed_demo_data.php --force --legacy
+```
+
+Load any page and GRACe upgrades it: the two columns are removed from
+`Genetics`, and the filled-in values are kept in `LegacyGeneticsDetails`
+(which also shows up in Administration, "Download backup").
+
 To start over completely:
 
 ```bash
@@ -95,9 +107,11 @@ Always run this before committing:
 bash tests/run_ci.sh
 ```
 
-It covers DB migrations, upload-path permissions, static checks (persistent
-paths, duplicate script tags), version consistency, and PHP syntax across
-every file.
+It covers DB migrations and in-place upgrades, the reporting and reminder
+logic, company editing, license alerts and upload limits, download names,
+static checks (persistent paths, duplicate script tags), version
+consistency, and PHP syntax across every file. [TESTING.md](TESTING.md)
+lists every stage.
 
 ## Release checklist
 
@@ -112,26 +126,11 @@ Also bump `GRACE_ASSET_VERSION` in
 `grace_addon/files/general/www/public/header.php` so browsers pick up new
 CSS/JS.
 
-## Notes for AI assistants & future developers
+## Rules
 
-- **No service worker / offline-first support is wanted.** GRACe runs as a
-  Home Assistant addon; users always reach it over their LAN through their
-  HA server, so "device is offline" is not a scenario we design for. The
-  reason Pico CSS and jQuery are vendored locally (`css/vendor/`,
-  `js/vendor/`) is that the *HA server itself* may be air-gapped from the
-  internet, that's an offline-server concern, not an offline-client one.
-  Don't add a service worker, app-state caching, or background sync.
-- The portal is normally served through **Home Assistant ingress**, which
-  mounts it under a deep path. Always use **relative URLs** for links,
-  assets, and fetch calls, never absolute paths starting with `/`.
-- Authentication is Home Assistant's job. There is intentionally no login
-  system in the app (the old `auth.php`/`login.php` were removed in 0.15.1).
-- The ledger is intentionally **append-only**: no UI for editing or deleting
-  historical plant/flower records should be added. Corrections happen via
-  compensating entries.
-- **Verified companies must never be deletable.** The ledger, manifests, and
-  Chain of Custody history reference them by id. Editing is fine (license
-  numbers change annually, staff contacts change); deletion is not. Don't
-  add a delete button, endpoint, or cascade.
-- Persistent-path rules (`/data/grace.db`, `/data/uploads/`) are absolute.
-  See the "CRITICAL DEVELOPER NOTES" section in [README.md](README.md).
+The rules every change must follow live in [AGENTS.md](AGENTS.md), where AI
+assistants pick them up automatically: the persistent `/data` paths,
+in-place database upgrades, the append-only ledger, never deleting verified
+companies, relative URLs under Home Assistant ingress, no service worker,
+Home Assistant backups as the backup plan, and plain writing for users.
+Read them before your first change.

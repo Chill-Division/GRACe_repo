@@ -7,9 +7,7 @@ $pdo = initializeDatabase();
 // Check if the form is submitted
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Get data from the form
-    $geneticsName = $_POST['geneticsName'];
-    $breeder = $_POST['breeder']; // Optional, might be empty
-    $geneticLineage = $_POST['geneticLineage']; // Optional, might be empty
+    $geneticsName = $_POST['geneticsName'] ?? '';
 
     // Basic input validation (you can add more checks as needed)
     if (empty($geneticsName)) {
@@ -32,13 +30,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             exit();
         }
         // Prepare and execute SQL query to insert data using PDO
-        $stmt = $pdo->prepare("INSERT INTO Genetics (name, breeder, genetic_lineage)
-                                VALUES (:geneticsName, :breeder, :geneticLineage)");
-
-        // Bind parameters to prevent SQL injection
+        // Genetics are just a name (Breeder and Genetic Lineage were removed in 1.1.0)
+        $stmt = $pdo->prepare("INSERT INTO Genetics (name) VALUES (:geneticsName)");
         $stmt->bindParam(':geneticsName', $geneticsName);
-        $stmt->bindParam(':breeder', $breeder);
-        $stmt->bindParam(':geneticLineage', $geneticLineage);
 
         $stmt->execute();
 

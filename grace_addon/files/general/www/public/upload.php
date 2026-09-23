@@ -1,9 +1,10 @@
- <?php
- require_once 'init_db.php';
+<?php
+require_once 'init_db.php';
+require_once 'license_alerts_lib.php';
 
- date_default_timezone_set('Pacific/Auckland');
- 
- $pdo = initializeDatabase();
+date_default_timezone_set('Pacific/Auckland');
+
+$pdo = initializeDatabase();
 $uploadDir = '/data/uploads/';
 
 header('Content-Type: application/json');
@@ -68,13 +69,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file'])) {
         exit;
     }
 
-    // Validate expiry date: must be at most 12 months in the future
+    // Validate expiry date (licenses): a real date, at most 15 months from
+    // today, because annual renewals can be issued up to 3 months early
     if ($expiryDate) {
-        $expiryTimestamp = strtotime($expiryDate);
-        $maxExpiryTimestamp = strtotime('+12 months');
-        
-        if ($expiryTimestamp > $maxExpiryTimestamp) {
-            echo json_encode(["success" => false, "message" => "Expiry date must be within 12 months."]);
+        $expiryError = validateLicenseExpiryDate($expiryDate);
+        if ($expiryError !== null) {
+            echo json_encode(["success" => false, "message" => $expiryError]);
             exit;
         }
     }
@@ -123,4 +123,3 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file'])) {
         "message" => "Invalid request"
     ]);
 }
- ?> 

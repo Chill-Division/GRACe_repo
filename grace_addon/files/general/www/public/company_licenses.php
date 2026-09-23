@@ -1,4 +1,6 @@
 <?php
+require_once 'license_alerts_lib.php';
+
 $pageTitle = 'GRACe - Company Licenses';
 $useJquery = true;
 require 'header.php';
@@ -16,8 +18,8 @@ require 'header.php';
                 <label for="file">License File</label>
                 <input type="file" name="file" id="file" required>
 
-                <label for="expiry_date">Expiry Date (Max 12 months from now)</label>
-                <input type="date" name="expiry_date" id="expiry_date" required>
+                <label for="expiry_date">Expiry Date (up to 15 months from today)</label>
+                <input type="date" name="expiry_date" id="expiry_date" required max="<?php echo licenseMaxExpiryDate(); ?>">
 
                 <input type="hidden" name="category" value="licenses">
                 <button type="submit">Upload</button>

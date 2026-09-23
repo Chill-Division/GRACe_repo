@@ -16,12 +16,6 @@ require 'header.php';
                 <label for="geneticsName">Genetics Name:</label>
                 <input type="text" id="geneticsName" name="geneticsName" class="input" required>
 
-                <label for="breeder">Breeder (Optional):</label>
-                <input type="text" id="breeder" name="breeder" class="input">
-
-                <label for="geneticLineage">Genetic Lineage (Optional):</label>
-                <textarea id="geneticLineage" name="geneticLineage" class="input" rows="3"></textarea>
-
                 <button type="submit" class="button">Add Genetics</button>
             </form>
         </article>
@@ -45,8 +39,6 @@ require 'header.php';
             // Pre-populate the form with the submitted data (if available)
             const submittedData = JSON.parse(urlParams.get('data') || '{}');
             form.geneticsName.value = submittedData.geneticsName || '';
-            form.breeder.value = submittedData.breeder || '';
-            form.geneticLineage.value = submittedData.geneticLineage || '';
         }
 
         function showStatusMessage(message, type) {
