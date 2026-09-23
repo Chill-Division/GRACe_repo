@@ -6,10 +6,11 @@
  *   php tests/seed_demo_data.php           # seeds an empty database
  *   php tests/seed_demo_data.php --force   # wipes /data/grace.db first, then seeds
  *   php tests/seed_demo_data.php --force --legacy
- *       seeds a database shaped like GRACe 1.0.x, with the old Breeder and
- *       Genetic Lineage columns filled in on some genetics, so you can watch
- *       the 1.1 upgrade happen: load any page and they are removed, with the
- *       filled-in values kept in LegacyGeneticsDetails
+ *       seeds a database shaped like GRACe 1.0.x, so you can watch the 1.1
+ *       upgrade happen on the next page load: the old Breeder and Genetic
+ *       Lineage columns (filled in on some genetics) are removed, with the
+ *       filled-in values kept in LegacyGeneticsDetails, and plant and flower
+ *       times, stored in UTC like 1.0.x did, are converted to NZ time
  *
  * Requires the persistent dirs used by the app: /data and /data/uploads
  * (see DEVELOPMENT.md). Never run this against a real production database:
@@ -73,6 +74,25 @@ function buildDemoPdf($title)
     return $pdf;
 }
 
+/**
+ * A seed time relative to now, e.g. seedTime('-3 days'), as 'Y-m-d H:i:s'.
+ * Pass several modifiers as an array; they're applied in order (PHP ignores
+ * '+14 days' when it shares a string with 'first day of last month').
+ * GRACe stores NZ time. $asOldUtc gives the UTC time instead, the way 1.0.x
+ * stamped plants and manual flower entries (used by --legacy).
+ */
+function seedTime($modifiers, $asOldUtc = false)
+{
+    $time = new DateTimeImmutable('now', new DateTimeZone('Pacific/Auckland'));
+    foreach ((array) $modifiers as $modifier) {
+        $time = $time->modify($modifier);
+    }
+    if ($asOldUtc) {
+        $time = $time->setTimezone(new DateTimeZone('UTC'));
+    }
+    return $time->format('Y-m-d H:i:s');
+}
+
 /** Insert a document row + matching file on disk so download links work. Returns the document id. */
 function seedDocument($pdo, $uploadDir, $category, $originalName, $daysAgoUploaded, $expiryDate = null, $acknowledged = 0)
 {
@@ -84,8 +104,8 @@ function seedDocument($pdo, $uploadDir, $category, $originalName, $daysAgoUpload
     file_put_contents($dir . '/' . $uniqueName, buildDemoPdf($originalName));
 
     $stmt = $pdo->prepare("INSERT INTO Documents (category, original_filename, unique_filename, upload_date, expiry_date, acknowledged)
-                           VALUES (?, ?, ?, datetime('now', ?), ?, ?)");
-    $stmt->execute([$category, $originalName, $uniqueName, "-$daysAgoUploaded days", $expiryDate, $acknowledged]);
+                           VALUES (?, ?, ?, ?, ?, ?)");
+    $stmt->execute([$category, $originalName, $uniqueName, seedTime("-$daysAgoUploaded days"), $expiryDate, $acknowledged]);
     return (int) $pdo->lastInsertId();
 }
 
@@ -150,10 +170,17 @@ $plantRows = [
     [4, 'Sent', 130, 40, 2],          // sent last month
 ];
 $stmt = $pdo->prepare("INSERT INTO Plants (genetics_id, status, date_created, date_harvested, company_id)
-                       VALUES (?, ?, date('now', ?), CASE WHEN ? IS NULL THEN NULL ELSE date('now', ?) END, ?)");
+                       VALUES (?, ?, ?, ?, ?)");
 foreach ($plantRows as $p) {
-    $harvestOffset = $p[3] === null ? null : "-{$p[3]} days";
-    $stmt->execute([$p[0], $p[1], "-{$p[2]} days", $harvestOffset, $harvestOffset, $p[4]]);
+    $created = seedTime("-{$p[2]} days", $legacy);
+    if ($p[3] !== null) {
+        $harvested = seedTime("-{$p[3]} days", $legacy);
+    } else {
+        // 1.0.x filled a growing plant's harvest date with its creation time
+        // (a column default); 1.1 leaves it blank until the plant leaves
+        $harvested = $legacy ? $created : null;
+    }
+    $stmt->execute([$p[0], $p[1], $created, $harvested, $p[4]]);
 }
 
 // --- Flower (dried inventory ledger) ----------------------------------------
@@ -165,20 +192,18 @@ $flowerRows = [
     [1, -25.00, 'Subtract', 'Testing', 33, 1],     // last month-ish
     [1, -150.00, 'Subtract', 'Send external', 31, 2],
     [2, -10.00, 'Subtract', 'Testing', 5, 1],      // this month
-    [2, -200.00, 'Subtract', 'Send external', 3, 2],
     [3, -15.50, 'Subtract', 'Destroy', 2, null],
 ];
 $stmt = $pdo->prepare("INSERT INTO Flower (genetics_id, weight, transaction_type, reason, transaction_date, company_id)
-                       VALUES (?, ?, ?, ?, datetime('now', ?), ?)");
+                       VALUES (?, ?, ?, ?, ?, ?)");
 foreach ($flowerRows as $f) {
-    $stmt->execute([$f[0], $f[1], $f[2], $f[3], "-{$f[4]} days", $f[5]]);
+    $stmt->execute([$f[0], $f[1], $f[2], $f[3], seedTime("-{$f[4]} days", $legacy), $f[5]]);
 }
 
 // Outbound flower mid-last-month, whatever month it is right now, so the
 // dashboard's monthly Agency report reminder always has something to show
 // during the first 7 days of the month (see DEVELOPMENT.md for demo tips)
-$pdo->exec("INSERT INTO Flower (genetics_id, weight, transaction_type, reason, transaction_date, company_id)
-            VALUES (1, -42.00, 'Subtract', 'Send external', datetime('now', 'start of month', '-1 month', '+14 days'), 2)");
+$stmt->execute([1, -42.00, 'Subtract', 'Send external', seedTime(['first day of last month', '+14 days', '10:00'], $legacy), 2]);
 
 // --- Documents (with real files so downloads work) --------------------------
 seedDocument($pdo, $uploadDir, 'licenses', 'cultivation-license-2026.pdf', 320, date('Y-m-d', strtotime('+10 days')));  // triggers the expiry banner
@@ -193,43 +218,55 @@ seedDocument($pdo, $uploadDir, 'other_records', 'police-vet-check-grower.pdf', 4
 $cocDocId = seedDocument($pdo, $uploadDir, 'coc', 'coc-shipment-2026-05.pdf', 12);
 
 // --- Shipping manifests (one completed, one awaiting its CoC) ----------------
-// Completed: matches the 200g White Widow "Send external" ledger entry above
-$sentFlowerId = (int) $pdo->query("SELECT id FROM Flower WHERE reason = 'Send external' AND weight = -200.00")->fetchColumn();
+// Manifests, and the flower they deduct, have always been stamped in NZ time
+$manifestFlowerStmt = $pdo->prepare("INSERT INTO Flower (genetics_id, weight, transaction_type, reason, transaction_date, company_id)
+                                     VALUES (?, ?, 'Subtract', 'Send external', ?, 2)");
 $manifestStmt = $pdo->prepare("INSERT INTO ShippingManifests
     (sending_company_id, recipient_id, shipment_date, product_type, status,
      sending_company_name, receiving_company_name, genetics_id, genetics_name,
      quantity, destination_address, flower_transaction_id, coc_document_id, date_completed, manifest_file)
-    VALUES (?, ?, datetime('now', ?), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+
+// Completed: 200g of White Widow sent 3 days ago, CoC attached yesterday
+$manifestFlowerStmt->execute([2, -200.00, seedTime('-3 days')]);
+$sentFlowerId = (int) $pdo->lastInsertId();
 $manifestStmt->execute([
-    null, 2, '-3 days', 'flower', 'Completed',
+    null, 2, seedTime('-3 days'), 'flower', 'Completed',
     'Demo Cultivation Co', 'Aotearoa Offtake Partners', 2, 'White Widow',
-    200.00, '45 Harbour View, Auckland 1010', $sentFlowerId, $cocDocId, date('Y-m-d H:i:s', strtotime('-1 day')),
+    200.00, '45 Harbour View, Auckland 1010', $sentFlowerId, $cocDocId, seedTime('-1 day'),
     seedManifestPdf($uploadDir, 'shipping-manifest-white-widow-200g.pdf'),
 ]);
 
 // In Progress: a fresh GG4 shipment, flower already deducted, CoC still pending
-$pdo->prepare("INSERT INTO Flower (genetics_id, weight, transaction_type, reason, transaction_date, company_id)
-               VALUES (3, -50.00, 'Subtract', 'Send external', datetime('now', '-1 days'), 2)")->execute();
+$manifestFlowerStmt->execute([3, -50.00, seedTime('-1 day')]);
 $pendingFlowerId = (int) $pdo->lastInsertId();
 $manifestStmt->execute([
-    null, 2, '-1 days', 'flower', 'In Progress',
+    null, 2, seedTime('-1 day'), 'flower', 'In Progress',
     'Demo Cultivation Co', 'Aotearoa Offtake Partners', 3, 'GG4',
     50.00, '45 Harbour View, Auckland 1010', $pendingFlowerId, null, null,
     seedManifestPdf($uploadDir, 'shipping-manifest-gg4-50g.pdf'),
 ]);
+
+if ($legacy) {
+    // 1.0.x had no record of the NZ time conversion, so the next page load
+    // converts the UTC times seeded above, exactly like a real upgrade
+    $pdo->exec("DROP TABLE IF EXISTS DataMigrations");
+}
 
 $pdo->commit();
 
 echo "Demo data seeded into $dbPath\n";
 echo "  - 1 own company, 3 external companies, 5 genetics\n";
 echo "  - " . count($plantRows) . " plants (growing / drying / destroyed / sent)\n";
-echo "  - " . (count($flowerRows) + 1) . " flower ledger entries\n";
+echo "  - " . (int) $pdo->query("SELECT COUNT(*) FROM Flower")->fetchColumn() . " flower ledger entries\n";
 echo "  - 8 documents with downloadable demo PDFs in {$uploadDir}\n";
 echo "  - 2 shipping manifests (1 completed with CoC attached, 1 awaiting completion)\n";
 echo "  - 1 license expiring in ~10 days (exercises the expiry banner + dashboard warning)\n";
 echo "  - 1 expired-but-acknowledged license (must stay hidden from dashboard alerts)\n";
 if ($legacy) {
     echo "\nLegacy mode: Genetics still has the old Breeder and Genetic Lineage columns,\n";
-    echo "filled in on 3 of the 5 genetics. Load any page and GRACe upgrades the database:\n";
-    echo "the columns are removed and those 3 entries are kept in LegacyGeneticsDetails.\n";
+    echo "filled in on 3 of the 5 genetics, and plant and flower times are in UTC like\n";
+    echo "1.0.x stored them. Load any page and GRACe upgrades the database: the columns\n";
+    echo "are removed (those 3 entries are kept in LegacyGeneticsDetails) and the times\n";
+    echo "are converted to NZ time.\n";
 }

@@ -83,9 +83,9 @@ function reportReminderActioned(PDO $pdo, $type, $period)
 function actionReportReminder(PDO $pdo, $type, $period, $status)
 {
     $stmt = $pdo->prepare("INSERT INTO ReportReminders (report_type, period, status, actioned_at)
-                           VALUES (?, ?, ?, datetime('now', 'localtime'))
+                           VALUES (?, ?, ?, ?)
                            ON CONFLICT(report_type, period) DO UPDATE SET status = excluded.status, actioned_at = excluded.actioned_at");
-    $stmt->execute([$type, $period, $status]);
+    $stmt->execute([$type, $period, $status, ledgerTimestamp()]);
 }
 
 /**
