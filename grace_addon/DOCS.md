@@ -134,13 +134,23 @@ Every January the Agency wants a stocktake as at midnight on 31 December. Report
 
 Administration → **"Record Management"** holds your paperwork: Chain of Custody documents, company licenses, SOPs, police vet checks and offtake agreements. Upload a photo or PDF and it's stored with your Home Assistant backups.
 
-Give each **license** its expiry date when you upload it. GRACe warns you on the Dashboard a month before it expires and shows a red banner on every page in the last three days. Once you've renewed it, press "Acknowledge Alert" and the warning goes away.
+Give each **license** its expiry date when you upload it. Licenses are yearly, but a renewal can be issued up to 3 months early, so the date can be up to 15 months from today and an early renewal goes straight in. GRACe warns you on the Dashboard a month before a license expires and shows a red banner on every page in the last three days. Once you've renewed it, press "Acknowledge Alert" and the warning goes away.
 
 <img src="https://raw.githubusercontent.com/Chill-Division/GRACe_repo/main/docs/screenshots/desktop-company-licenses.png" alt="Company licenses with expiry tracking" width="900">
+
+# Backups
+
+Your ledger and every document you've uploaded live inside the GRACe add-on, so **Home Assistant's own backups are your backup plan**. They save everything, and they're what you'd restore from if your Home Assistant box ever died. Set them up once:
+
+1. In Home Assistant, go to **Settings → System → Backups**.
+2. Turn on **automatic backups** (daily is a good choice) and make sure the **GRACe Portal** add-on is included.
+3. Add at least one **off-site location**, such as Home Assistant Cloud, Google Drive, or a network share. A backup that only lives on the same box won't help if that box fails.
+4. Every so often, check that the latest backup finished.
+
+Administration → **"Download backup"** is only for an extra, ad-hoc copy, for example to hand to an auditor. It contains your ledger but not the uploaded documents themselves (licenses, Chain of Custody photos and so on), and GRACe can't restore from it. Never use it as your main backup.
 
 # Good to know
 
 - **Fixing a mistake.** History can't be edited, so correct it with another entry. Recorded 10 clones but only took 8? Process the 2 extras as destroyed. Typed 250 g instead of 25 g? Subtract 225 g with the reason Other and a note saying why. The correction is part of your record too.
 - **Light or dark.** The sun/moon button in the top right switches themes, and GRACe remembers your choice.
-- **Backups.** Administration → "Download backup" saves your whole ledger as a single file. Your data is also included in Home Assistant's own backups; getting those off-site (Google Drive, a USB drive) is up to you.
 - **Phone tip.** Everything in this guide works from the Home Assistant app on your phone, so record harvests and sends while you're standing in the room.

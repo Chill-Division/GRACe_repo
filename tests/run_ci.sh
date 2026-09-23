@@ -25,6 +25,17 @@ else
     FAILures=$((FAILures+1))
 fi
 
+# Run Genetics Upgrade Test
+echo ""
+echo "--- Genetics Upgrade Test ---"
+php tests/test_genetics_upgrade.php
+if [ $? -eq 0 ]; then
+    echo -e "${GREEN}[PASS]${NC} Genetics upgrade verified"
+else
+    echo -e "${RED}[FAIL]${NC} Genetics upgrade failed"
+    FAILures=$((FAILures+1))
+fi
+
 # Run Permission Logic Test
 echo ""
 echo "--- Permission Logic Test ---"
@@ -77,6 +88,17 @@ if [ $? -eq 0 ]; then
     echo -e "${GREEN}[PASS]${NC} License alert logic verified"
 else
     echo -e "${RED}[FAIL]${NC} License alert logic failed"
+    FAILures=$((FAILures+1))
+fi
+
+# Run License Expiry Limit Test
+echo ""
+echo "--- License Expiry Limit Test ---"
+php tests/test_license_expiry.php
+if [ $? -eq 0 ]; then
+    echo -e "${GREEN}[PASS]${NC} License expiry limit verified"
+else
+    echo -e "${RED}[FAIL]${NC} License expiry limit failed"
     FAILures=$((FAILures+1))
 fi
 

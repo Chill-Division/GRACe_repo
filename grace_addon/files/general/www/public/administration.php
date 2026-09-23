@@ -97,7 +97,7 @@ require 'header.php';
                     <span class="nav-card-icon" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14a9 3 0 0 0 18 0V5"/><path d="M3 12a9 3 0 0 0 18 0"/></svg></span>
                     <span class="nav-card-body">
                         <strong>Download backup</strong>
-                        <small>Download the full ledger as a timestamped JSON file for backup or audit</small>
+                        <small>An extra, ad-hoc copy of your ledger, e.g. for an auditor. Home Assistant backups are your main backup.</small>
                     </span>
                 </a>
                 <a class="nav-card" href="admin_migrate_harvested.php">

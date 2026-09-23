@@ -3,7 +3,7 @@ Repository for the GRACe Portal addon for Home Assistant
 
 Take back your time, focus on your garden, while GRACe looks after your regulatory compliance
 
-GRACe is a simple ledger for your plants and dried flower. If you take a clone, you add to the it. If you harvest a plant, you subtract it. This is the whole basis of GRACe, coupled with the intentional inability to historically edit records.
+GRACe is a simple ledger for your plants and dried flower. If you take a clone, you add to it. If you harvest a plant, you subtract it. This is the whole basis of GRACe, coupled with the intentional inability to historically edit records.
 
 * Annual reporting / stock-take
 * Monthly summaries for the Medicinal Cannabis Agency
@@ -42,81 +42,10 @@ Tap the new add-on, select "Install", then tap "Show in sidebar", "Auto update" 
 
 ![image](https://github.com/user-attachments/assets/72cde961-1459-4805-ae29-f1a4f6ef1b47)
 
----
+## Your data and backups
 
-## ⚠️ CRITICAL DEVELOPER NOTES: Persistent Storage Requirements
+Everything GRACe records (your ledger and every document you upload) is stored inside the add-on, so it survives updates and is included in your Home Assistant backups. Make sure automatic Home Assistant backups are turned on and copied somewhere off the box. The [user guide](grace_addon/DOCS.md#backups) shows how.
 
-> [!CAUTION]
-> **This application runs as a Home Assistant addon and MUST use persistent storage paths.**
-> 
-> **Ephemeral storage (container filesystem) is WIPED on every addon update/restart.**
+## For developers
 
-### Absolute Requirements
-
-The following paths are **IMMUTABLE** and must **NEVER** be changed:
-
-| Resource | Required Path | Notes |
-|----------|--------------|-------|
-| **Database** | `/data/grace.db` | SQLite database file |
-| **Uploads** | `/data/uploads/` | All uploaded documents |
-
-### Why This Matters
-
-Home Assistant addons run in Docker containers where:
-- ✅ `/data` → **Persistent volume** (survives updates)
-- ❌ Container filesystem → **Ephemeral** (wiped on updates)
-
-**If database or uploads use relative paths like `__DIR__ . '/uploads/'` or any path outside `/data`, ALL DATA WILL BE LOST on the next addon update.**
-
-### For Developers & AI Assistants
-
-When reviewing Pull Requests or making code changes:
-
-1. **REJECT** any PR that changes database path from `/data/grace.db`
-2. **REJECT** any PR that changes upload path from `/data/uploads/`
-3. **VERIFY** `init_db.php` default parameter: `initializeDatabase($dbPath = '/data/grace.db')`
-4. **VERIFY** `upload.php` and `download.php` use: `$uploadDir = '/data/uploads/';`
-
-**This requirement takes absolute precedence over all other considerations.**
-
-### Current Implementation Status
-
-✅ **Verified Correct** (as of last check):
-- `grace_addon/files/general/www/public/init_db.php` → `/data/grace.db`
-- `grace_addon/files/general/www/public/upload.php` → `/data/uploads/`
-- `grace_addon/files/general/www/public/download.php` → `/data/uploads/`
-
-
-
-## Storage and Upgrades
-
-Files are stored in `/data/uploads`, which is a permanent storage volume in Home Assistant. This ensures uploaded documents persist across addon updates.
-
-**Note on Upgrades (v0.12+):**
-- **Database:** Schema changes (new `expiry_date` and `acknowledged` columns) are handled automatically by the application upon start.
-- **File Storage:** Uploads now go to `/data/uploads`. Existing files in the container's ephemeral storage are *not* automatically migrated. They must be moved manually to `/data/uploads` if needed.
-- **Permissions:** The application automatically attempts to create necessary directories in `/data` and set permissions.
-
-## Local Testing
-
-See [DEVELOPMENT.md](DEVELOPMENT.md) for how to spin up a local dev server, seed demo data into the database, and preview UI changes before committing. It also contains important notes for AI assistants (e.g. no service worker / offline-first support is wanted, users always reach GRACe over the LAN via their Home Assistant server).
-
-This repository includes a manual CI testing suite for local development.
-
-**Prerequisites:**
-- PHP 8.1+ CLI
-- `php-sqlite3` extension (Required for DB tests)
-
-To run the suite:
-```bash
-bash tests/run_ci.sh
-```
-
-For full details, see [TESTING.md](TESTING.md).
-
-## Release Process
-
-For future edits, note that the version number is maintained in three places:
-1.  **`config.yaml`**: The source of truth for the Home Assistant Addon version.
-2.  **`grace_addon/files/general/www/public/nav.php`**: Displayed to the user in the top navigation bar.
-3.  **`CHANGELOG.md`**: Documenting changes for each version.
+Working on GRACe itself? [DEVELOPMENT.md](DEVELOPMENT.md) covers running it locally with demo data, and [TESTING.md](TESTING.md) covers the test suite. The rules every change must follow, for people and AI assistants alike, are in [AGENTS.md](AGENTS.md).

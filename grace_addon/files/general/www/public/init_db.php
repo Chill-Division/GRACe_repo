@@ -36,12 +36,11 @@ function initializeDatabase($dbPath = '/data/grace.db') {
                 primary_contact_phone TEXT
             );",
 
-            // Genetics
+            // Genetics (Breeder and Genetic Lineage were removed in 1.1.0,
+            // see removeLegacyGeneticsColumns() for how old installs upgrade)
             "CREATE TABLE IF NOT EXISTS Genetics (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
-                name TEXT NOT NULL,
-                breeder TEXT,
-                genetic_lineage TEXT
+                name TEXT NOT NULL
             );",
 
             // Plants
@@ -263,6 +262,80 @@ function performMigrations($pdo) {
             $pdo->rollBack();
             die("Migration failed: " . $e->getMessage());
         }
+    }
+
+    removeLegacyGeneticsColumns($pdo);
+}
+
+/**
+ * Breeder and Genetic Lineage were removed in 1.1.0 because nobody used them.
+ * Existing installs drop the two columns from Genetics here, on the first
+ * page load after the update. Anything people had typed into them is copied
+ * into LegacyGeneticsDetails first, so entered data is never thrown away (it
+ * also still shows up in "Download backup").
+ *
+ * ALTER TABLE ... DROP COLUMN rewrites the table in place, so genetics ids
+ * never change and every Plants/Flower link survives. Never rebuild Genetics
+ * with DROP TABLE plus a rename instead: foreign keys are on, and the
+ * ON DELETE SET NULL links would wipe every plant's and flower entry's
+ * genetics. tests/test_genetics_upgrade.php guards this.
+ *
+ * @param PDO $pdo
+ * @param string|null $sqliteVersion override for tests; defaults to the real version
+ */
+function removeLegacyGeneticsColumns($pdo, $sqliteVersion = null)
+{
+    $columns = array_column($pdo->query("PRAGMA table_info(Genetics)")->fetchAll(PDO::FETCH_ASSOC), 'name');
+    $legacyColumns = array_values(array_intersect(['breeder', 'genetic_lineage'], $columns));
+    if (!$legacyColumns) {
+        return; // fresh install, or already upgraded
+    }
+
+    // DROP COLUMN needs SQLite 3.35+. On anything older, leave the columns
+    // alone: nothing reads them any more, so they're harmless.
+    $sqliteVersion = $sqliteVersion ?? $pdo->query('SELECT sqlite_version()')->fetchColumn();
+    if (version_compare($sqliteVersion, '3.35.0', '<')) {
+        error_log("GRACe: SQLite $sqliteVersion cannot drop columns, leaving the unused Genetics columns in place");
+        return;
+    }
+
+    // Only values with real content count; blanks, empty strings and
+    // whitespace were never "filled in"
+    $breeder = in_array('breeder', $legacyColumns, true) ? "NULLIF(TRIM(breeder), '')" : 'NULL';
+    $lineage = in_array('genetic_lineage', $legacyColumns, true) ? "NULLIF(TRIM(genetic_lineage), '')" : 'NULL';
+    $filledIn = "($breeder IS NOT NULL OR $lineage IS NOT NULL)";
+
+    try {
+        $pdo->beginTransaction();
+
+        $filledCount = (int) $pdo->query("SELECT COUNT(*) FROM Genetics WHERE $filledIn")->fetchColumn();
+        if ($filledCount > 0) {
+            $pdo->exec("CREATE TABLE IF NOT EXISTS LegacyGeneticsDetails (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                genetics_id INTEGER,
+                genetics_name TEXT,
+                breeder TEXT,
+                genetic_lineage TEXT,
+                archived_at DATETIME
+            )");
+            $stmt = $pdo->prepare("INSERT INTO LegacyGeneticsDetails (genetics_id, genetics_name, breeder, genetic_lineage, archived_at)
+                                   SELECT id, name, $breeder, $lineage, ? FROM Genetics WHERE $filledIn ORDER BY id");
+            $stmt->execute([date('Y-m-d H:i:s')]);
+        }
+
+        foreach ($legacyColumns as $column) {
+            $pdo->exec("ALTER TABLE Genetics DROP COLUMN $column");
+        }
+
+        $pdo->commit();
+        error_log("GRACe: removed unused Genetics columns (" . implode(', ', $legacyColumns) . "), kept $filledCount filled-in entries in LegacyGeneticsDetails");
+    } catch (Exception $e) {
+        if ($pdo->inTransaction()) {
+            $pdo->rollBack();
+        }
+        // Never block the app over this: the columns are unused, so leaving
+        // them in place is safe, and the next page load will try again
+        error_log("GRACe: could not remove unused Genetics columns: " . $e->getMessage());
     }
 }
 
