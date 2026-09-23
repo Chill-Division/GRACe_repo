@@ -139,6 +139,33 @@ If the release changes how pages look, refresh the screenshots in
 `docs/screenshots/` too: the user guide and README use them, and every one
 shows the version number in the menu.
 
+## Refresh the screenshots
+
+`tests/capture_screenshots.ps1` retakes every screenshot the user guide and
+README use, on Windows with headless Microsoft Edge, against the dev server
+in WSL. Do it after the version bump and the new changelog entry, so the
+menu and the "What's new" shots show the new version.
+
+```bash
+# In WSL, from the repo root: a new-install demo, then the dev server
+php tests/seed_demo_data.php --force
+cd grace_addon/files/general/www/public && php -S 127.0.0.1:8420
+```
+
+Then, in PowerShell from the repo root:
+
+```powershell
+.\tests\capture_screenshots.ps1
+```
+
+Pass `-Only desktop-dashboard,mobile-dashboard` to retake just some. If
+PowerShell won't run scripts from the WSL folder, run it as
+`powershell -ExecutionPolicy Bypass -File .\tests\capture_screenshots.ps1`.
+The script fills in the forms so the guide shows realistic entries, and it
+takes the two "What's new" shots last, marking the notes unseen for those
+only. Look through the new PNGs before committing them. To add a shot, add a
+line to `$shots` in the script and show the PNG in `grace_addon/DOCS.md`.
+
 ## Rules
 
 The rules every change must follow live in [AGENTS.md](AGENTS.md), where AI
