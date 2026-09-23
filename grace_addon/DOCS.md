@@ -53,6 +53,8 @@ New genetics that isn't in the list yet? Choose **"+ Add new genetics…"** at t
 
 <img src="https://raw.githubusercontent.com/Chill-Division/GRACe_repo/main/docs/screenshots/desktop-receive-plants.png" alt="Receive plants form" width="900">
 
+<img src="https://raw.githubusercontent.com/Chill-Division/GRACe_repo/main/docs/screenshots/desktop-add-new-genetics.png" alt="Adding a new genetics without leaving the page" width="900">
+
 ## Flower coming in
 
 Once harvested plants have dried, weigh the flower and record it: Plant Tracking → **"Record dry weight change"**, choose the genetics, enter the weight in grams (to one decimal place, like 612.5), choose **Add**, and pick the reason **Harvest**. That weight is now in your dried-flower inventory.
@@ -159,11 +161,18 @@ Your ledger and every document you've uploaded live inside the GRACe add-on, so 
 
 Administration → **"Download backup"** is only for an extra, ad-hoc copy, for example to hand to an auditor. It contains your ledger but not the uploaded documents themselves (licenses, Chain of Custody photos and so on), and GRACe can't restore from it. Never use it as your main backup.
 
+# After an update
+
+The first time anyone opens GRACe after it updates, a **"What's new"** summary pops up, once for everyone. Long notes start folded: tap "Show more…" to read the lot, then "Got it" when you're done. Missed it, or want to read it again? Administration → **"What's new"** shows it any time.
+
+<img src="https://raw.githubusercontent.com/Chill-Division/GRACe_repo/main/docs/screenshots/desktop-whats-new.png" alt="The What's new pop-up after an update" width="900">
+
+<img src="https://raw.githubusercontent.com/Chill-Division/GRACe_repo/main/docs/screenshots/mobile-whats-new.png" alt="What's new on a phone" width="300">
+
 # Good to know
 
 - **Recent entries.** Receive plants, Record dry weight change and Harvest / Destroy / Send each list your last 10 entries under the form, newest first. Check there if you think something went in twice.
 - **Fixing a mistake.** History can't be edited, so correct it with another entry. Recorded 10 clones but only took 8? Process the 2 extras as destroyed. Typed 250 g instead of 25 g? Subtract 225 g with the reason Other and a note saying why. The correction is part of your record too.
-- **What's new.** After GRACe updates, the first person to open it sees a short "What's new" summary, once for everyone. Long notes start folded, so tap "Show more…" to read the lot. Missed it, or want to read it again? Administration → **"What's new"** shows it any time.
 - **Light or dark.** The sun/moon button in the top right switches themes, and GRACe remembers your choice.
 - **Phone tip.** Everything in this guide works from the Home Assistant app on your phone, so record harvests and sends while you're standing in the room.
 - **Times are NZ time.** Before version 1.1, GRACe saved plant and flower times in UTC, which is 12 or 13 hours behind NZ, so anything recorded before about 1pm on the 1st of a month counted towards the month before. Updating to 1.1 corrects the old entries as well. A few of them move into the month they really happened in, so an older monthly report you open again can differ slightly from the one you sent at the time.
