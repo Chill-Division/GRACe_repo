@@ -73,6 +73,8 @@ Ticking 88 boxes out of 90 is tedious, so use **Quick select**: choose the genet
 
 Before anything is written, GRACe shows you exactly what is about to happen and asks you to confirm. This is your chance to catch a mistake.
 
+If some of the ticked plants have already been processed, for example on another device or in another tab, GRACe changes nothing and reloads the list, so old entries can never be overwritten by accident.
+
 <img src="https://raw.githubusercontent.com/Chill-Division/GRACe_repo/main/docs/screenshots/desktop-harvest-confirm.png" alt="The confirmation step before plants are processed" width="900">
 
 ## Flower going out
