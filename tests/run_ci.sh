@@ -223,6 +223,17 @@ else
     FAILures=$((FAILures+1))
 fi
 
+# Run Double Submit Test
+echo ""
+echo "--- Double Submit Test ---"
+php tests/test_double_submit.php
+if [ $? -eq 0 ]; then
+    echo -e "${GREEN}[PASS]${NC} Saving exactly once verified"
+else
+    echo -e "${RED}[FAIL]${NC} Saving exactly once failed"
+    FAILures=$((FAILures+1))
+fi
+
 # Run Version Consistency Check
 echo ""
 echo "--- Version Consistency ---"

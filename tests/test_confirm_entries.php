@@ -33,11 +33,11 @@ $receive = source($publicDir, 'js/genetics.js');
 $flower = source($publicDir, 'js/transaction_form.js');
 
 check('Receive plants asks for confirmation before saving', strpos($receive, 'confirmAction({') !== false, true);
-check('Receive plants only submits after Confirm', preg_match('/confirmAction\(\{.*?\}\)\.then\(confirmed => \{\s*if \(!confirmed\) return;\s*form\.submit\(\);/s', $receive), 1);
+check('Receive plants only submits after Confirm', preg_match('/confirmAction\(\{.*?\}\)\.then\(confirmed => \{\s*if \(!confirmed\) return;\s*(form\.submit\(\)|submitOnce\(form\));/s', $receive), 1);
 check('Its summary names the count and genetics', strpos($receive, '× ${geneticsName}') !== false, true);
 
 check('Record dry weight asks for confirmation before saving', strpos($flower, 'confirmAction({') !== false, true);
-check('Record dry weight only submits after Confirm', preg_match('/confirmAction\(\{.*?\}\)\.then\(confirmed => \{\s*if \(!confirmed\) return;\s*form\.submit\(\);/s', $flower), 1);
+check('Record dry weight only submits after Confirm', preg_match('/confirmAction\(\{.*?\}\)\.then\(confirmed => \{\s*if \(!confirmed\) return;\s*(form\.submit\(\)|submitOnce\(form\));/s', $flower), 1);
 check('Its summary shows what on hand will be afterwards', strpos($flower, 'On hand after') !== false, true);
 check('Destroying flower gets the red confirm button', strpos($flower, "danger: reason === 'Destroy'") !== false, true);
 

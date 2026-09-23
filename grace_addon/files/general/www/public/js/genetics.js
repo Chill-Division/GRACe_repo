@@ -139,7 +139,7 @@ function initReceiveGenetics() {
             warningTick: `Yes, ${count} plants is right`
         }).then(confirmed => {
             if (!confirmed) return;
-            form.submit();
+            submitOnce(form);
         });
     });
 

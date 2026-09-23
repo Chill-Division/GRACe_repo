@@ -184,7 +184,7 @@ function initTransactionForm() {
             warningTick: `Yes, ${formatGrams(grams)} g is right`
         }).then(confirmed => {
             if (!confirmed) return;
-            form.submit();
+            submitOnce(form);
         });
     });
 

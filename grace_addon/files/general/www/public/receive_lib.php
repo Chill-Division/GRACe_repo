@@ -34,18 +34,21 @@ function receivePlants(PDO $pdo, array $input)
             . ' plants. Split it up if you really received more.'];
     }
 
-    // Times are NZ time; the harvest date stays blank until the plant leaves
-    // (the column's old default filled it with the UTC time)
-    $insert = $pdo->prepare("INSERT INTO Plants (genetics_id, status, date_created, date_harvested)
-                             VALUES (?, 'Growing', ?, NULL)");
-    $createdAt = ledgerTimestamp();
-    for ($i = 0; $i < $count; $i++) {
-        $insert->execute([$genetics['id'], $createdAt]);
-    }
+    // All or nothing: if anything fails partway (disk full, database busy),
+    // none of the batch is kept. Times are NZ time; the harvest date stays
+    // blank until the plant leaves (the old column default was UTC).
+    $growing = withWriteLock($pdo, function (PDO $pdo) use ($genetics, $count) {
+        $insert = $pdo->prepare("INSERT INTO Plants (genetics_id, status, date_created, date_harvested)
+                                 VALUES (?, 'Growing', ?, NULL)");
+        $createdAt = ledgerTimestamp();
+        for ($i = 0; $i < $count; $i++) {
+            $insert->execute([$genetics['id'], $createdAt]);
+        }
 
-    $stmt = $pdo->prepare("SELECT COUNT(*) FROM Plants WHERE genetics_id = ? AND status = 'Growing'");
-    $stmt->execute([$genetics['id']]);
-    $growing = (int) $stmt->fetchColumn();
+        $stmt = $pdo->prepare("SELECT COUNT(*) FROM Plants WHERE genetics_id = ? AND status = 'Growing'");
+        $stmt->execute([$genetics['id']]);
+        return (int) $stmt->fetchColumn();
+    });
 
     return ['success' => true, 'message' => sprintf('Added %d %s %s. You now have %d growing.',
         $count, $genetics['name'], $count === 1 ? 'plant' : 'plants', $growing)];
