@@ -87,12 +87,38 @@ function initReceiveGenetics() {
         statusMessage.textContent = message;
         statusMessage.classList.add(type);
         statusMessage.style.display = 'block';
+        statusMessage.setAttribute('role', type === 'error' ? 'alert' : 'status');
 
-        setTimeout(() => {
-            statusMessage.style.display = 'none';
-            statusMessage.classList.remove(type);
-        }, 5000);
+        // Errors stay until the next entry, so there's time to read why
+        if (type !== 'error') {
+            setTimeout(() => {
+                statusMessage.style.display = 'none';
+                statusMessage.classList.remove(type);
+            }, 8000);
+        }
     }
+
+    // How many of the chosen genetics are already growing / drying
+    const stockHint = document.getElementById('stockHint');
+    let stock = {};
+    function showStock() {
+        if (!stockHint) return;
+        const id = geneticsDropdown.value;
+        if (!/^\d+$/.test(id)) {
+            stockHint.textContent = ''; // nothing chosen, or "+ Add new genetics…"
+            return;
+        }
+        const name = geneticsDropdown.options[geneticsDropdown.selectedIndex].textContent;
+        const growing = stock[id] ? stock[id].growing : 0;
+        const drying = stock[id] ? stock[id].drying : 0;
+        stockHint.textContent = `Growing now: ${growing} ${name} plant${growing === 1 ? '' : 's'}`
+            + (drying ? `, plus ${drying} drying.` : '.');
+    }
+    geneticsDropdown.addEventListener('change', showStock);
+    fetch('get_stock_on_hand.php')
+        .then(response => response.json())
+        .then(data => { stock = data || {}; showStock(); })
+        .catch(error => console.error('Error fetching stock on hand:', error));
 
     // Fetch genetics data and populate dropdown on load
     fetch('get_genetics.php')
@@ -105,6 +131,7 @@ function initReceiveGenetics() {
                 geneticsDropdown.appendChild(option);
             });
             if (submittedData.geneticsName) geneticsDropdown.value = submittedData.geneticsName;
+            showStock();
 
             // "+ Add new genetics…" at the bottom of the list (quick_add.js)
             if (typeof enableQuickAddGenetics === 'function') enableQuickAddGenetics(geneticsDropdown);

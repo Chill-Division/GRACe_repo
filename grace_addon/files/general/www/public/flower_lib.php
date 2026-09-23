@@ -25,6 +25,40 @@ function flowerOnHand(PDO $pdo, $geneticsId)
     return round((float) $stmt->fetchColumn(), 2);
 }
 
+/**
+ * What's on hand for every genetics, for the entry forms' hints
+ * (get_stock_on_hand.php): growing and drying plants, and grams of flower.
+ *
+ * @return array<int, array{growing: int, drying: int, flower: float}> keyed by genetics id
+ */
+function stockByGenetics(PDO $pdo)
+{
+    $stock = [];
+    foreach ($pdo->query("SELECT id FROM Genetics ORDER BY id")->fetchAll(PDO::FETCH_COLUMN) as $id) {
+        $stock[(int) $id] = ['growing' => 0, 'drying' => 0, 'flower' => 0.0];
+    }
+
+    $plants = $pdo->query("SELECT genetics_id,
+                                  SUM(status = 'Growing') AS growing,
+                                  SUM(status = 'Harvested - Drying') AS drying
+                           FROM Plants GROUP BY genetics_id");
+    foreach ($plants->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        if (isset($stock[(int) $row['genetics_id']])) {
+            $stock[(int) $row['genetics_id']]['growing'] = (int) $row['growing'];
+            $stock[(int) $row['genetics_id']]['drying'] = (int) $row['drying'];
+        }
+    }
+
+    $flower = $pdo->query("SELECT genetics_id, SUM(weight) AS grams FROM Flower GROUP BY genetics_id");
+    foreach ($flower->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        if (isset($stock[(int) $row['genetics_id']])) {
+            $stock[(int) $row['genetics_id']]['flower'] = round((float) $row['grams'], 2);
+        }
+    }
+
+    return $stock;
+}
+
 /** 1234.5 -> "1,234.5", 70.0 -> "70" */
 function formatFlowerGrams($grams)
 {
@@ -80,20 +114,20 @@ function recordFlowerTransaction(PDO $pdo, array $input)
         }
     }
 
-    $companyId = null;
+    $company = null;
     if ($type === 'Subtract' && in_array($reason, GRACE_FLOWER_COMPANY_REASONS, true)) {
-        $stmt = $pdo->prepare("SELECT id FROM Companies WHERE id = ?");
+        $stmt = $pdo->prepare("SELECT id, name FROM Companies WHERE id = ?");
         $stmt->execute([(int) ($input['companyId'] ?? 0)]);
-        $companyId = $stmt->fetchColumn();
-        if ($companyId === false) {
+        $company = $stmt->fetch(PDO::FETCH_ASSOC);
+        if (!$company) {
             return $refuse('Please select a company for Testing or Send external transactions.');
         }
-        $companyId = (int) $companyId;
     }
+    $companyId = $company ? (int) $company['id'] : null;
 
     // The stock check and the entry happen under the write lock, so two
     // entries at once can't both take the last of the stock
-    return withWriteLock($pdo, function (PDO $pdo) use ($genetics, $weight, $type, $finalReason, $companyId, $refuse) {
+    return withWriteLock($pdo, function (PDO $pdo) use ($genetics, $weight, $type, $finalReason, $company, $companyId, $refuse) {
         // Compared at 0.1 g, the precision weights are entered in, so a
         // balance with hundredths from an older version can still be cleared
         $onHand = flowerOnHand($pdo, $genetics['id']);
@@ -115,7 +149,16 @@ function recordFlowerTransaction(PDO $pdo, array $input)
             $companyId,
         ]);
 
-        return ['success' => true, 'message' => 'Flower transaction recorded successfully',
-                'onHand' => flowerOnHand($pdo, $genetics['id'])];
+        // Say exactly what happened: "Subtracted 10 g of White Widow
+        // (Testing, Lab Ltd). On hand now: 602.5 g."
+        $onHandNow = flowerOnHand($pdo, $genetics['id']);
+        $message = sprintf('%s %s g of %s (%s). On hand now: %s g.',
+            $type === 'Add' ? 'Added' : 'Subtracted',
+            formatFlowerGrams($weight),
+            $genetics['name'],
+            $finalReason . ($company ? ", {$company['name']}" : ''),
+            formatFlowerGrams($onHandNow)
+        );
+        return ['success' => true, 'message' => $message, 'onHand' => $onHandNow];
     });
 }

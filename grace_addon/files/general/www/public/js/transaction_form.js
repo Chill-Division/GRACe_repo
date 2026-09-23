@@ -61,9 +61,46 @@ function initTransactionForm() {
             setTimeout(() => {
                 statusMessage.style.display = 'none';
                 statusMessage.classList.remove(type);
-            }, 5000);
+            }, 8000);
         }
     }
+
+    // Flower on hand for the chosen genetics, and what it will be after this
+    // entry. The server refuses a Subtract of more than is on hand; this
+    // just warns before you get that far.
+    const stockHint = document.getElementById('stockHint');
+    let stock = {};
+    function updateStockHint() {
+        if (!stockHint) return;
+        const id = geneticsDropdown.value;
+        if (!/^\d+$/.test(id)) {
+            stockHint.textContent = ''; // nothing chosen, or "+ Add new genetics…"
+            stockHint.classList.remove('stock-hint--warning');
+            return;
+        }
+        const name = geneticsDropdown.options[geneticsDropdown.selectedIndex].textContent;
+        const onHand = stock[id] ? stock[id].flower : 0;
+        const weight = parseFloat(form.weight.value);
+        let text = `On hand: ${formatGrams(onHand)} g of ${name}.`;
+        let warning = false;
+        if (weight > 0) {
+            const after = transactionTypeDropdown.value === 'Subtract' ? onHand - weight : onHand + weight;
+            if (after < -0.001) {
+                text += ' That is more than is on hand.';
+                warning = true;
+            } else {
+                text += ` After this: ${formatGrams(after)} g.`;
+            }
+        }
+        stockHint.textContent = text;
+        stockHint.classList.toggle('stock-hint--warning', warning);
+    }
+    [geneticsDropdown, transactionTypeDropdown].forEach(el => el.addEventListener('change', updateStockHint));
+    form.weight.addEventListener('input', updateStockHint);
+    fetch('get_stock_on_hand.php')
+        .then(response => response.json())
+        .then(data => { stock = data || {}; updateStockHint(); })
+        .catch(error => console.error('Error fetching stock on hand:', error));
 
     transactionTypeDropdown.addEventListener('change', updateReasonOptions);
     reasonDropdown.addEventListener('change', updateCompanyVisibility);
@@ -144,6 +181,7 @@ function initTransactionForm() {
             });
             // Re-select if needed
             if (submittedData.geneticsName) geneticsDropdown.value = submittedData.geneticsName;
+            updateStockHint();
 
             // "+ Add new genetics…" at the bottom of the list (quick_add.js)
             if (typeof enableQuickAddGenetics === 'function') enableQuickAddGenetics(geneticsDropdown);

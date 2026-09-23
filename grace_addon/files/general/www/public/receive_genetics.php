@@ -21,6 +21,7 @@ require 'header.php';
                 <select id="geneticsName" name="geneticsName" class="input" required>
                     <option value="" disabled selected>Select Genetics</option>
                 </select>
+                <small id="stockHint" aria-live="polite"></small>
 
                 <button type="submit" class="button">Add plants</button>
             </form>
