@@ -201,6 +201,17 @@ else
     FAILures=$((FAILures+1))
 fi
 
+# Run Confirm Entry Test
+echo ""
+echo "--- Confirm Entry Test ---"
+php tests/test_confirm_entries.php
+if [ $? -eq 0 ]; then
+    echo -e "${GREEN}[PASS]${NC} Confirm steps verified"
+else
+    echo -e "${RED}[FAIL]${NC} Confirm steps failed"
+    FAILures=$((FAILures+1))
+fi
+
 # Run Version Consistency Check
 echo ""
 echo "--- Version Consistency ---"

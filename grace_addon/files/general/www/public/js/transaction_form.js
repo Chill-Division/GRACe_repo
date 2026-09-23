@@ -152,7 +152,34 @@ function initTransactionForm() {
             showToast('Please select a company for Testing or Send external transactions.', 'error');
             return;
         }
-        this.submit();
+
+        // Show exactly what's about to be recorded before saving it: the
+        // ledger can't be edited afterwards
+        const type = transactionTypeDropdown.value;
+        const reason = reasonDropdown.value;
+        const verb = type === 'Subtract' ? 'Subtract' : 'Add';
+        const grams = parseFloat(form.weight.value);
+        const geneticsName = geneticsDropdown.options[geneticsDropdown.selectedIndex].textContent;
+        const onHand = stock[geneticsDropdown.value] ? stock[geneticsDropdown.value].flower : 0;
+        const items = [
+            `${verb} ${formatGrams(grams)} g of ${geneticsName}`,
+            `Reason: ${reason === 'Other' ? form.otherReason.value.trim() : reason}`
+        ];
+        if (companySelection.style.display !== 'none' && companyDropdown.value) {
+            items.push(`Company: ${companyDropdown.options[companyDropdown.selectedIndex].textContent}`);
+        }
+        items.push(`On hand after: ${formatGrams(type === 'Subtract' ? onHand - grams : onHand + grams)} g`);
+
+        confirmAction({
+            title: `${verb} ${formatGrams(grams)} g of ${geneticsName}?`,
+            message: "This is recorded in the ledger and can't be edited afterwards.",
+            items: items,
+            confirmLabel: `${verb} ${formatGrams(grams)} g`,
+            danger: reason === 'Destroy'
+        }).then(confirmed => {
+            if (!confirmed) return;
+            form.submit();
+        });
     });
 
     // Initial setup
