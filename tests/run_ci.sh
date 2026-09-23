@@ -157,6 +157,17 @@ else
     FAILures=$((FAILures+1))
 fi
 
+# Run Genetics Duplicate Test
+echo ""
+echo "--- Genetics Duplicate Test ---"
+php tests/test_genetics_duplicates.php
+if [ $? -eq 0 ]; then
+    echo -e "${GREEN}[PASS]${NC} Genetics duplicate check verified"
+else
+    echo -e "${RED}[FAIL]${NC} Genetics duplicate check failed"
+    FAILures=$((FAILures+1))
+fi
+
 # Run Static Checks
 echo ""
 echo "--- Static Analysis ---"

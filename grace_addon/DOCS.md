@@ -22,7 +22,7 @@ GRACe works the same on a PC, a tablet, or a phone through the Home Assistant ap
 
 **1. Your company details.** The first time GRACe opens it asks for your company name, license number, address and contact email. These are printed on every Chain of Custody document and go in the subject line of your Agency emails, so get them right. You can change them later under Administration → "Update company information".
 
-**2. Your genetics.** Go to Administration → "Add New Genetics" and add every strain you have as plants or flower, or expect to have. You can't record a plant until its genetics exist.
+**2. Your genetics.** Go to Administration → "Add New Genetics" and add every strain you have as plants or flower, or expect to have. You can't record a plant until its genetics exist. Don't worry about typing a name twice: GRACe spots names that differ only by capitals or spaces, so "white widow" won't become a second White Widow.
 
 **3. Your verified companies.** Administration → "Add Verified Company" is where you add the testing labs and buyers you send product to. They then show up in a drop-down whenever you send something. Their license numbers change every year, so when that happens use "Edit Verified Companies" to update them (companies can be edited but never deleted, because your records refer to them).
 
