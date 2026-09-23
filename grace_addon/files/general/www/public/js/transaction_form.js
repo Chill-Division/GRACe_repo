@@ -54,11 +54,15 @@ function initTransactionForm() {
         statusMessage.textContent = message;
         statusMessage.classList.add(type);
         statusMessage.style.display = 'block';
+        statusMessage.setAttribute('role', type === 'error' ? 'alert' : 'status');
 
-        setTimeout(() => {
-            statusMessage.style.display = 'none';
-            statusMessage.classList.remove(type);
-        }, 5000);
+        // Errors stay until the next entry, so there's time to read why
+        if (type !== 'error') {
+            setTimeout(() => {
+                statusMessage.style.display = 'none';
+                statusMessage.classList.remove(type);
+            }, 5000);
+        }
     }
 
     transactionTypeDropdown.addEventListener('change', updateReasonOptions);

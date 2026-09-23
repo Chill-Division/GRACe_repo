@@ -179,6 +179,17 @@ else
     FAILures=$((FAILures+1))
 fi
 
+# Run Flower Stock Test
+echo ""
+echo "--- Flower Stock Test ---"
+php tests/test_flower_stock.php
+if [ $? -eq 0 ]; then
+    echo -e "${GREEN}[PASS]${NC} Flower stock checks verified"
+else
+    echo -e "${RED}[FAIL]${NC} Flower stock checks failed"
+    FAILures=$((FAILures+1))
+fi
+
 # Run Version Consistency Check
 echo ""
 echo "--- Version Consistency ---"

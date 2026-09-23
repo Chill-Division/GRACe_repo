@@ -215,8 +215,8 @@ foreach (glob($publicDir . '/*.php') as $file) {
 }
 check('No page or handler uses the database clock (UTC) for times', $offenders, []);
 
-// (Harvest / Destroy / Send does its writing in harvest_lib.php)
-foreach (['handle_receive_genetics.php', 'harvest_lib.php', 'record_flower_transaction.php'] as $handler) {
+// (Harvest / Destroy / Send and Record dry weight do their writing in libs)
+foreach (['handle_receive_genetics.php', 'harvest_lib.php', 'flower_lib.php'] as $handler) {
     check("$handler stamps entries with ledgerTimestamp()",
         strpos(file_get_contents($publicDir . '/' . $handler), 'ledgerTimestamp()') !== false, true);
 }

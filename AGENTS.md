@@ -82,6 +82,12 @@ an update: `performMigrations()` in `init_db.php` runs on every request.
   database and every uploaded document. The "Download backup" JSON export is
   an ad-hoc extra copy for audits. It leaves out the uploaded files and
   GRACe can't restore from it, so never present it as the main backup.
+- Flower weights are grams to one decimal place (0.1 g), in every form and
+  every server check. GRACe's users aren't GMP facilities, and neither their
+  work nor NZ's Medicinal Cannabis Agency needs hundredths of a gram, so
+  don't bring back 0.01 g inputs. Older installs may hold entries with
+  hundredths: show stored values as they are, and compare stock at 0.1 g so
+  such a balance can still be cleared (see `recordFlowerTransaction()`).
 
 ## 4. Before you open a pull request
 

@@ -53,7 +53,7 @@ New genetics that isn't in the list yet? Choose **"+ Add new genetics…"** at t
 
 ## Flower coming in
 
-Once harvested plants have dried, weigh the flower and record it: Plant Tracking → **"Record dry weight change"**, choose the genetics, enter the weight in grams, choose **Add**, and pick the reason **Harvest**. That weight is now in your dried-flower inventory.
+Once harvested plants have dried, weigh the flower and record it: Plant Tracking → **"Record dry weight change"**, choose the genetics, enter the weight in grams (to one decimal place, like 612.5), choose **Add**, and pick the reason **Harvest**. That weight is now in your dried-flower inventory.
 
 If flower arrives from someone else (a sample from another grower, say), use Add with the reason **Other**.
 
@@ -89,6 +89,8 @@ Plant Tracking → **"Record dry weight change"** again, but this time choose **
 - **Other**: anything else, with a note.
 
 Testing and Send external are what appear in your monthly materials-out report.
+
+You can't subtract more flower than GRACe has on record for that genetics. If you really do have more than it thinks (say a harvest was never entered), record the missing amount with **Add** first.
 
 <img src="https://raw.githubusercontent.com/Chill-Division/GRACe_repo/main/docs/screenshots/desktop-record-dry-weight.png" alt="Recording flower sent out" width="900">
 

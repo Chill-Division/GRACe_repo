@@ -1,60 +1,25 @@
 <?php
 require_once 'init_db.php';
+require_once 'flower_lib.php';
 
-// Ensure a connection using PDO
-$pdo = initializeDatabase();
-
-// Check if the form is submitted
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Get data from the form
-    $geneticsId = $_POST['geneticsName'];
-    $weight = $_POST['weight'];
-    $transactionType = $_POST['transactionType'];
-    $reason = $_POST['reason'];
-    $otherReason = $_POST['otherReason'] ?? null;
-    $companyId = $_POST['companyId'] ?? null;
-
-    // Basic input validation
-    if (empty($geneticsId) || empty($weight) || empty($transactionType) || empty($reason)) {
-        header("Location: record_dry_weight.php?error=" . urlencode("All fields are required"));
-        exit();
-    }
-
-    // If the reason is 'Other', ensure 'otherReason' is provided
-    if ($reason === 'Other' && empty($otherReason)) {
-        header("Location: record_dry_weight.php?error=" . urlencode("Please provide the 'Other' reason"));
-        exit();
-    }
-
-    // Validate company selection for 'Testing' and 'Send external' reasons
-    if ($transactionType === 'Subtract' && ($reason === 'Testing' || $reason === 'Send external') && empty($companyId)) {
-        header("Location: record_dry_weight.php?error=" . urlencode("Please select a company for Testing or Send external transactions"));
-        exit();
-    }
-
-    // Adjust weight based on transaction type
-    if ($transactionType === 'Subtract') {
-        $weight *= -1;
-    }
-
-    // Use the appropriate reason based on the selection
-    $finalReason = ($reason === 'Other') ? $otherReason : $reason;
-
-    // Insert into Flower table
-    try {
-        $sql = "INSERT INTO Flower (genetics_id, weight, transaction_type, transaction_date, reason, company_id)
-                VALUES (:geneticsId, :weight, :transactionType, :transactionDate, :finalReason, :companyId)";
-        $stmt = $pdo->prepare($sql);
-        $stmt->execute([
-            ':geneticsId' => $geneticsId,
-            ':weight' => $weight,
-            ':transactionType' => $transactionType,
-            ':transactionDate' => ledgerTimestamp(), // NZ time, the same clock the reports use
-            ':finalReason' => $finalReason,
-            ':companyId' => $companyId,
-        ]);
-        header("Location: record_dry_weight.php?success=" . urlencode("Flower transaction recorded successfully"));
-    } catch (PDOException $e) {
-        header("Location: record_dry_weight.php?error=" . urlencode("Error recording transaction: " . $e->getMessage()));
-    }
+if ($_SERVER["REQUEST_METHOD"] !== "POST") {
+    header("Location: record_dry_weight.php");
+    exit();
 }
+
+try {
+    $pdo = initializeDatabase();
+    // Checks every field, and refuses a Subtract of more than is on hand
+    $result = recordFlowerTransaction($pdo, $_POST);
+} catch (PDOException $e) {
+    $result = ['success' => false, 'message' => 'Error recording transaction: ' . $e->getMessage()];
+}
+
+if ($result['success']) {
+    header("Location: record_dry_weight.php?success=" . urlencode($result['message']));
+} else {
+    // Back to the form with the message and everything that was typed
+    $typed = array_intersect_key($_POST, array_flip(['geneticsName', 'weight', 'transactionType', 'reason', 'otherReason', 'companyId']));
+    header("Location: record_dry_weight.php?error=" . urlencode($result['message']) . "&data=" . urlencode(json_encode($typed)));
+}
+exit();
