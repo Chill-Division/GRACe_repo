@@ -92,6 +92,7 @@ bash tests/run_ci.sh
 *   **Timezone:** Verifies `Pacific/Auckland` is set.
 *   **Security:** Scans for dangerous relative path usage (`__DIR__ . '/uploads'`).
 *   **Duplicates:** Scans for duplicate `<script src="...">` tags in PHP files (prevent redeclaration errors).
+*   **PHP extensions:** Fails on `ctype_*` or `mb_*` functions. The add-on image only loads `pdo`, `pdo_sqlite` and `session` on top of PHP's core, so they would crash in production even though they work on a dev PC.
 
 ### 14. Version Consistency (`tests/test_version_consistency.php`)
 *   **Why:** Ensures the version number is identical across:

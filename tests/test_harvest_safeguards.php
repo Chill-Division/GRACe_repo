@@ -87,6 +87,7 @@ check('Send without a company is refused', processPlants($pdo, [1], 'send', null
     'Choose which company the plants were sent to.');
 check('Send to a company that does not exist is refused', processPlants($pdo, [1], 'send', 999)['success'], false);
 check('Plant ids that are not numbers are refused', processPlants($pdo, ['1 OR 1=1'], 'destroy', null)['success'], false);
+check('...including a number with a line break after it', processPlants($pdo, ["1\n"], 'destroy', null)['success'], false);
 check('An empty selection is refused', processPlants($pdo, [], 'destroy', null)['success'], false);
 check('Nothing changed after all the refused requests', $unchanged(range(1, 8)), $snapshot);
 

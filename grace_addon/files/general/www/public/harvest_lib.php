@@ -42,7 +42,7 @@ function processPlants(PDO $pdo, $plantIds, $action, $companyId)
     }
     $ids = [];
     foreach ($plantIds as $id) {
-        if (!(is_int($id) || (is_string($id) && ctype_digit($id))) || (int) $id <= 0) {
+        if (!(is_int($id) || (is_string($id) && preg_match('/^[0-9]+$/D', $id))) || (int) $id <= 0) {
             return $refuse('That plant selection is not valid. Nothing was changed.');
         }
         $ids[(int) $id] = true; // a plant ticked twice counts once
@@ -51,7 +51,7 @@ function processPlants(PDO $pdo, $plantIds, $action, $companyId)
 
     $company = null;
     if ($action === 'send') {
-        if (!(is_int($companyId) || (is_string($companyId) && ctype_digit($companyId)))) {
+        if (!(is_int($companyId) || (is_string($companyId) && preg_match('/^[0-9]+$/D', $companyId)))) {
             return $refuse('Choose which company the plants were sent to.');
         }
         $stmt = $pdo->prepare("SELECT id, name FROM Companies WHERE id = ?");

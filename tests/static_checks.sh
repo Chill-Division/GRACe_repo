@@ -55,6 +55,16 @@ find grace_addon/files/general/www/public/ -name "*.php" -print0 | while IFS= re
     fi
 done
 
+# 7. Only use PHP functions the add-on image has. Its Dockerfile loads just
+#    pdo, pdo_sqlite and session on top of PHP's core, so the ctype and
+#    mbstring functions (present on most dev PCs) crash in production.
+if grep -nE "\b(ctype|mb)_[a-z_]+\s*\(" grace_addon/files/general/www/public/*.php; then
+    echo "[FAIL] Found ctype_/mb_ functions above, which the add-on image doesn't have"
+    FAIL=1
+else
+    echo "[PASS] Only PHP functions the add-on image provides"
+fi
+
 echo "Static Analysis Complete"
 if [ $FAIL -eq 1 ]; then
     exit 1

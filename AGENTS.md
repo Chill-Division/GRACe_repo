@@ -73,6 +73,11 @@ an update: `performMigrations()` in `init_db.php` runs on every request.
   their LAN through their Home Assistant server. Pico CSS and jQuery are
   vendored (`css/vendor/`, `js/vendor/`) only because the Home Assistant
   server itself may have no internet access.
+- The add-on image runs PHP 8.3 with only `pdo`, `pdo_sqlite` and `session`
+  on top of PHP's core (see `grace_addon/Dockerfile`). Functions from other
+  extensions, such as `ctype_digit()`, `mb_strtolower()` or `iconv()`, work
+  on a dev PC but crash in production. Use `preg_match()` and plain string
+  functions, or guard with `function_exists()`.
 - Home Assistant backups are the backup plan: they include `/data`, so the
   database and every uploaded document. The "Download backup" JSON export is
   an ad-hoc extra copy for audits. It leaves out the uploaded files and
