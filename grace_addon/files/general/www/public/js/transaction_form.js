@@ -140,6 +140,9 @@ function initTransactionForm() {
             });
             // Re-select if needed
             if (submittedData.geneticsName) geneticsDropdown.value = submittedData.geneticsName;
+
+            // "+ Add new genetics…" at the bottom of the list (quick_add.js)
+            if (typeof enableQuickAddGenetics === 'function') enableQuickAddGenetics(geneticsDropdown);
         })
         .catch(error => console.error('Error fetching genetics:', error));
 

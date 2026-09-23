@@ -71,16 +71,16 @@ function initReceiveGenetics() {
     const successMessage = urlParams.get('success');
     const errorMessage = urlParams.get('error');
 
+    // Pre-populate the form with the submitted data after an error (the
+    // genetics choice is restored once the list has loaded, below)
+    const submittedData = errorMessage ? JSON.parse(urlParams.get('data') || '{}') : {};
+
     if (successMessage) {
         showStatusMessage(successMessage, 'success');
         form.reset(); // Clear the form
     } else if (errorMessage) {
         showStatusMessage(errorMessage, 'error');
-
-        // Pre-populate the form with the submitted data (if available)
-        const submittedData = JSON.parse(urlParams.get('data') || '{}');
         if (form.plantCount) form.plantCount.value = submittedData.plantCount || '';
-        if (form.geneticsName) form.geneticsName.value = submittedData.geneticsName || '';
     }
 
     function showStatusMessage(message, type) {
@@ -104,6 +104,10 @@ function initReceiveGenetics() {
                 option.textContent = geneticsItem.name;
                 geneticsDropdown.appendChild(option);
             });
+            if (submittedData.geneticsName) geneticsDropdown.value = submittedData.geneticsName;
+
+            // "+ Add new genetics…" at the bottom of the list (quick_add.js)
+            if (typeof enableQuickAddGenetics === 'function') enableQuickAddGenetics(geneticsDropdown);
         })
         .catch(error => console.error('Error fetching genetics:', error));
 }

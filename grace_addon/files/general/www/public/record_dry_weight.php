@@ -49,7 +49,8 @@ require 'header.php';
         </article>
     </main>
 
-    <script src="js/transaction_form.js"></script>
+    <script src="js/quick_add.js?v=<?php echo GRACE_ASSET_VERSION; ?>"></script>
+    <script src="js/transaction_form.js?v=<?php echo GRACE_ASSET_VERSION; ?>"></script>
     <script>
         document.addEventListener('DOMContentLoaded', initTransactionForm);
     </script>

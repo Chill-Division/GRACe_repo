@@ -810,6 +810,24 @@ article {
   color: #ffffff;
 }
 
+/* "+ Add new…" pop-up forms (js/quick_add.js) */
+.grace-modal.quick-add article {
+  width: calc(100vw - 2rem);
+  max-width: 30rem;
+  max-height: calc(100vh - 2rem);
+  overflow-y: auto;
+}
+
+.grace-modal.quick-add label {
+  font-size: 0.9rem;
+}
+
+.grace-modal .quick-add-error {
+  margin: 0.25rem 0 0;
+  color: var(--g-danger);
+  font-size: 0.9rem;
+}
+
 .grace-modal .modal-danger:hover,
 .grace-modal .modal-danger:focus {
   background: #991b1b;

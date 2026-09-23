@@ -47,6 +47,8 @@ It also tells you when a report is due:
 
 Plant Tracking → **"Receive plants or take clones"**. Use this for clones you take from a mother plant, plants received from another license holder, and plants declared under Form D. Enter how many and which genetics, then "Add plants". Each one becomes a plant in your ledger with today's date, and you'll see it counted under "Plants growing" on the Dashboard.
 
+New genetics that isn't in the list yet? Choose **"+ Add new genetics…"** at the bottom of the list, type the name and it's added and selected, without leaving the page. The same works on "Record dry weight change".
+
 <img src="https://raw.githubusercontent.com/Chill-Division/GRACe_repo/main/docs/screenshots/desktop-receive-plants.png" alt="Receive plants form" width="900">
 
 ## Flower coming in
