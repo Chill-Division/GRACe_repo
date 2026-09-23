@@ -111,4 +111,9 @@ require 'header.php';
         </section>
     </main>
 
+    <?php if (($_GET['saved'] ?? '') === 'company'): ?>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => showToast('Company details saved.', 'success'));
+    </script>
+    <?php endif; ?>
 <?php require 'footer.php'; ?>

@@ -42,7 +42,7 @@ require 'header.php';
           data-company-name="<?php echo htmlspecialchars($companyName); ?>"
           data-company-license="<?php echo htmlspecialchars($companyLicense); ?>">
         <hgroup class="page-header">
-            <h1><?php echo $reportHeading; ?></h1>
+            <h1><?php echo htmlspecialchars($reportHeading); ?></h1>
             <p><?php echo htmlspecialchars($reportMonthLabel); ?>, pre-formatted and ready to send to the Agency.</p>
         </hgroup>
 

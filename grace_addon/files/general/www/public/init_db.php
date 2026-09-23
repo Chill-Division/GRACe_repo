@@ -295,6 +295,64 @@ function performMigrations($pdo) {
 
     removeLegacyGeneticsColumns($pdo);
     convertLedgerTimesToNzTime($pdo);
+    runDataFixOnce($pdo, 'own-company-quotes', 'repairOwnCompanyQuotes');
+}
+
+/** The table that records one-off data fixes, so each runs exactly once. */
+function ensureDataMigrationsTable($pdo)
+{
+    $pdo->exec("CREATE TABLE IF NOT EXISTS DataMigrations (
+        name TEXT PRIMARY KEY,
+        status TEXT NOT NULL,
+        details TEXT,
+        updated_at DATETIME
+    )");
+}
+
+/**
+ * Run a one-off data fix exactly once per install and record it in
+ * DataMigrations. $fix($pdo) runs under the write lock and returns details
+ * worth keeping (such as how many rows it changed). If it fails, nothing is
+ * recorded and the next page load tries again; it never blocks the app.
+ */
+function runDataFixOnce($pdo, $name, callable $fix)
+{
+    try {
+        ensureDataMigrationsTable($pdo);
+        $status = $pdo->prepare("SELECT status FROM DataMigrations WHERE name = ?");
+        $status->execute([$name]);
+        if ($status->fetchColumn() === 'done' || $pdo->inTransaction()) {
+            return;
+        }
+
+        withWriteLock($pdo, function ($pdo) use ($name, $fix, $status) {
+            $status->execute([$name]);
+            if ($status->fetchColumn() === 'done') {
+                return; // another page load got there first
+            }
+            $details = $fix($pdo);
+            $pdo->prepare("INSERT OR REPLACE INTO DataMigrations (name, status, details, updated_at) VALUES (?, 'done', ?, ?)")
+                ->execute([$name, json_encode($details), ledgerTimestamp()]);
+        });
+    } catch (Throwable $e) {
+        error_log("GRACe: one-off data fix '$name' failed, will try again: " . $e->getMessage());
+    }
+}
+
+/**
+ * 1.0.x saved your own company details through FILTER_SANITIZE_STRING, which
+ * stores ' and " as &#39; and &#34;, so "Joe's Farm" appeared in Agency
+ * emails as "Joe&#39;s Farm". Put the real characters back (1.1.0).
+ */
+function repairOwnCompanyQuotes($pdo)
+{
+    $changed = 0;
+    foreach (['company_name', 'company_license_number', 'company_address'] as $column) {
+        $changed += $pdo->exec("UPDATE OwnCompany
+                                SET $column = REPLACE(REPLACE($column, '&#39;', ''''), '&#34;', '\"')
+                                WHERE $column LIKE '%&#39;%' OR $column LIKE '%&#34;%'");
+    }
+    return ['fieldsRepaired' => $changed];
 }
 
 const GRACE_NZ_TIME_MIGRATION = 'ledger-times-to-nz-time';
@@ -327,12 +385,7 @@ function convertLedgerTimesToNzTime($pdo)
             return; // not a GRACe ledger (only happens in tests)
         }
 
-        $pdo->exec("CREATE TABLE IF NOT EXISTS DataMigrations (
-            name TEXT PRIMARY KEY,
-            status TEXT NOT NULL,
-            details TEXT,
-            updated_at DATETIME
-        )");
+        ensureDataMigrationsTable($pdo);
 
         $findJob = $pdo->prepare("SELECT status, details FROM DataMigrations WHERE name = ?");
         $findJob->execute([GRACE_NZ_TIME_MIGRATION]);

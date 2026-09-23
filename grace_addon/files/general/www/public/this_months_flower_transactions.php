@@ -29,7 +29,7 @@ require 'header.php';
 
     <main class="container" data-endpoint="get_this_months_flower_transactions.php">
         <hgroup class="page-header">
-            <h1><?php echo $reportHeading; ?></h1>
+            <h1><?php echo htmlspecialchars($reportHeading); ?></h1>
             <p>Pre-formatted and ready to send to the Agency.</p>
         </hgroup>
 

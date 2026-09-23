@@ -113,6 +113,17 @@ else
     FAILures=$((FAILures+1))
 fi
 
+# Run Own Company Test
+echo ""
+echo "--- Own Company Test ---"
+php tests/test_own_company.php
+if [ $? -eq 0 ]; then
+    echo -e "${GREEN}[PASS]${NC} Own company details verified"
+else
+    echo -e "${RED}[FAIL]${NC} Own company details failed"
+    FAILures=$((FAILures+1))
+fi
+
 # Run License Alerts Test
 echo ""
 echo "--- License Alerts Test ---"

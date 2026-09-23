@@ -110,22 +110,22 @@ require 'header.php';
             if (choice === 'us') {
                 detailElement.innerHTML = `
                     <label>Company Name:</label>
-                    <input type="text" name="${prefix}CompanyName" class="input" value="${ownCompany.company_name}" readonly>
+                    <input type="text" name="${prefix}CompanyName" class="input" value="${escapeHtml(ownCompany.company_name)}" readonly>
 
                     <label>License #:</label>
-                    <input type="text" name="${prefix}LicenseNumber" class="input" value="${ownCompany.company_license_number}" readonly>
+                    <input type="text" name="${prefix}LicenseNumber" class="input" value="${escapeHtml(ownCompany.company_license_number)}" readonly>
 
                     <label>Address:</label>
-                    <textarea name="${prefix}Address" class="input" rows="2" readonly>${ownCompany.company_address}</textarea>
+                    <textarea name="${prefix}Address" class="input" rows="2" readonly>${escapeHtml(ownCompany.company_address)}</textarea>
 
                     <label>Contact Email:</label>
-                    <input type="email" name="${prefix}ContactEmail" class="input" value="${ownCompany.primary_contact_email}" readonly>
+                    <input type="email" name="${prefix}ContactEmail" class="input" value="${escapeHtml(ownCompany.primary_contact_email)}" readonly>
                 `;
             } else {
                 let options = '<label>Select Company:</label>';
                 options += `<select name="${prefix}CompanySelect" class="input" required>`;
                 companies.forEach(company => {
-                    options += `<option value="${company.id}">${company.name}</option>`;
+                    options += `<option value="${escapeHtml(company.id)}">${escapeHtml(company.name)}</option>`;
                 });
                 options += '</select>';
                 detailElement.innerHTML = options;
@@ -143,16 +143,16 @@ require 'header.php';
             const selectedCompany = companies.find(company => company.id == selectElement.value);
             infoContainer.innerHTML = `
                 <label>Company Name:</label>
-                <input type="text" name="${prefix}CompanyName" class="input" value="${selectedCompany.name}" readonly>
+                <input type="text" name="${prefix}CompanyName" class="input" value="${escapeHtml(selectedCompany.name)}" readonly>
 
                 <label>License #:</label>
-                <input type="text" name="${prefix}LicenseNumber" class="input" value="${selectedCompany.license_number}" readonly>
+                <input type="text" name="${prefix}LicenseNumber" class="input" value="${escapeHtml(selectedCompany.license_number)}" readonly>
 
                 <label>Address:</label>
-                <textarea name="${prefix}Address" class="input" rows="2" readonly>${selectedCompany.address}</textarea>
+                <textarea name="${prefix}Address" class="input" rows="2" readonly>${escapeHtml(selectedCompany.address)}</textarea>
 
                 <label>Contact Email:</label>
-                <input type="email" name="${prefix}ContactEmail" class="input" value="${selectedCompany.primary_contact_email}" readonly>
+                <input type="email" name="${prefix}ContactEmail" class="input" value="${escapeHtml(selectedCompany.primary_contact_email)}" readonly>
             `;
             // Remove any previous appended company details
                 const existingDetails = detailElement.querySelector('div');
@@ -193,9 +193,12 @@ require 'header.php';
             updateStockHint();
         });
 
-        // Initialize with default options
-        populateDetails(sendingChoice.value, 'sendingDetails', 'sending');
-        populateDetails(receivingChoice.value, 'receivingDetails', 'receiving');
-        updateStockHint();
+        // Initialize with default options, once the shared helpers in
+        // growcart.js (escapeHtml) have loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            populateDetails(sendingChoice.value, 'sendingDetails', 'sending');
+            populateDetails(receivingChoice.value, 'receivingDetails', 'receiving');
+            updateStockHint();
+        });
     </script>
 <?php require 'footer.php'; ?>

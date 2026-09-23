@@ -50,12 +50,17 @@
 })();
 
 /**
- * Escape a string for safe insertion into innerHTML.
+ * Escape a string for safe insertion into innerHTML, as text or inside a
+ * quoted attribute value (quotes are escaped too, so a company called
+ * Joe's "Farm" can't break out of value="...").
  */
 function escapeHtml(value) {
-    const div = document.createElement('div');
-    div.textContent = String(value ?? '');
-    return div.innerHTML;
+    return String(value ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
 }
 
 /**
