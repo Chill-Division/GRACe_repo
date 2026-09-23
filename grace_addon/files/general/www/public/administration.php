@@ -93,6 +93,13 @@ require 'header.php';
                         <small>Enter your own company information, used to populate CoC docs and Agency emails</small>
                     </span>
                 </a>
+                <a class="nav-card" href="settings.php">
+                    <span class="nav-card-icon" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 4h-7"/><path d="M10 4H3"/><path d="M21 12h-9"/><path d="M8 12H3"/><path d="M21 20h-5"/><path d="M12 20H3"/><path d="M14 2v4"/><path d="M8 10v4"/><path d="M16 18v4"/></svg></span>
+                    <span class="nav-card-body">
+                        <strong>Entry warning limits</strong>
+                        <small>How big an entry can be before GRACe asks "are you sure?"</small>
+                    </span>
+                </a>
                 <a class="nav-card" href="show_database.php">
                     <span class="nav-card-icon" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14a9 3 0 0 0 18 0V5"/><path d="M3 12a9 3 0 0 0 18 0"/></svg></span>
                     <span class="nav-card-body">

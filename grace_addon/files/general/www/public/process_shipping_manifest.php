@@ -1,6 +1,7 @@
 <?php
 require_once 'TCPDF/tcpdf.php';
 require_once 'init_db.php';
+require_once 'manifest_lib.php';
 
 // Initialize PDO connection
 $pdo = initializeDatabase();
@@ -32,9 +33,13 @@ $geneticsId = (int) ($_POST['geneticsId'] ?? 0);
 
 if (!in_array($sendingChoice, ['us', 'external'], true)
     || !in_array($receivingChoice, ['us', 'external'], true)
-    || !in_array($productType, ['flower', 'plant'], true)
-    || $quantity <= 0) {
+    || !in_array($productType, ['flower', 'plant'], true)) {
     backToFormWithError('All manifest fields are required.');
+}
+// Above 0, and whole plants for a plant manifest
+$quantityError = validateManifestQuantity($productType, $_POST['quantity'] ?? '');
+if ($quantityError !== null) {
+    backToFormWithError($quantityError);
 }
 
 $geneticsStmt = $pdo->prepare("SELECT id, name FROM Genetics WHERE id = ?");

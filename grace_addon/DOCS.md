@@ -26,6 +26,8 @@ GRACe works the same on a PC, a tablet, or a phone through the Home Assistant ap
 
 **3. Your verified companies.** Administration → "Add Verified Company" is where you add the testing labs and buyers you send product to. They then show up in a drop-down whenever you send something. Their license numbers change every year, so when that happens use "Edit Verified Companies" to update them (companies can be edited but never deleted, because your records refer to them). Forgot one? Choose **"+ Add new company…"** at the bottom of any company list, on Harvest / Destroy / Send, Record dry weight change or Generate Shipping Manifest, and add it there without losing what you've filled in.
 
+**4. Your entry warning limits.** Administration → "Entry warning limits". Anything bigger than these, such as receiving 1,000 plants when you meant 100, gets an extra "are you sure?" that you have to tick before it's saved. Set each to about half of what one of your flower rooms usually holds. They start at 100 plants and 5,000 g. Plant counts are always whole numbers.
+
 <img src="https://raw.githubusercontent.com/Chill-Division/GRACe_repo/main/docs/screenshots/desktop-administration.png" alt="The Administration page" width="900">
 
 <img src="https://raw.githubusercontent.com/Chill-Division/GRACe_repo/main/docs/screenshots/desktop-verified-companies.png" alt="Verified companies list" width="900">

@@ -125,12 +125,18 @@ function initReceiveGenetics() {
         const plants = `plant${count === 1 ? '' : 's'}`;
         const geneticsName = geneticsDropdown.options[geneticsDropdown.selectedIndex].textContent;
         const growing = stock[geneticsDropdown.value] ? stock[geneticsDropdown.value].growing : 0;
+        // Bigger than the large-entry limit (Administration → Entry warning
+        // limits)? Then it has to be ticked as right, to catch an extra zero
+        const largePlants = parseInt(form.dataset.largePlants, 10) || 0;
+        const isLarge = largePlants > 0 && count > largePlants;
 
         confirmAction({
             title: `Add ${count} ${geneticsName} ${plants}?`,
             message: "They're recorded in the ledger with today's date and can't be edited afterwards.",
             items: [`${count} × ${geneticsName}`, `Growing after this: ${growing + count}`],
-            confirmLabel: `Add ${count} ${plants}`
+            confirmLabel: `Add ${count} ${plants}`,
+            warning: isLarge ? `That's more than ${largePlants} plants, your large-entry limit. Check the number before you confirm.` : '',
+            warningTick: `Yes, ${count} plants is right`
         }).then(confirmed => {
             if (!confirmed) return;
             form.submit();

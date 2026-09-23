@@ -37,6 +37,22 @@ function fetchManifests($pdo, $status = null) {
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
+/**
+ * Check a manifest quantity as typed: above 0, and whole plants for a
+ * plant manifest. Returns an error message, or null if it's fine.
+ */
+function validateManifestQuantity($productType, $quantity)
+{
+    $text = trim((string) $quantity);
+    if (!preg_match('/^(\d+(\.\d*)?|\.\d+)$/D', $text) || (float) $text <= 0) {
+        return 'Please enter a quantity above 0.';
+    }
+    if ($productType === 'plant' && !preg_match('/^\d+(\.0*)?$/D', $text)) {
+        return 'Plants are counted in whole numbers.';
+    }
+    return null;
+}
+
 /** "200 g White Widow (flower)" / "5 x GG4 (plant)" */
 function manifestShipmentLabel($manifest) {
     $quantity = rtrim(rtrim(number_format((float) $manifest['quantity'], 2, '.', ''), '0'), '.');

@@ -4,6 +4,10 @@
  * handle_receive_genetics.php), tested by tests/test_entry_messages.php.
  */
 
+// A runaway typo (1000000 instead of 100) can't flood the ledger. Big
+// entries below this still get an "are you sure?" (settings_lib.php).
+const GRACE_MAX_PLANTS_PER_ENTRY = 10000;
+
 /**
  * Add new plants to the ledger, stamped with today's NZ time.
  *
@@ -20,9 +24,15 @@ function receivePlants(PDO $pdo, array $input)
         return ['success' => false, 'message' => 'Please choose a genetics.'];
     }
 
-    $count = (int) ($input['plantCount'] ?? 0);
-    if ($count < 1) {
-        return ['success' => false, 'message' => 'Please enter how many plants.'];
+    // Whole plants only: "2.5" used to become 3 plants
+    $countText = trim((string) ($input['plantCount'] ?? ''));
+    if (!preg_match('/^[0-9]+$/D', $countText) || (int) $countText < 1) {
+        return ['success' => false, 'message' => 'Please enter a whole number of plants (1 or more).'];
+    }
+    $count = (int) $countText;
+    if ($count > GRACE_MAX_PLANTS_PER_ENTRY) {
+        return ['success' => false, 'message' => 'One entry can add at most ' . number_format(GRACE_MAX_PLANTS_PER_ENTRY)
+            . ' plants. Split it up if you really received more.'];
     }
 
     // Times are NZ time; the harvest date stays blank until the plant leaves
