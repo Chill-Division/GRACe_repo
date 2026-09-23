@@ -1,4 +1,11 @@
 <?php
+require_once 'init_db.php';
+require_once 'receive_lib.php';
+require_once 'settings_lib.php';
+
+// Above this many plants the confirm step asks for an extra tick
+$limits = getEntryWarningLimits(initializeDatabase());
+
 $pageTitle = 'GRACe - Receive Genetics';
 require 'header.php';
 ?>
@@ -12,10 +19,11 @@ require 'header.php';
         </hgroup>
 
         <article class="form-card">
-            <form id="receiveGeneticsForm" class="form" action="handle_receive_genetics.php" method="post">
+            <form id="receiveGeneticsForm" class="form" action="handle_receive_genetics.php" method="post"
+                  data-large-plants="<?php echo (int) $limits['plants']; ?>">
 
                 <label for="plantCount">How many plants received / clones taken:</label>
-                <input type="number" id="plantCount" name="plantCount" class="input" min="1" required>
+                <input type="number" id="plantCount" name="plantCount" class="input" min="1" max="<?php echo GRACE_MAX_PLANTS_PER_ENTRY; ?>" step="1" inputmode="numeric" required>
 
                 <label for="geneticsName">Genetics Name:</label>
                 <select id="geneticsName" name="geneticsName" class="input" required>

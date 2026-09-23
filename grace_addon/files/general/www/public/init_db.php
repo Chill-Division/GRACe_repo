@@ -165,6 +165,13 @@ function initializeDatabase($dbPath = '/data/grace.db') {
                 status TEXT NOT NULL CHECK(status IN ('dismissed', 'drafted')),
                 actioned_at DATETIME DEFAULT CURRENT_TIMESTAMP,
                 UNIQUE(report_type, period)
+            );",
+
+            // Settings (added in 1.1.0), small named settings such as the
+            // entry warning limits (see settings_lib.php)
+            "CREATE TABLE IF NOT EXISTS Settings (
+                name TEXT PRIMARY KEY,
+                value TEXT
             );"
 
         ];

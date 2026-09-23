@@ -141,6 +141,10 @@ document.addEventListener('DOMContentLoaded', () => {
  * @param {string} [options.confirmLabel]
  * @param {string} [options.cancelLabel]
  * @param {boolean} [options.danger]  style the confirm button red
+ * @param {string} [options.warning]  a highlighted warning (e.g. an unusually
+ *        large entry); the confirm button stays disabled until the tick box
+ *        underneath is ticked
+ * @param {string} [options.warningTick]  label for that tick box
  * @returns {Promise<boolean>}
  */
 function confirmAction(options) {
@@ -151,10 +155,12 @@ function confirmAction(options) {
     const confirmLabel = opts.confirmLabel || 'Confirm';
     const cancelLabel = opts.cancelLabel || 'Cancel';
     const danger = !!opts.danger;
+    const warning = opts.warning || '';
+    const warningTick = opts.warningTick || 'Yes, this is right';
 
     if (typeof HTMLDialogElement === 'undefined') {
         // Very old browser, fall back to the native dialog
-        return Promise.resolve(window.confirm(title + (message ? '\n\n' + message : '')));
+        return Promise.resolve(window.confirm(title + (message ? '\n\n' + message : '') + (warning ? '\n\n' + warning : '')));
     }
 
     return new Promise((resolve) => {
@@ -168,6 +174,8 @@ function confirmAction(options) {
                 <h3>${escapeHtml(title)}</h3>
                 ${message ? '<p>' + escapeHtml(message) + '</p>' : ''}
                 ${list}
+                ${warning ? `<p class="grace-modal-warning" role="alert">${escapeHtml(warning)}</p>
+                <label class="grace-modal-tick"><input type="checkbox" data-modal-tick> ${escapeHtml(warningTick)}</label>` : ''}
                 <footer>
                     <button type="button" class="secondary" data-modal-cancel>${escapeHtml(cancelLabel)}</button>
                     <button type="button"${danger ? ' class="modal-danger"' : ''} data-modal-confirm>${escapeHtml(confirmLabel)}</button>
@@ -181,7 +189,14 @@ function confirmAction(options) {
             resolve(result);
         };
         dialog.querySelector('[data-modal-cancel]').addEventListener('click', () => close(false));
-        dialog.querySelector('[data-modal-confirm]').addEventListener('click', () => close(true));
+        const confirmButton = dialog.querySelector('[data-modal-confirm]');
+        confirmButton.addEventListener('click', () => close(true));
+        const tick = dialog.querySelector('[data-modal-tick]');
+        if (tick) {
+            // A large entry has to be ticked as right before it can be saved
+            confirmButton.disabled = true;
+            tick.addEventListener('change', () => { confirmButton.disabled = !tick.checked; });
+        }
         dialog.addEventListener('cancel', (e) => { e.preventDefault(); close(false); });
         dialog.addEventListener('click', (e) => { if (e.target === dialog) close(false); });
         dialog.showModal();

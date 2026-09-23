@@ -1,5 +1,6 @@
 <?php
 require_once 'init_db.php';
+require_once 'settings_lib.php';
 
 // Initialize PDO connection
 $pdo = initializeDatabase();
@@ -15,6 +16,9 @@ $companies = $companiesStmt->fetchAll(PDO::FETCH_ASSOC);
 // Fetch genetics for dropdown, sorted alphabetically by name
 $geneticsStmt = $pdo->query("SELECT id, name FROM Genetics ORDER BY name ASC");
 $geneticsList = $geneticsStmt->fetchAll(PDO::FETCH_ASSOC);
+
+// Above these the form asks for an extra tick before generating
+$limits = getEntryWarningLimits($pdo);
 
 // Current dried-flower stock per genetics, so the form can show what an
 // automatic deduction will run against before the manifest is generated
@@ -43,7 +47,9 @@ require 'header.php';
         </article>
 
         <article class="form-card">
-            <form id="shippingManifestForm" class="form" method="post" action="process_shipping_manifest.php">
+            <form id="shippingManifestForm" class="form" method="post" action="process_shipping_manifest.php"
+                  data-large-plants="<?php echo (int) $limits['plants']; ?>"
+                  data-large-grams="<?php echo (int) $limits['grams']; ?>">
                 <h2>Sending Party</h2>
                 <label for="sendingChoice">Choose:</label>
                 <select id="sendingChoice" name="sendingChoice" class="input" required>
@@ -70,7 +76,7 @@ require 'header.php';
                 </select>
 
                 <label for="quantity">Quantity or Weight (grams for flower):</label>
-                <input type="number" id="quantity" name="quantity" class="input" min="0.01" step="0.01" required>
+                <input type="number" id="quantity" name="quantity" class="input" min="0.1" step="0.1" inputmode="decimal" required>
 
                 <label for="geneticsId">Genetics:</label>
                 <select id="geneticsId" name="geneticsId" class="input" required>
@@ -203,6 +209,40 @@ require 'header.php';
         };
 
         [productType, geneticsSelect].forEach(el => el.addEventListener('change', updateStockHint));
+
+        // Plants are counted in whole numbers; flower is weighed to 0.1 g
+        const quantityInput = document.getElementById('quantity');
+        const updateQuantityStep = () => {
+            const wholePlants = productType.value === 'plant';
+            quantityInput.step = wholePlants ? '1' : '0.1';
+            quantityInput.min = wholePlants ? '1' : '0.1';
+        };
+        productType.addEventListener('change', updateQuantityStep);
+        updateQuantityStep();
+
+        // An unusually large shipment (Administration → Entry warning limits)
+        // has to be ticked as right first, to catch an extra zero
+        const manifestForm = document.getElementById('shippingManifestForm');
+        manifestForm.addEventListener('submit', (event) => {
+            const quantity = parseFloat(quantityInput.value);
+            const plants = productType.value === 'plant';
+            const limit = parseInt(plants ? manifestForm.dataset.largePlants : manifestForm.dataset.largeGrams, 10) || 0;
+            if (!limit || !(quantity > limit)) return; // normal size: generate straight away
+
+            event.preventDefault();
+            const amount = plants ? `${quantity} plants` : `${formatGrams(quantity)} g`;
+            const geneticsName = geneticsSelect.options[geneticsSelect.selectedIndex].text.trim();
+            confirmAction({
+                title: `Generate a manifest for ${amount} of ${geneticsName}?`,
+                message: productType.value === 'flower' && sendingChoice.value === 'us' && receivingChoice.value === 'external'
+                    ? 'The weight comes off your dried-flower stock straight away.' : '',
+                confirmLabel: 'Generate manifest',
+                warning: `That's more than ${plants ? limit + ' plants' : formatGrams(limit) + ' g'}, your large-entry limit. Check the quantity before you confirm.`,
+                warningTick: `Yes, ${amount} is right`
+            }).then(confirmed => {
+                if (confirmed) manifestForm.submit();
+            });
+        });
 
         sendingChoice.addEventListener('change', () => {
             populateDetails(sendingChoice.value, 'sendingDetails', 'sending');

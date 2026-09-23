@@ -88,6 +88,17 @@ an update: `performMigrations()` in `init_db.php` runs on every request.
   don't bring back 0.01 g inputs. Older installs may hold entries with
   hundredths: show stored values as they are, and compare stock at 0.1 g so
   such a balance can still be cleared (see `recordFlowerTransaction()`).
+- Plant counts are whole numbers, and one Receive plants entry adds at most
+  1,000 plants (`GRACE_MAX_PLANTS_PER_ENTRY` in `settings_lib.php`). NZ
+  cultivators are small: only the largest handles more than 1,000 plants,
+  and they spread intakes over several days and people. The cap stops a
+  typo like 10000 flooding the append-only ledger, so don't raise it
+  without a real grower who needs it.
+- Large-entry warnings are settings, not rules: Administration → Entry
+  warning limits (default 100 plants and 5,000 g, recommended about half of
+  what one flower room holds). Above them the confirm step needs an extra
+  tick. They warn, they never block, and the plant limit can't exceed the
+  per-entry cap.
 
 ## 4. Before you open a pull request
 

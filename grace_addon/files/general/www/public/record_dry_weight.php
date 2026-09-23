@@ -1,4 +1,10 @@
 <?php
+require_once 'init_db.php';
+require_once 'settings_lib.php';
+
+// Above this many grams the confirm step asks for an extra tick
+$limits = getEntryWarningLimits(initializeDatabase());
+
 $pageTitle = 'GRACe - Record Flower Transaction';
 require 'header.php';
 ?>
@@ -12,7 +18,8 @@ require 'header.php';
         </hgroup>
 
         <article class="form-card">
-            <form id="recordFlowerTransactionForm" class="form" action="record_flower_transaction.php" method="post">
+            <form id="recordFlowerTransactionForm" class="form" action="record_flower_transaction.php" method="post"
+                  data-large-grams="<?php echo (int) $limits['grams']; ?>">
                 <label for="geneticsName">Genetics:</label>
                 <select id="geneticsName" name="geneticsName" class="input" required>
                     <option value="" disabled selected>Select Genetics</option>

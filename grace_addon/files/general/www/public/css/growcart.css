@@ -810,6 +810,27 @@ article {
   color: #ffffff;
 }
 
+/* Large-entry warning in the confirm pop-up (confirmAction's warning option) */
+.grace-modal p.grace-modal-warning {
+  margin: 0.25rem 0 0.75rem;
+  padding: 0.65rem 0.85rem;
+  border-radius: var(--pico-border-radius);
+  background: var(--g-danger-soft);
+  color: var(--g-danger);
+  font-weight: 600;
+}
+
+.grace-modal-tick {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.92rem;
+}
+
+.grace-modal-tick input[type="checkbox"] {
+  margin: 0;
+}
+
 /* Stock hint under a form's genetics list goes red when an entry would take
    more than is on hand (record_dry_weight.php) */
 small.stock-hint--warning {

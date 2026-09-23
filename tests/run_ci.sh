@@ -212,6 +212,17 @@ else
     FAILures=$((FAILures+1))
 fi
 
+# Run Entry Limit Test
+echo ""
+echo "--- Entry Limit Test ---"
+php tests/test_entry_limits.php
+if [ $? -eq 0 ]; then
+    echo -e "${GREEN}[PASS]${NC} Entry limits verified"
+else
+    echo -e "${RED}[FAIL]${NC} Entry limits failed"
+    FAILures=$((FAILures+1))
+fi
+
 # Run Version Consistency Check
 echo ""
 echo "--- Version Consistency ---"
