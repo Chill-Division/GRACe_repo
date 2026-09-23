@@ -188,7 +188,7 @@ $flowerRows = [
     // [genetics_id, weight, type, reason, days_ago, company_id|null]
     [1, 612.50, 'Add', 'Harvest', 40, null],
     [2, 480.00, 'Add', 'Harvest', 35, null],
-    [3, 295.25, 'Add', 'Harvest', 18, null],
+    [3, 295.5, 'Add', 'Harvest', 18, null],
     [1, -25.00, 'Subtract', 'Testing', 33, 1],     // last month-ish
     [1, -150.00, 'Subtract', 'Send external', 31, 2],
     [2, -10.00, 'Subtract', 'Testing', 5, 1],      // this month

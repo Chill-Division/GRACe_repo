@@ -57,7 +57,8 @@ bash tests/run_ci.sh
 
 ### 7. Flower Stock (`tests/test_flower_stock.php`)
 *   **No going below zero:** a Subtract (Testing, Destroy, Send external or Other) of more than is on hand is refused with a message saying how much is recorded, and nothing is written. Shipping manifests already worked this way; manual entries didn't. Taking exactly what's on hand works, including weights like 0.1 + 0.2 g.
-*   **Checked on the server:** unknown genetics, zero, negative or non-numeric weights, more than 2 decimal places, unknown types, reasons that don't go with the type, Other without an explanation, and Testing or Send external without a real company are all refused.
+*   **One decimal place:** weights are grams to 0.1 g ("12.25" is refused, "12.50" is fine). Stock is compared at 0.1 g, so a balance with hundredths from an older version can still be cleared.
+*   **Checked on the server:** unknown genetics, zero, negative or non-numeric weights, unknown types, reasons that don't go with the type, Other without an explanation, and Testing or Send external without a real company are all refused.
 *   **Stored cleanly:** Other stores its explanation as the reason, and a company is only stored for Testing and Send external.
 
 ### 8. Annual Stocktake Logic (`tests/test_annual_stocktake.php`)

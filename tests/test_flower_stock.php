@@ -58,7 +58,7 @@ check('...with a message that says how much there is',
     $result['message'], 'Only 70 g of Alpha is recorded, so 80 g can\'t be subtracted. If more is really there, record it with Add first.');
 check('...and nothing is written', $entries(), 3);
 check('The same goes for Testing and Send external',
-    $subtract(70.01, ['reason' => 'Testing', 'companyId' => '1'])['success'], false);
+    $subtract(70.1, ['reason' => 'Testing', 'companyId' => '1'])['success'], false);
 check('A ledger that is already below zero can\'t go further below',
     recordFlowerTransaction($pdo, ['geneticsName' => '2', 'weight' => '1', 'transactionType' => 'Subtract', 'reason' => 'Destroy'])['success'], false);
 
@@ -69,6 +69,21 @@ $result = recordFlowerTransaction($pdo, ['geneticsName' => '1', 'weight' => '0.1
 recordFlowerTransaction($pdo, ['geneticsName' => '1', 'weight' => '0.2', 'transactionType' => 'Add', 'reason' => 'Harvest']);
 check('Adding is never limited', $result['success'], true);
 check('Rounding in stored weights never blocks taking the lot (0.1 + 0.2 g)', $subtract(0.3)['success'], true);
+
+// --- Weights are grams to one decimal place -----------------------------------------
+// Not a GMP facility, and the Agency doesn't need hundredths of a gram
+$pdo->exec("INSERT INTO Flower (genetics_id, weight, transaction_type, transaction_date, reason) VALUES (1, 50, 'Add', '2026-09-03 10:00:00', 'Harvest')");
+$result = $subtract(12.25);
+check('A weight with 2 decimal places is refused', [$result['success'], $result['message']],
+    [false, 'Weights are recorded to one decimal place, like 12.5 g.']);
+check('A trailing zero is fine (12.50 g is 12.5 g)', $subtract('12.50')['success'], true);
+check('...and whole grams are fine', $subtract('10')['success'], true);
+
+// Older installs could record hundredths. A balance like 27.55 g can still
+// be cleared: stock is compared at 0.1 g, the precision weights are entered in.
+$pdo->exec("INSERT INTO Flower (genetics_id, weight, transaction_type, transaction_date, reason) VALUES (1, 0.05, 'Add', '2026-09-03 11:00:00', 'Harvest')");
+check('An older balance with hundredths can be cleared by rounding to the nearest 0.1 g',
+    [flowerOnHand($pdo, 1), $subtract(27.6)['success']], [27.55, true]);
 
 // --- Everything else is checked on the server too -------------------------------
 $refused = [
@@ -85,7 +100,7 @@ $refused = [
 ];
 $before = $entries();
 foreach ($refused as $story => $input) {
-    $result = recordFlowerTransaction($pdo, $input + ['geneticsName' => '1', 'weight' => '0.01', 'transactionType' => 'Subtract', 'reason' => 'Destroy']);
+    $result = recordFlowerTransaction($pdo, $input + ['geneticsName' => '1', 'weight' => '0.1', 'transactionType' => 'Subtract', 'reason' => 'Destroy']);
     check("$story is refused", $result['success'], false);
 }
 check('None of them wrote anything', $entries(), $before);

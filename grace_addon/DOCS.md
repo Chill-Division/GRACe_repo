@@ -53,7 +53,7 @@ New genetics that isn't in the list yet? Choose **"+ Add new genetics…"** at t
 
 ## Flower coming in
 
-Once harvested plants have dried, weigh the flower and record it: Plant Tracking → **"Record dry weight change"**, choose the genetics, enter the weight in grams, choose **Add**, and pick the reason **Harvest**. That weight is now in your dried-flower inventory.
+Once harvested plants have dried, weigh the flower and record it: Plant Tracking → **"Record dry weight change"**, choose the genetics, enter the weight in grams (to one decimal place, like 612.5), choose **Add**, and pick the reason **Harvest**. That weight is now in your dried-flower inventory.
 
 If flower arrives from someone else (a sample from another grower, say), use Add with the reason **Other**.
 

@@ -56,10 +56,12 @@ function recordFlowerTransaction(PDO $pdo, array $input)
     if (!preg_match('/^(\d+(\.\d*)?|\.\d+)$/D', $weightText) || (float) $weightText <= 0) {
         return $refuse('Please enter a weight in grams, above 0.');
     }
-    if (preg_match('/\.\d{3,}$/D', rtrim($weightText, '0'))) {
-        return $refuse('Weights can have at most 2 decimal places.');
+    // Grams to one decimal place: GRACe's users aren't GMP facilities, and
+    // the Agency doesn't need hundredths of a gram (see AGENTS.md)
+    if (preg_match('/\.\d{2,}$/D', rtrim($weightText, '0'))) {
+        return $refuse('Weights are recorded to one decimal place, like 12.5 g.');
     }
-    $weight = round((float) $weightText, 2);
+    $weight = round((float) $weightText, 1);
 
     $type = (string) ($input['transactionType'] ?? '');
     if (!isset(GRACE_FLOWER_REASONS[$type])) {
@@ -92,8 +94,10 @@ function recordFlowerTransaction(PDO $pdo, array $input)
     // The stock check and the entry happen under the write lock, so two
     // entries at once can't both take the last of the stock
     return withWriteLock($pdo, function (PDO $pdo) use ($genetics, $weight, $type, $finalReason, $companyId, $refuse) {
+        // Compared at 0.1 g, the precision weights are entered in, so a
+        // balance with hundredths from an older version can still be cleared
         $onHand = flowerOnHand($pdo, $genetics['id']);
-        if ($type === 'Subtract' && $weight > $onHand + 0.001) {
+        if ($type === 'Subtract' && $weight > round($onHand, 1) + 0.0001) {
             return $refuse(sprintf(
                 "Only %s g of %s is recorded, so %s g can't be subtracted. If more is really there, record it with Add first.",
                 formatFlowerGrams($onHand), $genetics['name'], formatFlowerGrams($weight)

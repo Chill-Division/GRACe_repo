@@ -19,7 +19,7 @@ require 'header.php';
                 </select>
 
                 <label for="weight">Weight (grams):</label>
-                <input type="number" id="weight" name="weight" class="input" min="0.01" step="0.01" required>
+                <input type="number" id="weight" name="weight" class="input" min="0.1" step="0.1" inputmode="decimal" required>
 
                 <label for="transactionType">Transaction Type:</label>
                 <select id="transactionType" name="transactionType" class="input" required>
