@@ -212,6 +212,17 @@ else
     FAILures=$((FAILures+1))
 fi
 
+# Run Company Adding Test
+echo ""
+echo "--- Company Adding Test ---"
+php tests/test_company_adding.php
+if [ $? -eq 0 ]; then
+    echo -e "${GREEN}[PASS]${NC} Company adding verified"
+else
+    echo -e "${RED}[FAIL]${NC} Company adding failed"
+    FAILures=$((FAILures+1))
+fi
+
 echo ""
 echo "=========================================="
 if [ $FAILures -eq 0 ]; then

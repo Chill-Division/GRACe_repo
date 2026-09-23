@@ -158,6 +158,9 @@ function initTransactionForm() {
             });
             // Re-select if needed
             if (submittedData.companyId) companyDropdown.value = submittedData.companyId;
+
+            // "+ Add new company…" at the bottom of the list (quick_add.js)
+            if (typeof enableQuickAddCompany === 'function') enableQuickAddCompany(companyDropdown);
         })
         .catch(error => console.error('Error fetching companies:', error));
 }

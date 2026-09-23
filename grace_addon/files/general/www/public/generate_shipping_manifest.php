@@ -87,6 +87,7 @@ require 'header.php';
         </article>
     </main>
 
+    <script src="js/quick_add.js?v=<?php echo GRACE_ASSET_VERSION; ?>"></script>
     <script>
         const sendingChoice = document.getElementById('sendingChoice');
         const receivingChoice = document.getElementById('receivingChoice');
@@ -122,8 +123,11 @@ require 'header.php';
                     <input type="email" name="${prefix}ContactEmail" class="input" value="${escapeHtml(ownCompany.primary_contact_email)}" readonly>
                 `;
             } else {
+                // No company is picked for you: choosing the first one in the
+                // list by default made it easy to address a shipment wrongly
                 let options = '<label>Select Company:</label>';
                 options += `<select name="${prefix}CompanySelect" class="input" required>`;
+                options += '<option value="" disabled selected>Select company</option>';
                 companies.forEach(company => {
                     options += `<option value="${escapeHtml(company.id)}">${escapeHtml(company.name)}</option>`;
                 });
@@ -134,13 +138,30 @@ require 'header.php';
                 companySelect.addEventListener('change', function() {
                     updateExternalDetails(this, detailElement, prefix);
                 });
-                updateExternalDetails(companySelect, detailElement, prefix);
+
+                // "+ Add new company…" at the bottom of the list (quick_add.js).
+                // A new company joins this page's list, so its details show,
+                // and the other party's list too.
+                enableQuickAddCompany(companySelect, saved => {
+                    if (!companies.some(company => company.id == saved.company.id)) {
+                        companies.push(saved.company);
+                    }
+                    document.querySelectorAll('select[name$="CompanySelect"]').forEach(other => {
+                        if (other !== companySelect) addQuickAddOption(other, saved.company.id, saved.company.name);
+                    });
+                });
             }
         };
 
         const updateExternalDetails = (selectElement, detailElement, prefix) => {
-            let infoContainer = document.createElement('div');
+            const existing = detailElement.querySelector('div');
             const selectedCompany = companies.find(company => company.id == selectElement.value);
+            if (!selectedCompany) {
+                // Nothing picked yet (or "+ Add new company…" while its pop-up is open)
+                if (existing) existing.remove();
+                return;
+            }
+            let infoContainer = document.createElement('div');
             infoContainer.innerHTML = `
                 <label>Company Name:</label>
                 <input type="text" name="${prefix}CompanyName" class="input" value="${escapeHtml(selectedCompany.name)}" readonly>

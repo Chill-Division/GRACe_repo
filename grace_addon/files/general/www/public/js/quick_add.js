@@ -5,6 +5,9 @@
  * - receive_genetics.php (via genetics.js) and record_dry_weight.php (via
  *   transaction_form.js): "+ Add new genetics…" at the bottom of the
  *   genetics list.
+ * - harvest_plants.php, record_dry_weight.php (via transaction_form.js) and
+ *   generate_shipping_manifest.php: "+ Add new company…" at the bottom of
+ *   the company list.
  *
  * Why:
  * Adding something that's missing from a drop-down used to mean leaving the
@@ -28,6 +31,9 @@ const QUICK_ADD_VALUE = '__quick_add__';
  * @param {string} options.submitLabel   e.g. 'Add genetics'
  * @param {string} options.endpoint      relative URL of the JSON endpoint
  * @param {Object[]} options.fields      { name, label, type ('text'|'email'|'tel'|'textarea'), required, autocomplete }
+ * @param {function(Object)} [options.onSaved] called with the endpoint's
+ *        answer before the new entry is selected (e.g. to keep a page's own
+ *        list of companies up to date)
  */
 function enableQuickAdd(select, options) {
     let previous = select.value;
@@ -56,6 +62,7 @@ function enableQuickAdd(select, options) {
                 select.value = previous; // cancelled: back to what it was
                 return;
             }
+            if (options.onSaved) options.onSaved(saved);
             selectQuickAddOption(select, saved.id, saved.name);
             previous = select.value;
             // Let the page react as if the user had picked it themselves
@@ -64,23 +71,27 @@ function enableQuickAdd(select, options) {
     });
 }
 
-/** Add (or find) an option for a saved entry, in alphabetical order, and select it. */
-function selectQuickAddOption(select, id, name) {
+/** Add an option for a saved entry in alphabetical order (unless it's already there). */
+function addQuickAddOption(select, id, name) {
     const value = String(id);
-    let option = [...select.options].find(o => o.value === value);
-    if (!option) {
-        option = document.createElement('option');
-        option.value = value;
-        option.textContent = name;
-        const before = [...select.options].find(o =>
-            o.value !== '' && (o.value === QUICK_ADD_VALUE || o.textContent.localeCompare(name, undefined, { sensitivity: 'base' }) > 0));
-        select.insertBefore(option, before || null);
-    }
-    select.value = value;
+    if ([...select.options].some(o => o.value === value)) return;
+    const option = document.createElement('option');
+    option.value = value;
+    option.textContent = name;
+    const before = [...select.options].find(o =>
+        o.value !== '' && (o.value === QUICK_ADD_VALUE || o.textContent.localeCompare(name, undefined, { sensitivity: 'base' }) > 0));
+    select.insertBefore(option, before || null);
+}
+
+/** Add (or find) the option for a saved entry and select it. */
+function selectQuickAddOption(select, id, name) {
+    addQuickAddOption(select, id, name);
+    select.value = String(id);
 }
 
 /**
- * Show the pop-up form. Resolves with the saved entry, or null if cancelled.
+ * Show the pop-up form. Resolves with the endpoint's answer for the saved
+ * (or already existing) entry, or null if cancelled.
  * @returns {Promise<{id: number, name: string}|null>}
  */
 function openQuickAddForm(options) {
@@ -145,7 +156,7 @@ function openQuickAddForm(options) {
                     if (data.success || data.duplicate) {
                         showToast(data.duplicate ? `${data.message} It's selected for you.` : data.message,
                             data.duplicate ? 'info' : 'success', 6000);
-                        close({ id: data.id, name: data.name });
+                        close(data);
                     } else {
                         showError(data.message || 'That could not be saved.');
                     }
@@ -158,6 +169,31 @@ function openQuickAddForm(options) {
         });
 
         dialog.showModal();
+    });
+}
+
+/**
+ * "+ Add new company…" for a verified company drop-down. Asks for the same
+ * details as Administration → Add Verified Company.
+ * @param {HTMLSelectElement} select
+ * @param {function(Object)} [onSaved] gets the answer, including .company
+ *        (id, name, license_number, address, primary_contact_email)
+ */
+function enableQuickAddCompany(select, onSaved) {
+    enableQuickAdd(select, {
+        optionLabel: '+ Add new company…',
+        title: 'Add a verified company',
+        submitLabel: 'Add company',
+        endpoint: 'handle_quick_add_company.php',
+        onSaved: onSaved,
+        fields: [
+            { name: 'companyName', label: 'Company name', type: 'text', required: true, autocomplete: 'organization' },
+            { name: 'licenseNumber', label: 'License #', type: 'text', required: true, autocomplete: 'off' },
+            { name: 'address', label: 'Address', type: 'textarea', required: true },
+            { name: 'contactName', label: 'Primary contact name', type: 'text', required: true, autocomplete: 'off' },
+            { name: 'contactEmail', label: 'Primary contact email', type: 'email', required: true, autocomplete: 'off' },
+            { name: 'contactPhone', label: 'Primary contact phone', type: 'tel', required: true, autocomplete: 'off' }
+        ]
     });
 }
 

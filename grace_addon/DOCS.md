@@ -24,7 +24,7 @@ GRACe works the same on a PC, a tablet, or a phone through the Home Assistant ap
 
 **2. Your genetics.** Go to Administration → "Add New Genetics" and add every strain you have as plants or flower, or expect to have. You can't record a plant until its genetics exist. Don't worry about typing a name twice: GRACe spots names that differ only by capitals or spaces, so "white widow" won't become a second White Widow.
 
-**3. Your verified companies.** Administration → "Add Verified Company" is where you add the testing labs and buyers you send product to. They then show up in a drop-down whenever you send something. Their license numbers change every year, so when that happens use "Edit Verified Companies" to update them (companies can be edited but never deleted, because your records refer to them).
+**3. Your verified companies.** Administration → "Add Verified Company" is where you add the testing labs and buyers you send product to. They then show up in a drop-down whenever you send something. Their license numbers change every year, so when that happens use "Edit Verified Companies" to update them (companies can be edited but never deleted, because your records refer to them). Forgot one? Choose **"+ Add new company…"** at the bottom of any company list, on Harvest / Destroy / Send, Record dry weight change or Generate Shipping Manifest, and add it there without losing what you've filled in.
 
 <img src="https://raw.githubusercontent.com/Chill-Division/GRACe_repo/main/docs/screenshots/desktop-administration.png" alt="The Administration page" width="900">
 
