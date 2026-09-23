@@ -190,6 +190,17 @@ else
     FAILures=$((FAILures+1))
 fi
 
+# Run Quick Add Test
+echo ""
+echo "--- Quick Add Test ---"
+php tests/test_quick_add.php
+if [ $? -eq 0 ]; then
+    echo -e "${GREEN}[PASS]${NC} Quick add wiring verified"
+else
+    echo -e "${RED}[FAIL]${NC} Quick add wiring failed"
+    FAILures=$((FAILures+1))
+fi
+
 # Run Syntax Check
 echo ""
 echo "--- PHP Syntax Check ---"

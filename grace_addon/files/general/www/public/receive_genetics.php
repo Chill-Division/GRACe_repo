@@ -27,7 +27,8 @@ require 'header.php';
         </article>
     </main>
 
-    <script src="js/genetics.js"></script>
+    <script src="js/quick_add.js?v=<?php echo GRACE_ASSET_VERSION; ?>"></script>
+    <script src="js/genetics.js?v=<?php echo GRACE_ASSET_VERSION; ?>"></script>
     <script>
         document.addEventListener('DOMContentLoaded', initReceiveGenetics);
     </script>
