@@ -48,26 +48,31 @@ bash tests/run_ci.sh
 *   **Windows, not queues:** the monthly reminder only shows on days 1-7 (and only if last month shipped materials); the annual reminder only in January (and only with prior-year data). At most two banners, ever.
 *   **Dismissals:** dismissing or drafting a period keeps it silent across reloads; fresh installs are never flooded.
 
-### 6. Company Editing (`tests/test_company_editing.php`)
+### 6. Monthly Report Periods (`tests/test_report_periods.php`)
+*   **Last month is the previous calendar month:** on the 29th, 30th and 31st, "Last month's materials out" used to show this month's figures under last month's heading, because `strtotime('-1 month')` on 31 July gives "31 June", which PHP rolls over to 1 July. Checked on month ends, across the new year and in a leap year.
+*   **Right rows:** the report holds only sends and lab samples dated inside the month, including its first and last second.
+*   **Heading and figures agree:** the page passes its month to the data endpoint, and anything other than a real `YYYY-MM` in the URL is ignored.
+
+### 7. Company Editing (`tests/test_company_editing.php`)
 *   **Annual license renewal:** updating a verified company's license number, address, or contact persists correctly.
 *   **Uniqueness:** a license number or contact email belonging to a *different* company is rejected; re-saving a company's own values always succeeds.
 *   **Design rule:** asserts `company_lib.php` contains no delete operation. Verified companies can be edited but never deleted.
 
-### 7. License Alerts (`tests/test_license_alerts.php`)
+### 8. License Alerts (`tests/test_license_alerts.php`)
 *   **Shared windows:** the nav banner (3 days) and Dashboard list (30 days) use one helper; each returns the right licenses for its window.
 *   **Acknowledgment:** acknowledged licenses disappear from both surfaces; other document categories and licenses without expiry dates are never alerted.
 
-### 8. License Expiry Limit (`tests/test_license_expiry.php`)
+### 9. License Expiry Limit (`tests/test_license_expiry.php`)
 *   **The limit:** a license upload may expire up to 15 months from today, because licenses are annual and a renewal can be issued up to 3 months early (it used to be 12 months, which blocked early renewals). Exactly on the limit is accepted, one day past it is refused, and month ends clamp (15 months from 30 November is 29 February).
 *   **Bad input:** text, impossible dates and wrong formats are refused; already-expired licenses can still be uploaded for the record.
 *   **One rule everywhere:** `upload.php` and the Company Licenses date picker both use the shared helper.
 
-### 9. Download Filenames (`tests/test_download_names.php`)
+### 10. Download Filenames (`tests/test_download_names.php`)
 *   **Original names:** uploaded documents download under the name they were uploaded as; generated manifests lose their `uniqid()` prefix.
 *   **Header safety:** the `Content-Disposition` value is a single quoted filename with no trailing semicolon, and matches the parser Android's download manager (used by the Home Assistant app) relies on. A malformed header made phones save licenses as `download-2.php`.
 *   **MIME types:** correct types for PDFs and images.
 
-### 10. Static Code Analysis (`tests/static_checks.sh`)
+### 11. Static Code Analysis (`tests/static_checks.sh`)
 *   **Critical Paths:**
     *   Verifies Database path is `/data/grace.db`
     *   Verifies Upload path is `/data/uploads/`
@@ -76,13 +81,13 @@ bash tests/run_ci.sh
 *   **Security:** Scans for dangerous relative path usage (`__DIR__ . '/uploads'`).
 *   **Duplicates:** Scans for duplicate `<script src="...">` tags in PHP files (prevent redeclaration errors).
 
-### 11. Version Consistency (`tests/test_version_consistency.php`)
+### 12. Version Consistency (`tests/test_version_consistency.php`)
 *   **Why:** Ensures the version number is identical across:
     *   `config.yaml` (Home Assistant)
     *   `nav.php` (UI Display)
     *   `CHANGELOG.md` (Release Notes)
 
-### 12. PHP Syntax Check (`tests/syntax_check.sh`)
+### 13. PHP Syntax Check (`tests/syntax_check.sh`)
 *   **Linting:** Runs `php -l` on all PHP files in `grace_addon/files/general/www/public/` to catch syntax errors before runtime.
 
 ## Demo / Development Helpers (not part of CI)

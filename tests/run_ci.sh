@@ -69,6 +69,17 @@ else
     FAILures=$((FAILures+1))
 fi
 
+# Run Report Period Test
+echo ""
+echo "--- Report Period Test ---"
+php tests/test_report_periods.php
+if [ $? -eq 0 ]; then
+    echo -e "${GREEN}[PASS]${NC} Report periods verified"
+else
+    echo -e "${RED}[FAIL]${NC} Report periods failed"
+    FAILures=$((FAILures+1))
+fi
+
 # Run Company Editing Test
 echo ""
 echo "--- Company Editing Test ---"
