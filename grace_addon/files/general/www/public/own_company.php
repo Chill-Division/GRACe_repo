@@ -15,11 +15,27 @@ try {
     echo "Error fetching company information: " . htmlspecialchars($e->getMessage());
 }
 
+// A refused save comes back here with the reason and what was typed
+$error = isset($_GET['error']) ? (string) $_GET['error'] : '';
+$typed = $error !== '' ? json_decode((string) ($_GET['data'] ?? ''), true) : null;
+if (is_array($typed)) {
+    $companyInfo = [
+        'company_name' => (string) ($typed['companyName'] ?? ''),
+        'company_license_number' => (string) ($typed['companyLicense'] ?? ''),
+        'company_address' => (string) ($typed['companyAddress'] ?? ''),
+        'primary_contact_email' => (string) ($typed['primaryContactEmail'] ?? ''),
+    ];
+}
+
 $pageTitle = 'GRACe - Your Company Information';
 require 'header.php';
 ?>
 
     <main class="container">
+        <?php if ($error !== ''): ?>
+        <div class="status-message error" role="alert"><?php echo htmlspecialchars($error); ?></div>
+        <?php endif; ?>
+
         <hgroup class="page-header">
             <h1>Your Company Information</h1>
             <p>Enter your own company information. This is used to generate information for emailing to the Agency, as well as Chain of Custody documents.</p>

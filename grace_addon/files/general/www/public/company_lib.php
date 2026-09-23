@@ -1,11 +1,68 @@
 <?php
 /**
- * Verified company editing (added in 0.18.0).
+ * Saving your own company details (1.1.0) and editing verified companies
+ * (added in 0.18.0).
  *
  * Companies can be edited but never deleted: the ledger, manifests, and
  * Chain of Custody history reference them by id. There is intentionally no
  * delete function in this file and none should ever be added.
  */
+
+/**
+ * Save your own company details (process_own_company.php). There is only
+ * ever one row: it's created the first time and updated after that.
+ *
+ * Values are stored exactly as typed (trimmed). Pages escape them when they
+ * show them. Never "sanitise" on the way in: 1.0.x ran FILTER_SANITIZE_STRING
+ * here, which stored "Joe's Farm" as "Joe&#39;s Farm" and put that in
+ * Agency emails.
+ *
+ * @param PDO $pdo
+ * @param array $input companyName, companyLicense, companyAddress, primaryContactEmail
+ * @return array{success: bool, message: string}
+ */
+function saveOwnCompany(PDO $pdo, array $input)
+{
+    $fields = [
+        'companyName' => 'Please enter your company name.',
+        'companyLicense' => 'Please enter your license number.',
+        'companyAddress' => 'Please enter your address.',
+        'primaryContactEmail' => 'Please enter a valid contact email.',
+    ];
+    $values = [];
+    foreach ($fields as $field => $message) {
+        $values[$field] = trim((string) ($input[$field] ?? ''));
+        if ($values[$field] === '') {
+            return ['success' => false, 'message' => $message];
+        }
+    }
+    if (!filter_var($values['primaryContactEmail'], FILTER_VALIDATE_EMAIL)) {
+        return ['success' => false, 'message' => $fields['primaryContactEmail']];
+    }
+
+    $params = [
+        ':companyName' => $values['companyName'],
+        ':companyLicense' => $values['companyLicense'],
+        ':companyAddress' => $values['companyAddress'],
+        ':primaryContactEmail' => $values['primaryContactEmail'],
+    ];
+    $existingId = $pdo->query("SELECT id FROM OwnCompany ORDER BY id LIMIT 1")->fetchColumn();
+    if ($existingId !== false) {
+        $stmt = $pdo->prepare("UPDATE OwnCompany SET
+                                  company_name = :companyName,
+                                  company_license_number = :companyLicense,
+                                  company_address = :companyAddress,
+                                  primary_contact_email = :primaryContactEmail
+                               WHERE id = :id");
+        $stmt->execute($params + [':id' => $existingId]);
+    } else {
+        $stmt = $pdo->prepare("INSERT INTO OwnCompany (company_name, company_license_number, company_address, primary_contact_email)
+                               VALUES (:companyName, :companyLicense, :companyAddress, :primaryContactEmail)");
+        $stmt->execute($params);
+    }
+
+    return ['success' => true, 'message' => 'Company details saved.'];
+}
 
 /**
  * Validate and apply an update to a verified company.

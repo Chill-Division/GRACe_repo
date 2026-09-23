@@ -70,21 +70,27 @@ bash tests/run_ci.sh
 *   **Uniqueness:** a license number or contact email belonging to a *different* company is rejected; re-saving a company's own values always succeeds.
 *   **Design rule:** asserts `company_lib.php` contains no delete operation. Verified companies can be edited but never deleted.
 
-### 10. License Alerts (`tests/test_license_alerts.php`)
+### 10. Own Company Details (`tests/test_own_company.php`)
+*   **Stored as typed:** apostrophes, quotes, ampersands and line breaks in your company details are saved exactly as entered. 1.0.x ran them through `FILTER_SANITIZE_STRING`, so "Joe's Farm" reached Agency emails as "Joe&#39;s Farm".
+*   **Clear refusals:** a missing name, license number or address, or an invalid email, is refused with a message saying which, and nothing is saved.
+*   **One-off repair:** details saved by 1.0.x get their real characters back on upgrade, recorded in `DataMigrations` so it never runs again.
+*   **Shown safely:** the report headings and the manifest form escape the details, and `escapeHtml()` escapes quotes.
+
+### 11. License Alerts (`tests/test_license_alerts.php`)
 *   **Shared windows:** the nav banner (3 days) and Dashboard list (30 days) use one helper; each returns the right licenses for its window.
 *   **Acknowledgment:** acknowledged licenses disappear from both surfaces; other document categories and licenses without expiry dates are never alerted.
 
-### 11. License Expiry Limit (`tests/test_license_expiry.php`)
+### 12. License Expiry Limit (`tests/test_license_expiry.php`)
 *   **The limit:** a license upload may expire up to 15 months from today, because licenses are annual and a renewal can be issued up to 3 months early (it used to be 12 months, which blocked early renewals). Exactly on the limit is accepted, one day past it is refused, and month ends clamp (15 months from 30 November is 29 February).
 *   **Bad input:** text, impossible dates and wrong formats are refused; already-expired licenses can still be uploaded for the record.
 *   **One rule everywhere:** `upload.php` and the Company Licenses date picker both use the shared helper.
 
-### 12. Download Filenames (`tests/test_download_names.php`)
+### 13. Download Filenames (`tests/test_download_names.php`)
 *   **Original names:** uploaded documents download under the name they were uploaded as; generated manifests lose their `uniqid()` prefix.
 *   **Header safety:** the `Content-Disposition` value is a single quoted filename with no trailing semicolon, and matches the parser Android's download manager (used by the Home Assistant app) relies on. A malformed header made phones save licenses as `download-2.php`.
 *   **MIME types:** correct types for PDFs and images.
 
-### 13. Static Code Analysis (`tests/static_checks.sh`)
+### 14. Static Code Analysis (`tests/static_checks.sh`)
 *   **Critical Paths:**
     *   Verifies Database path is `/data/grace.db`
     *   Verifies Upload path is `/data/uploads/`
@@ -94,13 +100,13 @@ bash tests/run_ci.sh
 *   **Duplicates:** Scans for duplicate `<script src="...">` tags in PHP files (prevent redeclaration errors).
 *   **PHP extensions:** Fails on `ctype_*` or `mb_*` functions. The add-on image only loads `pdo`, `pdo_sqlite` and `session` on top of PHP's core, so they would crash in production even though they work on a dev PC.
 
-### 14. Version Consistency (`tests/test_version_consistency.php`)
+### 15. Version Consistency (`tests/test_version_consistency.php`)
 *   **Why:** Ensures the version number is identical across:
     *   `config.yaml` (Home Assistant)
     *   `nav.php` (UI Display)
     *   `CHANGELOG.md` (Release Notes)
 
-### 15. PHP Syntax Check (`tests/syntax_check.sh`)
+### 16. PHP Syntax Check (`tests/syntax_check.sh`)
 *   **Linting:** Runs `php -l` on all PHP files in `grace_addon/files/general/www/public/` to catch syntax errors before runtime.
 
 ## Demo / Development Helpers (not part of CI)
