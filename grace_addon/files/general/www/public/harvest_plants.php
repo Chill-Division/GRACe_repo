@@ -67,6 +67,7 @@ require 'header.php';
         <button type="button" class="button" id="processSelectedButton">Process Selected</button>
     </main>
 
+    <script src="js/quick_add.js?v=<?php echo GRACE_ASSET_VERSION; ?>"></script>
     <script>
         const plantsTable = document.getElementById('plantsTable').getElementsByTagName('tbody')[0];
         const selectAllCheckbox = document.getElementById('selectAllCheckbox');
@@ -296,6 +297,9 @@ require 'header.php';
                     option.textContent = company.name;
                     companyDropdown.appendChild(option);
                 });
+
+                // "+ Add new company…" at the bottom of the list (quick_add.js)
+                enableQuickAddCompany(companyDropdown);
             })
             .catch(error => console.error('Error fetching companies:', error));
     </script>

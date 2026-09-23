@@ -818,6 +818,10 @@ article {
   overflow-y: auto;
 }
 
+.grace-modal.quick-add form {
+  --pico-spacing: 0.6rem; /* tighter fields, so the company form fits most screens */
+}
+
 .grace-modal.quick-add label {
   font-size: 0.9rem;
 }
