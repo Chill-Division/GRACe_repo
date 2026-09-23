@@ -77,6 +77,15 @@ function formatLedgerDate(value) {
 }
 
 /**
+ * Format grams for people: 1400 -> '1,400', 395.5 -> '395.5', at most 2 decimals.
+ * @param {number} grams
+ * @returns {string}
+ */
+function formatGrams(grams) {
+    return Number(grams || 0).toLocaleString('en-NZ', { maximumFractionDigits: 2 });
+}
+
+/**
  * Show a transient toast notification.
  * @param {string} message
  * @param {string} type 'success' | 'error' | 'info'

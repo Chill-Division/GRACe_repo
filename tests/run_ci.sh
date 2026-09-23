@@ -190,6 +190,17 @@ else
     FAILures=$((FAILures+1))
 fi
 
+# Run Entry Message Test
+echo ""
+echo "--- Entry Message Test ---"
+php tests/test_entry_messages.php
+if [ $? -eq 0 ]; then
+    echo -e "${GREEN}[PASS]${NC} Stock on hand and entry messages verified"
+else
+    echo -e "${RED}[FAIL]${NC} Stock on hand and entry messages failed"
+    FAILures=$((FAILures+1))
+fi
+
 # Run Version Consistency Check
 echo ""
 echo "--- Version Consistency ---"

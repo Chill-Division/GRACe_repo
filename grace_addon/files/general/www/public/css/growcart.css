@@ -810,6 +810,13 @@ article {
   color: #ffffff;
 }
 
+/* Stock hint under a form's genetics list goes red when an entry would take
+   more than is on hand (record_dry_weight.php) */
+small.stock-hint--warning {
+  color: var(--g-danger);
+  font-weight: 600;
+}
+
 /* "+ Add new…" pop-up forms (js/quick_add.js) */
 .grace-modal.quick-add article {
   width: calc(100vw - 2rem);

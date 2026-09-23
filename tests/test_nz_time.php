@@ -215,13 +215,13 @@ foreach (glob($publicDir . '/*.php') as $file) {
 }
 check('No page or handler uses the database clock (UTC) for times', $offenders, []);
 
-// (Harvest / Destroy / Send and Record dry weight do their writing in libs)
-foreach (['handle_receive_genetics.php', 'harvest_lib.php', 'flower_lib.php'] as $handler) {
+// (receiving, Harvest / Destroy / Send and Record dry weight write through these libs)
+foreach (['receive_lib.php', 'harvest_lib.php', 'flower_lib.php'] as $handler) {
     check("$handler stamps entries with ledgerTimestamp()",
         strpos(file_get_contents($publicDir . '/' . $handler), 'ledgerTimestamp()') !== false, true);
 }
 check('Receiving plants leaves the harvest date blank (it used to default to the UTC time)',
-    preg_match('/INSERT INTO Plants \(genetics_id, status, date_created, date_harvested\)/', file_get_contents($publicDir . '/handle_receive_genetics.php')) === 1, true);
+    preg_match('/INSERT INTO Plants \(genetics_id, status, date_created, date_harvested\)/', file_get_contents($publicDir . '/receive_lib.php')) === 1, true);
 
 $transactionsJs = file_get_contents($publicDir . '/js/transactions.js');
 check('Report dates are shown as stored (NZ time), not re-read in the browser\'s time zone',

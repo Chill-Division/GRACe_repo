@@ -17,6 +17,7 @@ require 'header.php';
                 <select id="geneticsName" name="geneticsName" class="input" required>
                     <option value="" disabled selected>Select Genetics</option>
                 </select>
+                <small id="stockHint" aria-live="polite"></small>
 
                 <label for="weight">Weight (grams):</label>
                 <input type="number" id="weight" name="weight" class="input" min="0.1" step="0.1" inputmode="decimal" required>
