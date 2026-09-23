@@ -234,6 +234,17 @@ else
     FAILures=$((FAILures+1))
 fi
 
+# Run Recent Entry Test
+echo ""
+echo "--- Recent Entry Test ---"
+php tests/test_recent_entries.php
+if [ $? -eq 0 ]; then
+    echo -e "${GREEN}[PASS]${NC} Recent entries verified"
+else
+    echo -e "${RED}[FAIL]${NC} Recent entries failed"
+    FAILures=$((FAILures+1))
+fi
+
 # Run Version Consistency Check
 echo ""
 echo "--- Version Consistency ---"

@@ -161,6 +161,7 @@ Administration → **"Download backup"** is only for an extra, ad-hoc copy, for 
 
 # Good to know
 
+- **Recent entries.** Receive plants, Record dry weight change and Harvest / Destroy / Send each list your last 10 entries under the form, newest first. Check there if you think something went in twice.
 - **Fixing a mistake.** History can't be edited, so correct it with another entry. Recorded 10 clones but only took 8? Process the 2 extras as destroyed. Typed 250 g instead of 25 g? Subtract 225 g with the reason Other and a note saying why. The correction is part of your record too.
 - **Light or dark.** The sun/moon button in the top right switches themes, and GRACe remembers your choice.
 - **Phone tip.** Everything in this guide works from the Home Assistant app on your phone, so record harvests and sends while you're standing in the room.
