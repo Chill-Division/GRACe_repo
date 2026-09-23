@@ -810,6 +810,75 @@ article {
   color: #ffffff;
 }
 
+/* "What's new" pop-up after an update (footer.php, js/whats_new.js) and the
+   What's new page. Long notes start folded to about 10 lines. */
+.grace-modal.whats-new article {
+  width: calc(100vw - 2rem);
+  max-width: 34rem;
+  max-height: calc(100vh - 2rem);
+  overflow-y: auto;
+}
+
+/* Pop-ups that can scroll keep their buttons inside the scroll area (the
+   usual full-bleed footer would stick out and add scrollbars) */
+.grace-modal.whats-new article footer,
+.grace-modal.quick-add article footer {
+  margin: 1rem 0 0;
+  padding: 0;
+  background: none;
+  border-top: 0;
+}
+
+.whats-new-notes {
+  position: relative;
+  max-height: 16rem;
+  overflow: hidden;
+  font-size: 0.92rem;
+}
+
+.whats-new-notes--folded::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 3rem;
+  background: linear-gradient(to bottom, transparent, var(--pico-card-background-color));
+  pointer-events: none;
+}
+
+.whats-new-notes--open {
+  max-height: min(55vh, 30rem);
+  overflow-y: auto;
+}
+
+.whats-new-notes h4,
+.whats-new-page h4 {
+  margin: 1rem 0 0.4rem;
+  font-size: 0.95rem;
+}
+
+.whats-new-notes h4:first-child,
+.whats-new-page h4:first-child {
+  margin-top: 0;
+}
+
+.whats-new-notes ul,
+.whats-new-page ul {
+  margin-bottom: 0.5rem;
+  padding-left: 1.2rem;
+}
+
+.whats-new-notes li,
+.whats-new-page li {
+  margin-bottom: 0.35rem;
+}
+
+.grace-modal .whats-new-notes p,
+.grace-modal .whats-new-notes li {
+  color: var(--pico-color);
+}
+
 /* "Recent entries" under the entry forms (recent_lib.php) */
 .recent-entries {
   margin-top: 2.25rem;

@@ -245,6 +245,17 @@ else
     FAILures=$((FAILures+1))
 fi
 
+# Run What's New Test
+echo ""
+echo "--- What's New Test ---"
+php tests/test_whats_new.php
+if [ $? -eq 0 ]; then
+    echo -e "${GREEN}[PASS]${NC} What's new verified"
+else
+    echo -e "${RED}[FAIL]${NC} What's new failed"
+    FAILures=$((FAILures+1))
+fi
+
 # Run Version Consistency Check
 echo ""
 echo "--- Version Consistency ---"
