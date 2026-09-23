@@ -90,6 +90,8 @@ Plant Tracking → **"Record dry weight change"** again, but this time choose **
 
 Testing and Send external are what appear in your monthly materials-out report.
 
+You can't subtract more flower than GRACe has on record for that genetics. If you really do have more than it thinks (say a harvest was never entered), record the missing amount with **Add** first.
+
 <img src="https://raw.githubusercontent.com/Chill-Division/GRACe_repo/main/docs/screenshots/desktop-record-dry-weight.png" alt="Recording flower sent out" width="900">
 
 <img src="https://raw.githubusercontent.com/Chill-Division/GRACe_repo/main/docs/screenshots/mobile-record-dry-weight.png" alt="Recording flower sent out on a phone" width="300">
