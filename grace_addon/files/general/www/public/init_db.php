@@ -303,6 +303,11 @@ function performMigrations($pdo) {
     removeLegacyGeneticsColumns($pdo);
     convertLedgerTimesToNzTime($pdo);
     runDataFixOnce($pdo, 'own-company-quotes', 'repairOwnCompanyQuotes');
+
+    // "What's new" after an update: decide once whether this install was
+    // already in use (see the latest notes) or is new (nothing to show)
+    require_once __DIR__ . '/whats_new_lib.php';
+    recordWhatsNewBaseline($pdo);
 }
 
 /** The table that records one-off data fixes, so each runs exactly once. */

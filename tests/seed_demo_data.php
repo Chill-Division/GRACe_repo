@@ -251,6 +251,9 @@ if ($legacy) {
     // 1.0.x had no record of the NZ time conversion, so the next page load
     // converts the UTC times seeded above, exactly like a real upgrade
     $pdo->exec("DROP TABLE IF EXISTS DataMigrations");
+    // 1.0.x had no "What's new" either, so the first page load shows the
+    // latest notes, exactly like a real upgrade
+    $pdo->exec("DELETE FROM Settings WHERE name = 'whatsNewSeenVersion'");
 }
 
 $pdo->commit();

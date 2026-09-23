@@ -30,6 +30,8 @@ RUN apk -U upgrade && apk add --no-cache \
 #    chown php:nginx /grace_config/grace.db
 
 COPY files/general files/php83 /
+# The changelog, for the "What's new" pop-up after an update (whats_new_lib.php)
+COPY CHANGELOG.md /www/CHANGELOG.md
 RUN chown php:nginx /www/public/grace.db
 
 ENTRYPOINT ["/init"]

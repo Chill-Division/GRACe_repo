@@ -16,7 +16,7 @@ $navSections = [
     ],
     'administration.php' => [
         'label' => 'Administration',
-        'pages' => ['administration', 'add_verified_company', 'verified_companies', 'edit_verified_company', 'add_new_genetics', 'police_vet_check_records', 'sops', 'offtake_agreements', 'company_licenses', 'chain_of_custody_documents', 'own_company', 'admin_migrate_harvested'],
+        'pages' => ['administration', 'add_verified_company', 'verified_companies', 'edit_verified_company', 'add_new_genetics', 'police_vet_check_records', 'sops', 'offtake_agreements', 'company_licenses', 'chain_of_custody_documents', 'own_company', 'admin_migrate_harvested', 'settings', 'whats_new'],
     ],
 ];
 ?>
@@ -38,7 +38,7 @@ $navSections = [
                 <?php foreach ($navSections as $href => $section):
                     $isActive = in_array($navCurrent, $section['pages'], true); ?>
                 <li><a href="<?php echo $href; ?>"<?php echo $isActive ? ' class="active" aria-current="page"' : ''; ?>><?php echo $section['label']; ?></a></li>
-                <?php endforeach; ?>
+                <?php endforeach; unset($href, $section, $isActive); // loop variables must not leak into the page ?>
                 <li><a href="#" id="theme_switcher" class="theme-toggle" role="button" aria-label="Toggle light/dark theme"></a></li>
             </ul>
         </nav>

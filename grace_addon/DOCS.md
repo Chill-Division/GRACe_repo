@@ -163,6 +163,7 @@ Administration → **"Download backup"** is only for an extra, ad-hoc copy, for 
 
 - **Recent entries.** Receive plants, Record dry weight change and Harvest / Destroy / Send each list your last 10 entries under the form, newest first. Check there if you think something went in twice.
 - **Fixing a mistake.** History can't be edited, so correct it with another entry. Recorded 10 clones but only took 8? Process the 2 extras as destroyed. Typed 250 g instead of 25 g? Subtract 225 g with the reason Other and a note saying why. The correction is part of your record too.
+- **What's new.** After GRACe updates, the first person to open it sees a short "What's new" summary, once for everyone. Long notes start folded, so tap "Show more…" to read the lot. Missed it, or want to read it again? Administration → **"What's new"** shows it any time.
 - **Light or dark.** The sun/moon button in the top right switches themes, and GRACe remembers your choice.
 - **Phone tip.** Everything in this guide works from the Home Assistant app on your phone, so record harvests and sends while you're standing in the room.
 - **Times are NZ time.** Before version 1.1, GRACe saved plant and flower times in UTC, which is 12 or 13 hours behind NZ, so anything recorded before about 1pm on the 1st of a month counted towards the month before. Updating to 1.1 corrects the old entries as well. A few of them move into the month they really happened in, so an older monthly report you open again can differ slightly from the one you sent at the time.

@@ -114,4 +114,10 @@ an update: `performMigrations()` in `init_db.php` runs on every request.
 - Changelogs, the user guide (`grace_addon/DOCS.md`) and on-screen text are
   read by growers, not developers. Keep it short and plain: say what changed
   for them and skip the technical detail.
+- The newest section of `grace_addon/CHANGELOG.md` is shown inside GRACe as
+  the "What's new" pop-up after an update (`whats_new_lib.php`; the
+  Dockerfile copies the file into the image). Write it for growers: what
+  changed for them first, with details, and small fixes grouped at the end.
+  Keep the `## [x.y.z] - YYYY-MM-DD` heading format, because What's new and
+  the version test both read it.
 - Don't use em-dashes anywhere. Rephrase so the sentence doesn't need one.

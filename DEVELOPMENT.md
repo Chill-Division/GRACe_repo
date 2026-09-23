@@ -128,6 +128,12 @@ Also bump `GRACE_ASSET_VERSION` in
 `grace_addon/files/general/www/public/header.php` so browsers pick up new
 CSS/JS.
 
+The new `CHANGELOG.md` section is what growers see in the "What's new"
+pop-up the first time anyone opens the updated add-on, so write it for them
+(see AGENTS.md). To see the pop-up locally, seed with `--legacy` (it behaves
+like an upgraded install) and open any page. A normal seed behaves like a
+new install, which never shows it.
+
 ## Rules
 
 The rules every change must follow live in [AGENTS.md](AGENTS.md), where AI
