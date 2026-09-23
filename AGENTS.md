@@ -106,18 +106,52 @@ an update: `performMigrations()` in `init_db.php` runs on every request.
 - New behaviour gets a regression test wired into `tests/run_ci.sh`, and
   `TESTING.md` stays in step with the suite.
 - Releases bump the version in `config.yaml`, `nav.php`, the top
-  `CHANGELOG.md` heading, and `GRACE_ASSET_VERSION` in `header.php`. See the
-  release checklist in DEVELOPMENT.md.
+  `CHANGELOG.md` heading, and `GRACE_ASSET_VERSION` in `header.php`, and add
+  a changelog entry written the way section 6 describes. See the release
+  checklist in DEVELOPMENT.md.
 
 ## 5. Writing for users
 
 - Changelogs, the user guide (`grace_addon/DOCS.md`) and on-screen text are
   read by growers, not developers. Keep it short and plain: say what changed
   for them and skip the technical detail.
-- The newest section of `grace_addon/CHANGELOG.md` is shown inside GRACe as
-  the "What's new" pop-up after an update (`whats_new_lib.php`; the
-  Dockerfile copies the file into the image). Write it for growers: what
-  changed for them first, with details, and small fixes grouped at the end.
-  Keep the `## [x.y.z] - YYYY-MM-DD` heading format, because What's new and
-  the version test both read it.
 - Don't use em-dashes anywhere. Rephrase so the sentence doesn't need one.
+
+## 6. The changelog
+
+`grace_addon/CHANGELOG.md` is read by growers in two places: Home
+Assistant's add-on changelog, and GRACe's own "What's new" pop-up, which
+shows the newest entry the first time anyone opens the updated add-on
+(`whats_new_lib.php`). **The 1.1.0 entry is the standard.** Match its tone
+and layout:
+
+- Heading `## [x.y.z] - YYYY-MM-DD`, newest entry at the top.
+- One plain sentence summing up the release.
+- Then these sections, in this order, leaving out any that would be empty:
+  - `### What's new`: each feature is a bullet that starts with a bold
+    sentence saying what the grower gets, followed by a line or two on how
+    to use it and where to find it.
+  - `### Important fixes`: bold lead-in, then what used to go wrong and what
+    it means for them now. Mention anything that changes their existing
+    records or reports.
+  - `### Changes`: behaviour that's different now, one plain line each.
+  - `### Minor bug fixes and reliability improvements`: small things,
+    grouped into two or three short bullets. Only say "performance" if
+    something really got faster.
+- What's new shows about the first 10 lines before "Show more…", so put
+  what matters most to growers first.
+- Write for growers: what changed for them, not how. No file names,
+  functions or tables. Use neutral examples ("Joe's Farm"), never strain
+  names or real customer data.
+- What's new only renders `### ` headings, `- ` bullets, `**bold**` and
+  `` `code` ``. Everything else shows as plain text.
+
+Two things that are easy to get wrong:
+
+- The file lives at `grace_addon/CHANGELOG.md`, not the repository root.
+- The add-on image only gets `files/general` and `files/php83` copied in,
+  so the Dockerfile copies the changelog separately
+  (`COPY CHANGELOG.md /www/CHANGELOG.md`). Without that line What's new
+  silently shows nothing. `whats_new_lib.php` looks in the image first, then
+  in the repository (for development and tests), and
+  `tests/test_whats_new.php` checks both.
