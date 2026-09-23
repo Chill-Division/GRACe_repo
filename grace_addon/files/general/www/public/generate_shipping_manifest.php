@@ -240,7 +240,7 @@ require 'header.php';
                 warning: `That's more than ${plants ? limit + ' plants' : formatGrams(limit) + ' g'}, your large-entry limit. Check the quantity before you confirm.`,
                 warningTick: `Yes, ${amount} is right`
             }).then(confirmed => {
-                if (confirmed) manifestForm.submit();
+                if (confirmed) submitOnce(manifestForm);
             });
         });
 

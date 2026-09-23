@@ -133,6 +133,64 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 /**
+ * Double taps can't save twice: once a form is on its way to the server,
+ * further submits of it are ignored until a new page loads. Forms that
+ * send via fetch() cancel the submit event, so they're not affected.
+ */
+function markFormSubmitting(form) {
+    form.dataset.submitting = '1';
+    // Disable the buttons only after the browser has read the form, so a
+    // named submit button (e.g. the legacy harvest migration) still sends
+    // its value
+    setTimeout(() => {
+        form.querySelectorAll('button[type="submit"], button:not([type])').forEach(button => {
+            button.disabled = true;
+            button.setAttribute('aria-busy', 'true');
+        });
+    }, 0);
+}
+
+/**
+ * Submit a form after a confirm step, at most once. Use instead of
+ * form.submit(), which skips the submit event and so the guard above.
+ * @param {HTMLFormElement} form
+ */
+function submitOnce(form) {
+    if (form.dataset.submitting) return;
+    markFormSubmitting(form);
+    form.submit();
+}
+
+// Capture phase: runs before any page's own submit handler, so a second tap
+// doesn't even open a second confirm pop-up
+document.addEventListener('submit', (event) => {
+    const form = event.target;
+    if (form.dataset.submitting) {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+    }
+}, true);
+
+// Bubble phase: after the page's handlers. If none of them cancelled the
+// submit, it's really on its way.
+document.addEventListener('submit', (event) => {
+    if (!event.defaultPrevented) markFormSubmitting(event.target);
+});
+
+// Coming back with the Back button can restore a page from the cache as it
+// was mid-submit; make its forms usable again
+window.addEventListener('pageshow', (event) => {
+    if (!event.persisted) return;
+    document.querySelectorAll('form[data-submitting]').forEach(form => {
+        delete form.dataset.submitting;
+        form.querySelectorAll('button[aria-busy]').forEach(button => {
+            button.disabled = false;
+            button.removeAttribute('aria-busy');
+        });
+    });
+});
+
+/**
  * Show a confirmation modal. Resolves true (confirm) or false (cancel).
  * @param {Object} options
  * @param {string} options.title
