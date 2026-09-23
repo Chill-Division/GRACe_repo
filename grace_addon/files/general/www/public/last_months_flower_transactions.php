@@ -1,5 +1,6 @@
 <?php
 require_once 'init_db.php';
+require_once 'materials_out_lib.php';
 
 $companyName = '';
 $companyLicense = '';
@@ -24,22 +25,25 @@ try {
     echo "Error: An unexpected error occurred. Please try again later.";
 }
 
-$reportMonthLabel = date('F Y', strtotime('first day of last month'));
-$reportPeriod = date('Y-m', strtotime('first day of last month'));
+// Work out the month once and hand it to the data endpoint, so the heading,
+// the figures and the email subject always agree
+$reportMonth = previousReportMonth();
+$reportMonthLabel = $reportMonth['label'];
+$reportPeriod = $reportMonth['period'];
 
 $reportHeading = $pageTitle;
 $pageTitle = "GRACe - $pageTitle";
 require 'header.php';
 ?>
 
-    <main class="container" data-endpoint="get_last_months_flower_transactions.php"
+    <main class="container" data-endpoint="get_last_months_flower_transactions.php?period=<?php echo urlencode($reportPeriod); ?>"
           data-report-month="<?php echo htmlspecialchars($reportMonthLabel); ?>"
           data-report-period="<?php echo htmlspecialchars($reportPeriod); ?>"
           data-company-name="<?php echo htmlspecialchars($companyName); ?>"
           data-company-license="<?php echo htmlspecialchars($companyLicense); ?>">
         <hgroup class="page-header">
             <h1><?php echo $reportHeading; ?></h1>
-            <p>Pre-formatted and ready to send to the Agency.</p>
+            <p><?php echo htmlspecialchars($reportMonthLabel); ?>, pre-formatted and ready to send to the Agency.</p>
         </hgroup>
 
         <div class="toolbar">
