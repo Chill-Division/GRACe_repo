@@ -13,6 +13,24 @@ function ledgerTimestamp() {
     return (new DateTimeImmutable('now', new DateTimeZone('Pacific/Auckland')))->format('Y-m-d H:i:s');
 }
 
+/**
+ * Run $work($pdo) in a transaction that takes the database write lock up
+ * front (BEGIN IMMEDIATE), so two requests can't both pass a check (say,
+ * "these plants are still growing") and then both write. Commits when $work
+ * returns, rolls back and rethrows if it throws.
+ */
+function withWriteLock(PDO $pdo, callable $work) {
+    $pdo->exec('BEGIN IMMEDIATE');
+    try {
+        $result = $work($pdo);
+        $pdo->exec('COMMIT');
+        return $result;
+    } catch (Throwable $e) {
+        $pdo->exec('ROLLBACK');
+        throw $e;
+    }
+}
+
 function initializeDatabase($dbPath = '/data/grace.db') {
     try {
         // Check if the directory exists

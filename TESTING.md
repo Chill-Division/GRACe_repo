@@ -39,46 +39,52 @@ bash tests/run_ci.sh
 *   **Verification:** Asserts that all required subdirectories (`offtakes`, `sops`, etc.) are created and writable.
 *   **Logic Check:** Verifies the script can handle creating parent and child directories permissions.
 
-### 4. Annual Stocktake Logic (`tests/test_annual_stocktake.php`)
+### 4. Harvest Safeguards (`tests/test_harvest_safeguards.php`)
+*   **History can't be rewritten:** plants that have already left (sent, destroyed) can't be processed again, for example from a stale browser tab. They keep their status, date and company.
+*   **All or nothing:** if any ticked plant can't take the action, the whole batch is refused and nothing changes. Drying plants can't be harvested again (that used to reset their harvest date).
+*   **Nothing is guessed:** a mistyped action (it used to be recorded as Sent), a send without a company or to an unknown company, and plant ids that aren't numbers are all refused.
+*   **Clear messages:** "Marked 1 plant as sent to Buyer Ltd." (it used to say "sended"), with the right singular or plural.
+
+### 5. Annual Stocktake Logic (`tests/test_annual_stocktake.php`)
 *   **Opening balance:** Plants that left stock in any earlier year (destroyed / sent / legacy-harvested) must not appear in a later year's Start Amount.
 *   **Year boundaries:** Activity timestamped on 31 December still counts in that year's columns.
 *   **Status rules:** "Harvested - Drying" counts as active stock; flower balances reconcile start + in - out - destroyed = end.
 
-### 5. NZ Time (`tests/test_nz_time.php`)
+### 6. NZ Time (`tests/test_nz_time.php`)
 *   **Upgrading a 1.0.x install:** builds a database with times stored the old way (UTC, from SQLite's `DATETIME('now')`), runs `performMigrations()`, and checks each one now reads NZ time: summer and winter time, both sides of a daylight saving change, and entries that move month or year (a plant sent on the morning of 1 March leaves February's report and joins March's).
 *   **Left alone:** flower deducted by a shipping manifest (always NZ time), dates without a time, blank dates and anything that isn't a date.
 *   **Exactly once:** a second run changes nothing, fresh installs have nothing to convert, entries written after the upgrade are never shifted, and a conversion that has to be retried only touches the rows that existed before the upgrade.
 *   **No UTC clock:** no page or handler uses SQLite's `'now'` or `CURRENT_TIMESTAMP`; handlers stamp entries with `ledgerTimestamp()`, and report dates are shown as stored instead of being re-read in the browser's time zone.
 
-### 6. Agency Report Reminders (`tests/test_report_reminders.php`)
+### 7. Agency Report Reminders (`tests/test_report_reminders.php`)
 *   **Windows, not queues:** the monthly reminder only shows on days 1-7 (and only if last month shipped materials); the annual reminder only in January (and only with prior-year data). At most two banners, ever.
 *   **Dismissals:** dismissing or drafting a period keeps it silent across reloads; fresh installs are never flooded.
 
-### 7. Monthly Report Periods (`tests/test_report_periods.php`)
+### 8. Monthly Report Periods (`tests/test_report_periods.php`)
 *   **Last month is the previous calendar month:** on the 29th, 30th and 31st, "Last month's materials out" used to show this month's figures under last month's heading, because `strtotime('-1 month')` on 31 July gives "31 June", which PHP rolls over to 1 July. Checked on month ends, across the new year and in a leap year.
 *   **Right rows:** the report holds only sends and lab samples dated inside the month, including its first and last second.
 *   **Heading and figures agree:** the page passes its month to the data endpoint, and anything other than a real `YYYY-MM` in the URL is ignored.
 
-### 8. Company Editing (`tests/test_company_editing.php`)
+### 9. Company Editing (`tests/test_company_editing.php`)
 *   **Annual license renewal:** updating a verified company's license number, address, or contact persists correctly.
 *   **Uniqueness:** a license number or contact email belonging to a *different* company is rejected; re-saving a company's own values always succeeds.
 *   **Design rule:** asserts `company_lib.php` contains no delete operation. Verified companies can be edited but never deleted.
 
-### 9. License Alerts (`tests/test_license_alerts.php`)
+### 10. License Alerts (`tests/test_license_alerts.php`)
 *   **Shared windows:** the nav banner (3 days) and Dashboard list (30 days) use one helper; each returns the right licenses for its window.
 *   **Acknowledgment:** acknowledged licenses disappear from both surfaces; other document categories and licenses without expiry dates are never alerted.
 
-### 10. License Expiry Limit (`tests/test_license_expiry.php`)
+### 11. License Expiry Limit (`tests/test_license_expiry.php`)
 *   **The limit:** a license upload may expire up to 15 months from today, because licenses are annual and a renewal can be issued up to 3 months early (it used to be 12 months, which blocked early renewals). Exactly on the limit is accepted, one day past it is refused, and month ends clamp (15 months from 30 November is 29 February).
 *   **Bad input:** text, impossible dates and wrong formats are refused; already-expired licenses can still be uploaded for the record.
 *   **One rule everywhere:** `upload.php` and the Company Licenses date picker both use the shared helper.
 
-### 11. Download Filenames (`tests/test_download_names.php`)
+### 12. Download Filenames (`tests/test_download_names.php`)
 *   **Original names:** uploaded documents download under the name they were uploaded as; generated manifests lose their `uniqid()` prefix.
 *   **Header safety:** the `Content-Disposition` value is a single quoted filename with no trailing semicolon, and matches the parser Android's download manager (used by the Home Assistant app) relies on. A malformed header made phones save licenses as `download-2.php`.
 *   **MIME types:** correct types for PDFs and images.
 
-### 12. Static Code Analysis (`tests/static_checks.sh`)
+### 13. Static Code Analysis (`tests/static_checks.sh`)
 *   **Critical Paths:**
     *   Verifies Database path is `/data/grace.db`
     *   Verifies Upload path is `/data/uploads/`
@@ -87,13 +93,13 @@ bash tests/run_ci.sh
 *   **Security:** Scans for dangerous relative path usage (`__DIR__ . '/uploads'`).
 *   **Duplicates:** Scans for duplicate `<script src="...">` tags in PHP files (prevent redeclaration errors).
 
-### 13. Version Consistency (`tests/test_version_consistency.php`)
+### 14. Version Consistency (`tests/test_version_consistency.php`)
 *   **Why:** Ensures the version number is identical across:
     *   `config.yaml` (Home Assistant)
     *   `nav.php` (UI Display)
     *   `CHANGELOG.md` (Release Notes)
 
-### 14. PHP Syntax Check (`tests/syntax_check.sh`)
+### 15. PHP Syntax Check (`tests/syntax_check.sh`)
 *   **Linting:** Runs `php -l` on all PHP files in `grace_addon/files/general/www/public/` to catch syntax errors before runtime.
 
 ## Demo / Development Helpers (not part of CI)

@@ -101,9 +101,9 @@ function showToast(message, type = 'info', duration = 4500) {
  * Queue a toast to be shown after the next page load, use before
  * location.reload() / navigation so the message isn't lost.
  */
-function flashToast(message, type = 'success') {
+function flashToast(message, type = 'success', duration = 4500) {
     try {
-        sessionStorage.setItem('grace-flash', JSON.stringify({ message: message, type: type }));
+        sessionStorage.setItem('grace-flash', JSON.stringify({ message: message, type: type, duration: duration }));
     } catch (e) { /* sessionStorage unavailable, message is lost, not fatal */ }
 }
 
@@ -113,7 +113,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (flash) {
             sessionStorage.removeItem('grace-flash');
             const data = JSON.parse(flash);
-            showToast(data.message, data.type || 'success');
+            showToast(data.message, data.type || 'success', data.duration || 4500);
         }
     } catch (e) { /* ignore malformed flash data */ }
 });

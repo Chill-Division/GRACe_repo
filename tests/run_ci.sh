@@ -47,6 +47,17 @@ else
     FAILures=$((FAILures+1))
 fi
 
+# Run Harvest Safeguard Test
+echo ""
+echo "--- Harvest Safeguard Test ---"
+php tests/test_harvest_safeguards.php
+if [ $? -eq 0 ]; then
+    echo -e "${GREEN}[PASS]${NC} Harvest safeguards verified"
+else
+    echo -e "${RED}[FAIL]${NC} Harvest safeguards failed"
+    FAILures=$((FAILures+1))
+fi
+
 # Run Annual Stocktake Test
 echo ""
 echo "--- Annual Stocktake Test ---"

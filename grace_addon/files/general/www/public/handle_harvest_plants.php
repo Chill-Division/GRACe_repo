@@ -1,62 +1,27 @@
 <?php
 require_once 'init_db.php';
+require_once 'harvest_lib.php';
 
 header('Content-Type: application/json');
 
-// Enable error reporting for debugging
-ini_set('display_errors', 1);
-error_reporting(E_ALL);
+if ($_SERVER["REQUEST_METHOD"] !== "POST") {
+    echo json_encode(['success' => false, 'message' => 'Invalid request method']);
+    exit();
+}
+
+// Expects JSON: { selectedPlants: [ids], action: 'harvest'|'destroy'|'send', companyId }
+$data = json_decode(file_get_contents('php://input'), true);
+if (!is_array($data)) {
+    echo json_encode(['success' => false, 'message' => 'Invalid or missing data']);
+    exit();
+}
 
 try {
     $pdo = initializeDatabase();
-
-    if ($_SERVER["REQUEST_METHOD"] !== "POST") {
-        throw new Exception('Invalid request method');
-    }
-
-    $json = file_get_contents('php://input');
-    $data = json_decode($json, true);
-
-    if (!isset($data['selectedPlants']) || !is_array($data['selectedPlants']) || !isset($data['action'])) {
-        throw new Exception('Invalid or missing data');
-    }
-
-    $selectedPlantIds = $data['selectedPlants'];
-    $action = $data['action'];
-    $companyId = $data['companyId'] ?? null;
-
-    if (empty($selectedPlantIds)) {
-        throw new Exception('No plants selected.');
-    }
-
-    // Map actions to new harvest sub-states while keeping legacy compatibility.
-    if ($action === 'harvest') {
-        $newStatus = 'Harvested - Drying';
-    } elseif ($action === 'destroy') {
-        $newStatus = 'Harvested - Destroyed';
-    } else {
-        $newStatus = 'Sent';
-    }
-    $placeholders = implode(',', array_fill(0, count($selectedPlantIds), '?'));
-    $sql = "UPDATE Plants SET status = ?, date_harvested = ?";
-
-    if ($action === 'send' && $companyId !== null) {
-        $sql .= ", company_id = ?";
-    }
-
-    $sql .= " WHERE id IN ($placeholders)";
-    $stmt = $pdo->prepare($sql);
-
-    // NZ time, the same clock the reports use
-    $when = ledgerTimestamp();
-    $params = ($action === 'send' && $companyId !== null) ? array_merge([$newStatus, $when, $companyId], $selectedPlantIds) : array_merge([$newStatus, $when], $selectedPlantIds);
-    $stmt->execute($params);
-
-    $affectedRows = $stmt->rowCount();
-    echo json_encode(['success' => true, 'message' => "Success: $affectedRows plants $action" . 'ed successfully']);
-
+    $result = processPlants($pdo, $data['selectedPlants'] ?? [], $data['action'] ?? '', $data['companyId'] ?? null);
 } catch (Exception $e) {
     error_log('Error in handle_harvest_plants.php: ' . $e->getMessage());
-    echo json_encode(['success' => false, 'message' => $e->getMessage()]);
+    $result = ['success' => false, 'message' => 'Something went wrong and nothing was changed: ' . $e->getMessage()];
 }
-?>
+
+echo json_encode($result);

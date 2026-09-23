@@ -208,6 +208,18 @@ require 'header.php';
                 return;
             }
 
+            // Drying plants have already been harvested; harvesting them
+            // again is refused by the server, so catch it here first
+            if (selectedAction === 'harvest') {
+                const drying = [...selectedCheckboxes].filter(
+                    checkbox => checkbox.closest('tr').cells[3].textContent.trim() !== 'Growing'
+                ).length;
+                if (drying > 0) {
+                    showToast(`${drying} of the selected plants ${drying === 1 ? 'is' : 'are'} already drying. Untick ${drying === 1 ? 'it' : 'them'}, or choose Destroy or Send.`, 'error', 8000);
+                    return;
+                }
+            }
+
             // Build a per-genetics summary of what's about to happen, the ledger
             // can't be edited afterwards, so make the user review it first
             const countsByGenetics = {};
@@ -253,9 +265,13 @@ require 'header.php';
                     if (data.success) {
                         flashToast(data.message, 'success');
                         location.reload();
+                    } else if (data.reload) {
+                        // The list is out of date (e.g. processed in another
+                        // tab): show why, with the current list underneath
+                        flashToast(data.message, 'error', 10000);
+                        location.reload();
                     } else {
-                        console.error('Error from server:', data.message);
-                        showToast('An error occurred: ' + data.message, 'error');
+                        showToast(data.message, 'error', 8000);
                     }
                 })
                 .catch(error => {
