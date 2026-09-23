@@ -1,7 +1,17 @@
 <?php
 
-date_default_timezone_set('Pacific/Auckland'); 
+date_default_timezone_set('Pacific/Auckland');
 
+/**
+ * The current time for a ledger entry: NZ time, as 'Y-m-d H:i:s'.
+ *
+ * Every timestamp GRACe stores is NZ time, because the Agency reports split
+ * months and years in NZ time. Never use SQLite's DATETIME('now') or
+ * CURRENT_TIMESTAMP: those are UTC, 12 or 13 hours behind NZ.
+ */
+function ledgerTimestamp() {
+    return (new DateTimeImmutable('now', new DateTimeZone('Pacific/Auckland')))->format('Y-m-d H:i:s');
+}
 
 function initializeDatabase($dbPath = '/data/grace.db') {
     try {
@@ -187,8 +197,9 @@ function performMigrations($pdo) {
     try {
         $pdo->query("SELECT upload_date FROM Documents LIMIT 1");
     } catch (PDOException $e) {
-        // Column doesn't exist, add it
-        $pdo->exec("ALTER TABLE Documents ADD COLUMN upload_date DATETIME DEFAULT CURRENT_TIMESTAMP");
+        // Column doesn't exist, add it. SQLite can't add a column with a
+        // CURRENT_TIMESTAMP default, and upload.php always sets the date.
+        $pdo->exec("ALTER TABLE Documents ADD COLUMN upload_date DATETIME");
     }
 
     // ShippingManifests workflow columns (added in 0.16.0 for the
@@ -265,6 +276,151 @@ function performMigrations($pdo) {
     }
 
     removeLegacyGeneticsColumns($pdo);
+    convertLedgerTimesToNzTime($pdo);
+}
+
+const GRACE_NZ_TIME_MIGRATION = 'ledger-times-to-nz-time';
+
+/**
+ * Before 1.1.0, plants and manual flower entries were stamped with SQLite's
+ * DATETIME('now'), which is UTC, 12 or 13 hours behind NZ. The reports split
+ * months and years in NZ time, so anything recorded before about 1pm on the
+ * 1st of a month was counted in the previous month. This converts those old
+ * UTC times to NZ time, once per install, on the first page load after the
+ * update. New entries use ledgerTimestamp(), which is already NZ time.
+ *
+ * Converted: Plants.date_created, Plants.date_harvested, and
+ * Flower.transaction_date, except flower deducted by a shipping manifest
+ * (always NZ time). Manifests and documents were already NZ time.
+ *
+ * Exactly once: the first run records which rows are old (the highest plant
+ * and flower ids) in DataMigrations before converting anything, then
+ * converts only those rows and marks the job done in the same transaction.
+ * If the conversion ever has to be retried, entries written in the meantime
+ * are already NZ time and are never touched. tests/test_nz_time.php guards
+ * all of this.
+ */
+function convertLedgerTimesToNzTime($pdo)
+{
+    try {
+        $ledgerTables = (int) $pdo->query("SELECT COUNT(*) FROM sqlite_master
+                                           WHERE type = 'table' AND name IN ('Plants', 'Flower', 'ShippingManifests')")->fetchColumn();
+        if ($ledgerTables < 3) {
+            return; // not a GRACe ledger (only happens in tests)
+        }
+
+        $pdo->exec("CREATE TABLE IF NOT EXISTS DataMigrations (
+            name TEXT PRIMARY KEY,
+            status TEXT NOT NULL,
+            details TEXT,
+            updated_at DATETIME
+        )");
+
+        $findJob = $pdo->prepare("SELECT status, details FROM DataMigrations WHERE name = ?");
+        $findJob->execute([GRACE_NZ_TIME_MIGRATION]);
+        $job = $findJob->fetch(PDO::FETCH_ASSOC);
+        if ($job && $job['status'] === 'done') {
+            return; // every page load after the first
+        }
+
+        if (!$job) {
+            // Nothing written by this version exists yet: this runs before any
+            // page gets to add entries. If two page loads race, the first wins.
+            $oldRows = json_encode([
+                'plantsUpToId' => (int) $pdo->query("SELECT COALESCE(MAX(id), 0) FROM Plants")->fetchColumn(),
+                'flowerUpToId' => (int) $pdo->query("SELECT COALESCE(MAX(id), 0) FROM Flower")->fetchColumn(),
+            ]);
+            $pdo->prepare("INSERT OR IGNORE INTO DataMigrations (name, status, details, updated_at) VALUES (?, 'pending', ?, ?)")
+                ->execute([GRACE_NZ_TIME_MIGRATION, $oldRows, ledgerTimestamp()]);
+        }
+    } catch (Exception $e) {
+        error_log("GRACe: could not start converting ledger times to NZ time: " . $e->getMessage());
+        return;
+    }
+
+    if ($pdo->inTransaction()) {
+        return; // never nest inside someone else's transaction; try next time
+    }
+
+    try {
+        // IMMEDIATE takes the write lock up front, so a second page load
+        // waits here and then finds the job done instead of converting twice
+        $pdo->exec('BEGIN IMMEDIATE');
+
+        $findJob->execute([GRACE_NZ_TIME_MIGRATION]);
+        $job = $findJob->fetch(PDO::FETCH_ASSOC);
+        if (!$job || $job['status'] === 'done') {
+            $pdo->exec('COMMIT');
+            return;
+        }
+        $details = json_decode($job['details'] ?? '', true) ?: [];
+        $plantsUpToId = (int) ($details['plantsUpToId'] ?? 0);
+        $flowerUpToId = (int) ($details['flowerUpToId'] ?? 0);
+
+        $utc = new DateTimeZone('UTC');
+        $nz = new DateTimeZone('Pacific/Auckland');
+        $converted = 0;
+        $movedMonth = 0;
+        // Returns the NZ time, or the value unchanged if it isn't a full
+        // 'Y-m-d H:i:s' time (blank, a date on its own, or anything odd)
+        $toNz = function ($value) use ($utc, $nz, &$converted, &$movedMonth) {
+            if (!is_string($value) || !preg_match('/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/', $value)) {
+                return $value;
+            }
+            $time = DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $value, $utc);
+            if (!$time || $time->format('Y-m-d H:i:s') !== $value) {
+                return $value;
+            }
+            $local = $time->setTimezone($nz)->format('Y-m-d H:i:s');
+            $converted++;
+            if (substr($local, 0, 7) !== substr($value, 0, 7)) {
+                $movedMonth++;
+            }
+            return $local;
+        };
+
+        $plants = $pdo->prepare("SELECT id, date_created, date_harvested FROM Plants WHERE id <= ?");
+        $plants->execute([$plantsUpToId]);
+        $updatePlant = $pdo->prepare("UPDATE Plants SET date_created = ?, date_harvested = ? WHERE id = ?");
+        foreach ($plants->fetchAll(PDO::FETCH_ASSOC) as $plant) {
+            $created = $toNz($plant['date_created']);
+            $harvested = $toNz($plant['date_harvested']);
+            if ($created !== $plant['date_created'] || $harvested !== $plant['date_harvested']) {
+                $updatePlant->execute([$created, $harvested, $plant['id']]);
+            }
+        }
+
+        $flower = $pdo->prepare("SELECT id, transaction_date FROM Flower
+                                 WHERE id <= ?
+                                   AND id NOT IN (SELECT flower_transaction_id FROM ShippingManifests
+                                                  WHERE flower_transaction_id IS NOT NULL)");
+        $flower->execute([$flowerUpToId]);
+        $updateFlower = $pdo->prepare("UPDATE Flower SET transaction_date = ? WHERE id = ?");
+        foreach ($flower->fetchAll(PDO::FETCH_ASSOC) as $entry) {
+            $date = $toNz($entry['transaction_date']);
+            if ($date !== $entry['transaction_date']) {
+                $updateFlower->execute([$date, $entry['id']]);
+            }
+        }
+
+        $details['convertedTimes'] = $converted;
+        $details['movedMonth'] = $movedMonth;
+        $pdo->prepare("UPDATE DataMigrations SET status = 'done', details = ?, updated_at = ? WHERE name = ?")
+            ->execute([json_encode($details), ledgerTimestamp(), GRACE_NZ_TIME_MIGRATION]);
+
+        $pdo->exec('COMMIT');
+        if ($converted > 0) {
+            error_log("GRACe: converted $converted ledger times from UTC to NZ time ($movedMonth moved into a different month)");
+        }
+    } catch (Exception $e) {
+        try {
+            $pdo->exec('ROLLBACK');
+        } catch (Exception $ignored) {
+            // no transaction left to roll back
+        }
+        // Never block the app over this; the next page load tries again
+        error_log("GRACe: could not convert ledger times to NZ time yet: " . $e->getMessage());
+    }
 }
 
 /**

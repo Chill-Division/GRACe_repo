@@ -61,7 +61,8 @@ unless you pass `--force`, so it can't clobber real records by accident.
 
 To try an upgrade the way an existing install experiences it, add
 `--legacy`. That seeds a database shaped like GRACe 1.0.x, with the old
-Breeder and Genetic Lineage columns filled in on some genetics:
+Breeder and Genetic Lineage columns filled in on some genetics, and plant
+and flower times stored in UTC the way 1.0.x stored them:
 
 ```bash
 php tests/seed_demo_data.php --force --legacy
@@ -69,7 +70,8 @@ php tests/seed_demo_data.php --force --legacy
 
 Load any page and GRACe upgrades it: the two columns are removed from
 `Genetics`, and the filled-in values are kept in `LegacyGeneticsDetails`
-(which also shows up in Administration, "Download backup").
+(which also shows up in Administration, "Download backup"). The times are
+converted to NZ time, and the `DataMigrations` table records that it's done.
 
 To start over completely:
 

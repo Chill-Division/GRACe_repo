@@ -4,10 +4,11 @@ require_once 'init_db.php';
 try {
     $pdo = initializeDatabase();
 
+    // Age is worked out against NZ time, the clock date_created is stored in
     $sql = "SELECT
                 P.id,
                 G.name AS geneticsName,
-                CAST((julianday('now') - julianday(P.date_created)) AS INTEGER) AS age,
+                CAST((julianday(:now) - julianday(P.date_created)) AS INTEGER) AS age,
                 P.status
             FROM
                 Plants P
@@ -18,7 +19,8 @@ try {
             ORDER BY
                 age ASC";
 
-    $stmt = $pdo->query($sql);
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute([':now' => ledgerTimestamp()]);
     $plantsData = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     // Properly send JSON header

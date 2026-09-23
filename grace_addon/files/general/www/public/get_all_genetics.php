@@ -8,10 +8,12 @@ try {
     // Check if status filter is provided
     $statusFilter = isset($_GET['status']) && !empty($_GET['status']) ? $_GET['status'] : null;
 
-    // Build the SQL query with optional status filter
+    // Build the SQL query with optional status filter. Age is worked out
+    // against NZ time, the clock date_created is stored in.
+    $now = ledgerTimestamp();
     $sql = "SELECT
                 G.name AS geneticsName,
-                CAST((julianday('now') - julianday(P.date_created)) AS INTEGER) AS age,
+                CAST((julianday(:now) - julianday(P.date_created)) AS INTEGER) AS age,
                 P.status
             FROM
                 Plants P
@@ -30,6 +32,7 @@ try {
     $sql .= "ORDER BY age ASC";
 
     $stmt = $pdo->prepare($sql);
+    $stmt->bindParam(':now', $now, PDO::PARAM_STR);
 
     if ($statusFilter && $statusFilter !== 'Harvested-all') {
         $stmt->bindParam(':status', $statusFilter, PDO::PARAM_STR);

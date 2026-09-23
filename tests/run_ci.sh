@@ -58,6 +58,17 @@ else
     FAILures=$((FAILures+1))
 fi
 
+# Run NZ Time Test
+echo ""
+echo "--- NZ Time Test ---"
+php tests/test_nz_time.php
+if [ $? -eq 0 ]; then
+    echo -e "${GREEN}[PASS]${NC} NZ time verified"
+else
+    echo -e "${RED}[FAIL]${NC} NZ time failed"
+    FAILures=$((FAILures+1))
+fi
+
 # Run Report Reminder Test
 echo ""
 echo "--- Report Reminder Test ---"

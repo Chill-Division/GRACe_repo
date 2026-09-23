@@ -46,6 +46,14 @@ an update: `performMigrations()` in `init_db.php` runs on every request.
   `DROP COLUMN`, which change the table in place.
 - Never destroy data people typed in. When a field is retired, keep its old
   values somewhere (see `LegacyGeneticsDetails` in `init_db.php`).
+- A one-off data fix (not a schema change) must run exactly once per
+  install. Record it in the `DataMigrations` table, the way
+  `convertLedgerTimesToNzTime()` does.
+- Every stored time is NZ time (Pacific/Auckland), because the Agency
+  reports split months and years in NZ time. Stamp entries with
+  `ledgerTimestamp()`. Never use SQLite's `DATETIME('now')`,
+  `CURRENT_TIMESTAMP` or `julianday('now')`: they are UTC, 12 or 13 hours
+  behind NZ (`tests/test_nz_time.php` checks for them).
 
 ## 3. Product rules
 

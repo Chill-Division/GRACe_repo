@@ -59,8 +59,7 @@ function initTransactionReport(endpoint, flowerTableElement, plantTableElement) 
 
                     nameCell.textContent = transaction.geneticsName;
                     weightCell.textContent = transaction.weight;
-                    dateCell.textContent = new Date(transaction.transaction_date)
-                        .toLocaleDateString('en-NZ', { timeZone: 'Pacific/Auckland' });
+                    dateCell.textContent = formatLedgerDate(transaction.transaction_date);
                     companyCell.textContent = transaction.companyNameAddress || '-';
                 });
                 // Add Footer
@@ -89,8 +88,7 @@ function initTransactionReport(endpoint, flowerTableElement, plantTableElement) 
 
                     nameCell.textContent = transaction.geneticsName;
                     countCell.textContent = transaction.plantCount;
-                    dateCell.textContent = new Date(transaction.transaction_date)
-                        .toLocaleDateString('en-NZ', { timeZone: 'Pacific/Auckland' });
+                    dateCell.textContent = formatLedgerDate(transaction.transaction_date);
                     companyCell.textContent = transaction.companyNameAddress || '-';
                 });
                 // Add Footer

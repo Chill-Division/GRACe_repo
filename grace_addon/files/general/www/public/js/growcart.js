@@ -59,6 +59,19 @@ function escapeHtml(value) {
 }
 
 /**
+ * Format a ledger timestamp ('2026-03-01 09:30:00', stored in NZ time) as an
+ * NZ date ('01/03/2026'), straight from the text. Parsing it with new Date()
+ * would read it in the browser's own time zone, which can shift the day.
+ * @param {string} value
+ * @returns {string}
+ */
+function formatLedgerDate(value) {
+    const text = String(value ?? '');
+    const match = /^(\d{4})-(\d{2})-(\d{2})/.exec(text);
+    return match ? `${match[3]}/${match[2]}/${match[1]}` : text;
+}
+
+/**
  * Show a transient toast notification.
  * @param {string} message
  * @param {string} type 'success' | 'error' | 'info'

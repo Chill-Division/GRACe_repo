@@ -43,12 +43,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Insert into Flower table
     try {
         $sql = "INSERT INTO Flower (genetics_id, weight, transaction_type, transaction_date, reason, company_id)
-                VALUES (:geneticsId, :weight, :transactionType, DATETIME('now'), :finalReason, :companyId)";
+                VALUES (:geneticsId, :weight, :transactionType, :transactionDate, :finalReason, :companyId)";
         $stmt = $pdo->prepare($sql);
         $stmt->execute([
             ':geneticsId' => $geneticsId,
             ':weight' => $weight,
             ':transactionType' => $transactionType,
+            ':transactionDate' => ledgerTimestamp(), // NZ time, the same clock the reports use
             ':finalReason' => $finalReason,
             ':companyId' => $companyId,
         ]);

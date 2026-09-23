@@ -19,12 +19,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     try {
-        // Prepare the SQL statement outside the loop for efficiency
-        $stmt = $pdo->prepare("INSERT INTO Plants (genetics_id, status, date_created)
-                                VALUES (:geneticsId, 'Growing', DATETIME('now'))");
+        // Prepare the SQL statement outside the loop for efficiency. Times are
+        // NZ time; the harvest date stays blank until the plant leaves
+        // (the column's old default filled it with the UTC time)
+        $stmt = $pdo->prepare("INSERT INTO Plants (genetics_id, status, date_created, date_harvested)
+                                VALUES (:geneticsId, 'Growing', :createdAt, NULL)");
 
-        // Bind the geneticsId parameter only once
+        // Bind the parameters only once
+        $createdAt = ledgerTimestamp();
         $stmt->bindParam(':geneticsId', $geneticsId);
+        $stmt->bindParam(':createdAt', $createdAt);
 
         // Insert into Plants table directly
         for ($i = 0; $i < $plantCount; $i++) {

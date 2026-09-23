@@ -38,7 +38,7 @@ try {
         $newStatus = 'Sent';
     }
     $placeholders = implode(',', array_fill(0, count($selectedPlantIds), '?'));
-    $sql = "UPDATE Plants SET status = ?, date_harvested = DATETIME('now')";
+    $sql = "UPDATE Plants SET status = ?, date_harvested = ?";
 
     if ($action === 'send' && $companyId !== null) {
         $sql .= ", company_id = ?";
@@ -47,7 +47,9 @@ try {
     $sql .= " WHERE id IN ($placeholders)";
     $stmt = $pdo->prepare($sql);
 
-    $params = ($action === 'send' && $companyId !== null) ? array_merge([$newStatus, $companyId], $selectedPlantIds) : array_merge([$newStatus], $selectedPlantIds);
+    // NZ time, the same clock the reports use
+    $when = ledgerTimestamp();
+    $params = ($action === 'send' && $companyId !== null) ? array_merge([$newStatus, $when, $companyId], $selectedPlantIds) : array_merge([$newStatus, $when], $selectedPlantIds);
     $stmt->execute($params);
 
     $affectedRows = $stmt->rowCount();
