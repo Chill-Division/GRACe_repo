@@ -810,6 +810,20 @@ article {
   color: #ffffff;
 }
 
+/* "Recent entries" under the entry forms (recent_lib.php) */
+.recent-entries {
+  margin-top: 2.25rem;
+}
+
+.recent-entries h2 {
+  margin-bottom: 0.25rem;
+}
+
+.recent-entries-note {
+  color: var(--g-text-muted);
+  font-size: 0.9rem;
+}
+
 /* Large-entry warning in the confirm pop-up (confirmAction's warning option) */
 .grace-modal p.grace-modal-warning {
   margin: 0.25rem 0 0.75rem;
