@@ -167,6 +167,7 @@ bash tests/run_ci.sh
 
 *   `tests/seed_demo_data.php [--force] [--legacy]` fills a dev database with realistic content (plants, ledger entries, companies, documents, manifests). `--legacy` shapes it like a 1.0.x install (old Genetics columns, UTC times) so you can watch the 1.1 upgrade run on the next page load. See DEVELOPMENT.md.
 *   `tests/demo_report_reminders.php [from] [to]` replays the dashboard reminder decisions for any date range against the dev database.
+*   `tests/capture_screenshots.ps1 [-Only name,name]` (Windows, headless Edge) retakes the screenshots in `docs/screenshots/` from the dev server, including the "What's new" pop-up. See "Refresh the screenshots" in DEVELOPMENT.md.
 
 ## Manual Verification Checklist
 
