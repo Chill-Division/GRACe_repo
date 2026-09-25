@@ -69,7 +69,7 @@ If flower arrives from someone else (a sample from another grower, say), use Add
 
 Plant Tracking → **"Harvest / Destroy / Send plants"** lists every live plant. Tick the plants, choose what happened to them, and press "Process Selected":
 
-- **Harvested - Drying**: the plants have been cut and are drying. They still count as stock until you record the dry weight.
+- **Harvested - Drying**: the plants have been cut and are drying. They still count as plants in stock until you send or destroy them.
 - **Harvested - Destroyed** (or destroyed for any other reason): the plants are gone.
 - **Send External**: the plants went to another license holder. You'll be asked which company.
 
@@ -101,6 +101,15 @@ You can't subtract more flower than GRACe has on record for that genetics. If yo
 <img src="https://raw.githubusercontent.com/Chill-Division/GRACe_repo/main/docs/screenshots/desktop-record-dry-weight.png" alt="Recording flower sent out" width="900">
 
 <img src="https://raw.githubusercontent.com/Chill-Division/GRACe_repo/main/docs/screenshots/mobile-record-dry-weight.png" alt="Recording flower sent out on a phone" width="300">
+
+## Sending a sample
+
+Cutting a sample off a plant, say to send to a lab, doesn't harvest the plant, so leave the plant as it is. Record just the sample, on Plant Tracking → **"Record dry weight change"**, in two entries:
+
+1. **Add** the sample's weight, with the reason **Harvest**.
+2. **Subtract** the same weight, with the reason **Testing** or **Send external**, and choose who it went to.
+
+Your plant counts don't change, and the sample shows in your monthly materials-out report.
 
 ## Shipping with a manifest
 
