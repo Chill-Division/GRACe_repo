@@ -1,3 +1,10 @@
+## [1.1.1] - 2026-09-25
+### Important fixes
+- **Current Plants now includes drying plants.** They were left out before, even though they're still on your site and your annual stocktake counts them. Each genetics now shows growing plus drying.
+
+### Changes
+- The user guide now explains how to record a sample cut from a plant, and that drying plants stay in stock until you send or destroy them.
+
 ## [1.1.0] - 2026-09-24
 Quicker data entry, more safety nets, and some important report fixes.
 

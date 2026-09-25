@@ -126,7 +126,8 @@ shows the newest entry the first time anyone opens the updated add-on
 and layout:
 
 - Heading `## [x.y.z] - YYYY-MM-DD`, newest entry at the top.
-- One plain sentence summing up the release.
+- One plain sentence summing up the release. Leave it out when the entry
+  is so short that the sentence would only repeat it, as in 1.1.1.
 - Then these sections, in this order, leaving out any that would be empty:
   - `### What's new`: each feature is a bullet that starts with a bold
     sentence saying what the grower gets, followed by a line or two on how
