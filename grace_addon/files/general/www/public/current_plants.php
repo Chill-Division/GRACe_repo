@@ -6,7 +6,7 @@ require 'header.php';
     <main class="container">
         <hgroup class="page-header">
             <h1>Current Plants</h1>
-            <p>Live plant counts on hand, by genetics.</p>
+            <p>Growing and drying plants on hand, by genetics.</p>
         </hgroup>
 
         <div class="toolbar">

@@ -69,6 +69,17 @@ else
     FAILures=$((FAILures+1))
 fi
 
+# Run Current Plants Test
+echo ""
+echo "--- Current Plants Test ---"
+php tests/test_current_plants.php
+if [ $? -eq 0 ]; then
+    echo -e "${GREEN}[PASS]${NC} Current plants report verified"
+else
+    echo -e "${RED}[FAIL]${NC} Current plants report failed"
+    FAILures=$((FAILures+1))
+fi
+
 # Run NZ Time Test
 echo ""
 echo "--- NZ Time Test ---"
