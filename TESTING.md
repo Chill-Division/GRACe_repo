@@ -98,53 +98,58 @@ bash tests/run_ci.sh
 *   **Year boundaries:** Activity timestamped on 31 December still counts in that year's columns.
 *   **Status rules:** "Harvested - Drying" counts as active stock; flower balances reconcile start + in - out - destroyed = end.
 
-### 15. NZ Time (`tests/test_nz_time.php`)
+### 15. Current Plants (`tests/test_current_plants.php`)
+*   **Drying counts:** the Current Plants report counts growing and drying plants, because drying plants are still on site until they're sent or destroyed. It used to count growing plants only, so a crop that had been cut and was drying disappeared from it.
+*   **Agrees with the stocktake:** each genetics' count matches the annual stocktake's end balance, and every plant status the database allows is either on hand or departed, never both.
+*   **Every genetics listed:** alphabetically, with 0 where there are none, so "Hide rows with all zero values" still works. The page gets its numbers from `currentPlantCounts()` and says drying plants are included.
+
+### 16. NZ Time (`tests/test_nz_time.php`)
 *   **Upgrading a 1.0.x install:** builds a database with times stored the old way (UTC, from SQLite's `DATETIME('now')`), runs `performMigrations()`, and checks each one now reads NZ time: summer and winter time, both sides of a daylight saving change, and entries that move month or year (a plant sent on the morning of 1 March leaves February's report and joins March's).
 *   **Left alone:** flower deducted by a shipping manifest (always NZ time), dates without a time, blank dates and anything that isn't a date.
 *   **Exactly once:** a second run changes nothing, fresh installs have nothing to convert, entries written after the upgrade are never shifted, and a conversion that has to be retried only touches the rows that existed before the upgrade.
 *   **No UTC clock:** no page or handler uses SQLite's `'now'` or `CURRENT_TIMESTAMP`; handlers stamp entries with `ledgerTimestamp()`, and report dates are shown as stored instead of being re-read in the browser's time zone.
 
-### 16. Agency Report Reminders (`tests/test_report_reminders.php`)
+### 17. Agency Report Reminders (`tests/test_report_reminders.php`)
 *   **Windows, not queues:** the monthly reminder only shows on days 1-7 (and only if last month shipped materials); the annual reminder only in January (and only with prior-year data). At most two banners, ever.
 *   **Dismissals:** dismissing or drafting a period keeps it silent across reloads; fresh installs are never flooded.
 
-### 17. Monthly Report Periods (`tests/test_report_periods.php`)
+### 18. Monthly Report Periods (`tests/test_report_periods.php`)
 *   **Last month is the previous calendar month:** on the 29th, 30th and 31st, "Last month's materials out" used to show this month's figures under last month's heading, because `strtotime('-1 month')` on 31 July gives "31 June", which PHP rolls over to 1 July. Checked on month ends, across the new year and in a leap year.
 *   **Right rows:** the report holds only sends and lab samples dated inside the month, including its first and last second.
 *   **Heading and figures agree:** the page passes its month to the data endpoint, and anything other than a real `YYYY-MM` in the URL is ignored.
 
-### 18. Company Adding (`tests/test_company_adding.php`)
+### 19. Company Adding (`tests/test_company_adding.php`)
 *   **One way in:** Administration → Add Verified Company and the "+ Add new company…" pop-up (Harvest / Destroy / Send, Record dry weight, Generate Shipping Manifest) both save through `addVerifiedCompany()`.
 *   **Already there:** a license number that's already on file is recognised as that company, and its details come back so the page can select it. Another company's contact email is refused, as when editing.
 *   **Complete details:** every field is required, the email must be valid, and nothing is saved when something's missing.
 *   **Still never deleted:** `company_lib.php` contains no delete. The manifest form makes you choose each company rather than defaulting to the first in the list.
 
-### 19. Company Editing (`tests/test_company_editing.php`)
+### 20. Company Editing (`tests/test_company_editing.php`)
 *   **Annual license renewal:** updating a verified company's license number, address, or contact persists correctly.
 *   **Uniqueness:** a license number or contact email belonging to a *different* company is rejected; re-saving a company's own values always succeeds.
 *   **Design rule:** asserts `company_lib.php` contains no delete operation. Verified companies can be edited but never deleted.
 
-### 20. Own Company Details (`tests/test_own_company.php`)
+### 21. Own Company Details (`tests/test_own_company.php`)
 *   **Stored as typed:** apostrophes, quotes, ampersands and line breaks in your company details are saved exactly as entered. 1.0.x ran them through `FILTER_SANITIZE_STRING`, so "Joe's Farm" reached Agency emails as "Joe&#39;s Farm".
 *   **Clear refusals:** a missing name, license number or address, or an invalid email, is refused with a message saying which, and nothing is saved.
 *   **One-off repair:** details saved by 1.0.x get their real characters back on upgrade, recorded in `DataMigrations` so it never runs again.
 *   **Shown safely:** the report headings and the manifest form escape the details, and `escapeHtml()` escapes quotes.
 
-### 21. License Alerts (`tests/test_license_alerts.php`)
+### 22. License Alerts (`tests/test_license_alerts.php`)
 *   **Shared windows:** the nav banner (3 days) and Dashboard list (30 days) use one helper; each returns the right licenses for its window.
 *   **Acknowledgment:** acknowledged licenses disappear from both surfaces; other document categories and licenses without expiry dates are never alerted.
 
-### 22. License Expiry Limit (`tests/test_license_expiry.php`)
+### 23. License Expiry Limit (`tests/test_license_expiry.php`)
 *   **The limit:** a license upload may expire up to 15 months from today, because licenses are annual and a renewal can be issued up to 3 months early (it used to be 12 months, which blocked early renewals). Exactly on the limit is accepted, one day past it is refused, and month ends clamp (15 months from 30 November is 29 February).
 *   **Bad input:** text, impossible dates and wrong formats are refused; already-expired licenses can still be uploaded for the record.
 *   **One rule everywhere:** `upload.php` and the Company Licenses date picker both use the shared helper.
 
-### 23. Download Filenames (`tests/test_download_names.php`)
+### 24. Download Filenames (`tests/test_download_names.php`)
 *   **Original names:** uploaded documents download under the name they were uploaded as; generated manifests lose their `uniqid()` prefix.
 *   **Header safety:** the `Content-Disposition` value is a single quoted filename with no trailing semicolon, and matches the parser Android's download manager (used by the Home Assistant app) relies on. A malformed header made phones save licenses as `download-2.php`.
 *   **MIME types:** correct types for PDFs and images.
 
-### 24. Static Code Analysis (`tests/static_checks.sh`)
+### 25. Static Code Analysis (`tests/static_checks.sh`)
 *   **Critical Paths:**
     *   Verifies Database path is `/data/grace.db`
     *   Verifies Upload path is `/data/uploads/`
@@ -154,13 +159,13 @@ bash tests/run_ci.sh
 *   **Duplicates:** Scans for duplicate `<script src="...">` tags in PHP files (prevent redeclaration errors).
 *   **PHP extensions:** Fails on `ctype_*` or `mb_*` functions. The add-on image only loads `pdo`, `pdo_sqlite` and `session` on top of PHP's core, so they would crash in production even though they work on a dev PC.
 
-### 25. Version Consistency (`tests/test_version_consistency.php`)
+### 26. Version Consistency (`tests/test_version_consistency.php`)
 *   **Why:** Ensures the version number is identical across:
     *   `config.yaml` (Home Assistant)
     *   `nav.php` (UI Display)
     *   `CHANGELOG.md` (Release Notes)
 
-### 26. PHP Syntax Check (`tests/syntax_check.sh`)
+### 27. PHP Syntax Check (`tests/syntax_check.sh`)
 *   **Linting:** Runs `php -l` on all PHP files in `grace_addon/files/general/www/public/` to catch syntax errors before runtime.
 
 ## Demo / Development Helpers (not part of CI)

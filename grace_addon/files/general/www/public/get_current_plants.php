@@ -1,33 +1,13 @@
 <?php
 require_once 'init_db.php';  // Utilize your SQLite database configuration
+require_once 'current_plants_lib.php';
 
 try {
     // Initialize the PDO connection using SQLite
     $pdo = initializeDatabase();
 
-    // Fetch all genetics, sorted alphabetically by name
-    $geneticsStmt = $pdo->query("SELECT id, name FROM Genetics ORDER BY name ASC");
-    $genetics = $geneticsStmt->fetchAll(PDO::FETCH_ASSOC);
-
-    $plantData = [];
-
-    foreach ($genetics as $genetic) {
-        // Count the number of plants with 'Growing' status for each genetic
-        $sql = "SELECT COUNT(*) AS plantCount
-                FROM Plants
-                WHERE genetics_id = :geneticsId
-                AND status = 'Growing'";
-
-        $stmt = $pdo->prepare($sql);
-        $stmt->bindParam(':geneticsId', $genetic['id'], PDO::PARAM_INT);
-        $stmt->execute();
-        $result = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        $plantData[] = [
-            'geneticsName' => $genetic['name'],
-            'plantCount' => $result['plantCount']
-        ];
-    }
+    // Growing and drying plants for each genetic, sorted alphabetically by name
+    $plantData = currentPlantCounts($pdo);
 
     // Send data as JSON
     header('Content-Type: application/json');

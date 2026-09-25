@@ -131,7 +131,7 @@ Plant Tracking → **"List all plants"** shows every plant you've ever recorded 
 
 <img src="https://raw.githubusercontent.com/Chill-Division/GRACe_repo/main/docs/screenshots/desktop-list-all-plants.png" alt="List of all plants with status badges" width="900">
 
-Reporting → **"Current Plants"** and **"Current Dried Flower"** give you today's totals by genetics, which is what to check against what's actually in the room.
+Reporting → **"Current Plants"** and **"Current Dried Flower"** give you today's totals by genetics, which is what to check against what's actually on site. Current Plants counts plants that are growing or drying.
 
 # Reporting to the Agency
 
