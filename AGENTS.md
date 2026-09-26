@@ -127,7 +127,7 @@ and layout:
 
 - Heading `## [x.y.z] - YYYY-MM-DD`, newest entry at the top.
 - One plain sentence summing up the release. Leave it out when the entry
-  is so short that the sentence would only repeat it, as in 1.1.1.
+  is so short that the sentence would only repeat it.
 - Then these sections, in this order, leaving out any that would be empty:
   - `### What's new`: each feature is a bullet that starts with a bold
     sentence saying what the grower gets, followed by a line or two on how
@@ -141,15 +141,23 @@ and layout:
     something really got faster.
 - What's new shows about the first 10 lines before "Show more…", so put
   what matters most to growers first.
+- What's new only shows the newest entry, so anyone who skips a version
+  never sees that version's notes. When a release follows one that was only
+  out briefly, bring the earlier entry's points into the new one and leave
+  the earlier entry as it was (1.1.1 does this for 1.1.0).
 - Write for growers: what changed for them, not how. No file names,
   functions or tables. Use neutral examples ("Joe's Farm"), never strain
   names or real customer data.
 - What's new only renders `### ` headings, `- ` bullets, `**bold**` and
   `` `code` ``. Everything else shows as plain text.
 
-Two things that are easy to get wrong:
+Three things that are easy to get wrong:
 
 - The file lives at `grace_addon/CHANGELOG.md`, not the repository root.
+- Each install keeps the changelog its add-on image was built with.
+  Editing an entry after its release only reaches installs that update to
+  that version afterwards, so get the entry right before the release goes
+  out.
 - The add-on image only gets `files/general` and `files/php83` copied in,
   so the Dockerfile copies the changelog separately
   (`COPY CHANGELOG.md /www/CHANGELOG.md`). Without that line What's new
