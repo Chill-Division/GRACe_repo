@@ -20,9 +20,9 @@ New to GRACe? Read the [first-time user guide](grace_addon/DOCS.md) (it's also s
 ## Installation and getting started video
 
 Check out the video on YouTube for a walkthrough of installation / getting started:
-[![image](https://github.com/user-attachments/assets/c7a64972-cfdb-4253-bb63-a615c5614f20)](https://youtu.be/KMqnaY6NRiY)
+[![image](https://github.com/user-attachments/assets/c7a64972-cfdb-4253-bb63-a615c5614f20)](https://youtu.be/2Re8jBMEAvw)
 
-[https://youtu.be/KMqnaY6NRiY](https://youtu.be/KMqnaY6NRiY)
+[[https://youtu.be/KMqnaY6NRiY]](https://youtu.be/2Re8jBMEAvw)
 
 ## Installation instructions
 
