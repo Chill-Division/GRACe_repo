@@ -278,6 +278,17 @@ else
     FAILures=$((FAILures+1))
 fi
 
+# Run Release Helper Test
+echo ""
+echo "--- Release Helper Test ---"
+php tests/test_bump_version.php
+if [ $? -eq 0 ]; then
+    echo -e "${GREEN}[PASS]${NC} Release helper verified"
+else
+    echo -e "${RED}[FAIL]${NC} Release helper failed"
+    FAILures=$((FAILures+1))
+fi
+
 # Run Quick Add Test
 echo ""
 echo "--- Quick Add Test ---"

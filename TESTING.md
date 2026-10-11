@@ -194,6 +194,7 @@ The shell checks (PHP syntax and duplicate script tags) fail the run when they f
     *   `config.yaml` (Home Assistant)
     *   `nav.php` (UI Display)
     *   `CHANGELOG.md` (Release Notes)
+*   **Release helper** (`tests/test_bump_version.php`): `tests/bump_version.php x.y.z` refuses a bad or older version and changes nothing until the changelog has the new entry; then it sets the version everywhere, and running it again changes nothing.
 
 ### 32. PHP Syntax Check (`tests/syntax_check.sh`)
 *   **Linting:** Runs `php -l` on all PHP files in `grace_addon/files/general/www/public/` to catch syntax errors before runtime.
@@ -204,6 +205,7 @@ The shell checks (PHP syntax and duplicate script tags) fail the run when they f
 *   `tests/demo_report_reminders.php [from] [to]` replays the dashboard reminder decisions for any date range against the dev database.
 *   `tests/ha_standin.php` stands in for Home Assistant's API so Administration → Report reminders can be tried on a dev machine. See "Trying report reminders" in DEVELOPMENT.md.
 *   `tests/capture_screenshots.ps1 [-Only name,name]` (Windows, headless Edge) retakes the screenshots in `docs/screenshots/` from the dev server, including the "What's new" pop-up. See "Refresh the screenshots" in DEVELOPMENT.md.
+*   `tests/bump_version.php x.y.z` sets the version in `config.yaml`, `nav.php` and `GRACE_ASSET_VERSION` once the changelog entry is written. See the release checklist in DEVELOPMENT.md.
 
 ## Manual Verification Checklist
 
