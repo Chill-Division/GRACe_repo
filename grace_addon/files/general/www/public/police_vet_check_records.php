@@ -45,8 +45,8 @@ require 'header.php';
         </section>
     </main>
 
-    <script src="js/image-compress.js"></script>
-    <script src="js/documents.js"></script>
+    <script src="js/image-compress.js?v=<?php echo GRACE_ASSET_VERSION; ?>"></script>
+    <script src="js/documents.js?v=<?php echo GRACE_ASSET_VERSION; ?>"></script>
     <script>
         $(document).ready(function() {
             initDocumentManager({

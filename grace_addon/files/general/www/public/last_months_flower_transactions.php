@@ -91,8 +91,8 @@ require 'header.php';
         </figure>
     </main>
 
-    <script src="js/transactions.js"></script>
-    <script src="js/report_email.js"></script>
+    <script src="js/transactions.js?v=<?php echo GRACE_ASSET_VERSION; ?>"></script>
+    <script src="js/report_email.js?v=<?php echo GRACE_ASSET_VERSION; ?>"></script>
     <script>
         const draftButton = document.getElementById('draftEmailButton');
         if (draftButton) {
