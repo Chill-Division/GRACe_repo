@@ -333,6 +333,17 @@ else
     FAILures=$((FAILures+1))
 fi
 
+# Run Asset Version Test
+echo ""
+echo "--- Asset Version Test ---"
+php tests/test_asset_versions.php
+if [ $? -eq 0 ]; then
+    echo -e "${GREEN}[PASS]${NC} Asset versions verified"
+else
+    echo -e "${RED}[FAIL]${NC} Asset versions failed"
+    FAILures=$((FAILures+1))
+fi
+
 # Run Syntax Check
 echo ""
 echo "--- PHP Syntax Check ---"

@@ -36,7 +36,7 @@ $pageTitle = $pageTitle ?? 'GRACe';
     <link rel="stylesheet" href="css/vendor/pico.min.css?v=<?php echo GRACE_ASSET_VERSION; ?>">
     <link rel="stylesheet" href="css/growcart.css?v=<?php echo GRACE_ASSET_VERSION; ?>">
     <?php if (!empty($useJquery)): ?>
-    <script src="js/vendor/jquery-3.6.0.min.js"></script>
+    <script src="js/vendor/jquery-3.6.0.min.js?v=<?php echo GRACE_ASSET_VERSION; ?>"></script>
     <?php endif; ?>
     <title><?php echo htmlspecialchars($pageTitle); ?></title>
 </head>

@@ -85,7 +85,7 @@ require 'header.php';
         </section>
     </main>
 
-    <script src="js/report_email.js"></script>
+    <script src="js/report_email.js?v=<?php echo GRACE_ASSET_VERSION; ?>"></script>
     <script>
         const yearInput = document.getElementById('year');
         const generateReportButton = document.getElementById('generateReportButton');

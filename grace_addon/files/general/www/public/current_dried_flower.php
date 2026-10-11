@@ -31,5 +31,5 @@ require 'header.php';
         <p id="noDataMessage" style="display: none; text-align: center; font-style: italic;"></p>
     </main>
 
-    <script src="js/reports.js"></script>
+    <script src="js/reports.js?v=<?php echo GRACE_ASSET_VERSION; ?>"></script>
 <?php require 'footer.php'; ?>

@@ -175,7 +175,11 @@ The shell checks (PHP syntax and duplicate script tags) fail the run when they f
 *   **Home Assistant:** starts a stand-in for the Supervisor and checks the real requests: the notify service path, the add-on's token, the title and message, an unknown device, a refused device name, and Home Assistant being down.
 *   **Wiring:** `homeassistant_api: true` in `config.yaml`, the PHP command line in the image, the executable `report-reminders` service that runs the check every few minutes, the check refusing web requests, and the Administration card and menu.
 
-### 29. Static Code Analysis (`tests/static_checks.sh`)
+### 29. Asset Versions (`tests/test_asset_versions.php`)
+*   **Fresh after an update:** every local script and stylesheet a page loads carries the asset version (`?v=` and `GRACE_ASSET_VERSION`, which each release bumps), so browsers fetch the new copy instead of keeping an old one. Many page scripts used to load without it.
+*   **Set before use:** every page that uses it loads `header.php`, which sets it, first; `footer.php` copies it into `$assetVersion`.
+
+### 30. Static Code Analysis (`tests/static_checks.sh`)
 *   **Critical Paths:**
     *   Verifies Database path is `/data/grace.db`
     *   Verifies Upload path is `/data/uploads/`
@@ -185,13 +189,13 @@ The shell checks (PHP syntax and duplicate script tags) fail the run when they f
 *   **Duplicates:** Scans for duplicate `<script src="...">` tags in PHP files (prevent redeclaration errors).
 *   **PHP extensions:** Fails on `ctype_*` or `mb_*` functions. The add-on image only loads `pdo`, `pdo_sqlite` and `session` on top of PHP's core, so they would crash in production even though they work on a dev PC.
 
-### 30. Version Consistency (`tests/test_version_consistency.php`)
+### 31. Version Consistency (`tests/test_version_consistency.php`)
 *   **Why:** Ensures the version number is identical across:
     *   `config.yaml` (Home Assistant)
     *   `nav.php` (UI Display)
     *   `CHANGELOG.md` (Release Notes)
 
-### 31. PHP Syntax Check (`tests/syntax_check.sh`)
+### 32. PHP Syntax Check (`tests/syntax_check.sh`)
 *   **Linting:** Runs `php -l` on all PHP files in `grace_addon/files/general/www/public/` to catch syntax errors before runtime.
 
 ## Demo / Development Helpers (not part of CI)
