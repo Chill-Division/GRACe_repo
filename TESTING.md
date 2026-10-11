@@ -21,6 +21,10 @@ Execute the master runner script from the repository root:
 bash tests/run_ci.sh
 ```
 
+GitHub runs the same suite on every pull request and every push to `main` (`.github/workflows/ci.yml`), inside the add-on's own image, so the tests see exactly the PHP that Home Assistant installs: only `pdo`, `pdo_sqlite` and `session` on top of PHP's core. A function that works on a dev PC but not in the add-on, like `ctype_digit()`, fails there even if it passes locally.
+
+The shell checks (PHP syntax and duplicate script tags) fail the run when they find something. They used to set their failure flag inside a piped loop, which runs in a subshell, so a syntax error was printed and still passed. `tests/test_check_scripts.php` makes sure that can't happen again.
+
 ## What It Tests
 
 ### 1. Database Migrations (`tests/test_db_migration.php`)

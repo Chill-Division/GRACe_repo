@@ -1,0 +1,35 @@
+# Runs tests/run_ci.sh on every pull request and every push to main, inside
+# the add-on's own image, so the tests see exactly the PHP and extensions
+# Home Assistant installs run (only pdo, pdo_sqlite and session on top of
+# PHP's core). A function that works on a dev PC but not in the add-on,
+# like ctype_digit(), fails here.
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  tests:
+    name: Test suite in the add-on image
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build the add-on image
+        run: docker build -t grace-ci grace_addon
+
+      - name: Run the test suite inside it
+        run: |
+          docker run --rm -v "$PWD:/repo" -w /repo --entrypoint /bin/sh grace-ci -c '
+            set -e
+            # The command line PHP, if this image does not have it yet, plus
+            # the GNU tools the shell checks use. Nothing that changes PHP.
+            command -v php83 >/dev/null || apk add --no-cache php83 >/dev/null
+            apk add --no-cache bash grep findutils >/dev/null
+            ln -sf "$(command -v php83)" /usr/local/bin/php
+            php -m
+            bash tests/run_ci.sh
+          '
