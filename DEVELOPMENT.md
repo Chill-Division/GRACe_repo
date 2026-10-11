@@ -154,6 +154,16 @@ Also bump `GRACE_ASSET_VERSION` in
 `grace_addon/files/general/www/public/header.php` so browsers pick up new
 CSS/JS.
 
+Write the changelog entry first, then let the helper do the rest:
+
+```bash
+php tests/bump_version.php 1.2.0
+```
+
+It refuses to change anything until `grace_addon/CHANGELOG.md` starts with
+`## [1.2.0] - YYYY-MM-DD`, then sets the version in `config.yaml`, `nav.php`
+and `GRACE_ASSET_VERSION`, and checks all four agree.
+
 The new `grace_addon/CHANGELOG.md` section is what growers see in the
 "What's new" pop-up the first time anyone opens the updated add-on, so write
 it for them, modelled on the 1.1.0 entry (AGENTS.md section 6 has the
