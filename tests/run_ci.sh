@@ -300,6 +300,17 @@ else
     FAILures=$((FAILures+1))
 fi
 
+# Run Dashboard Link Test
+echo ""
+echo "--- Dashboard Link Test ---"
+php tests/test_dashboard_links.php
+if [ $? -eq 0 ]; then
+    echo -e "${GREEN}[PASS]${NC} Dashboard links verified"
+else
+    echo -e "${RED}[FAIL]${NC} Dashboard links failed"
+    FAILures=$((FAILures+1))
+fi
+
 # Run Syntax Check
 echo ""
 echo "--- PHP Syntax Check ---"

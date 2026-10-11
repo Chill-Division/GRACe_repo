@@ -40,7 +40,7 @@ require 'header.php';
         </figure>
     </main>
 
-    <script src="js/genetics.js"></script>
+    <script src="js/genetics.js?v=<?php echo GRACE_ASSET_VERSION; ?>"></script>
     <script>
         document.addEventListener('DOMContentLoaded', initGeneticsList);
     </script>

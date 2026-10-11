@@ -48,7 +48,13 @@ function initGeneticsList() {
             .catch(error => console.error('Error fetching genetics data:', error));
     }
 
-    fetchAndDisplayGenetics();
+    // A status in the address (the Dashboard's plant cards link here with
+    // ?status=...) starts the list filtered, if it's one of the filter's choices
+    const requested = new URLSearchParams(window.location.search).get('status');
+    if (requested && [...statusFilter.options].some(option => option.value === requested)) {
+        statusFilter.value = requested;
+    }
+    fetchAndDisplayGenetics(statusFilter.value);
 
     statusFilter.addEventListener('change', () => {
         fetchAndDisplayGenetics(statusFilter.value);
