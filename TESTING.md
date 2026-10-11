@@ -168,7 +168,14 @@ The shell checks (PHP syntax and duplicate script tags) fail the run when they f
 *   **What gets filled in:** only a plant manifest from us fills in its genetics, count and company; flower, incoming, unknown and non-numeric ids fill in nothing.
 *   **Nothing is saved early:** the plants are only ticked (drying plants first) and still have to be confirmed. Afterwards it returns to the manifest with `location.replace()`, so going Back can't reopen the ticked page.
 
-### 28. Static Code Analysis (`tests/static_checks.sh`)
+### 28. Report Reminders on a Phone (`tests/test_report_notify.php`)
+*   **When:** from 9am on the first weekday of the month (Monday when the 1st is a weekend), catching up within the Dashboard's first week if GRACe was off, and never twice in a month.
+*   **What:** off until switched on with a device chosen; nothing in a month with nothing to report, or once the report is sent or dismissed on the Dashboard; January names the materials-out report and the annual stocktake together; a failed send is tried again on the next check.
+*   **Settings:** only a device Home Assistant offers can be chosen, and reminders can't be switched on while Home Assistant can't be reached. Phones (the Home Assistant app) are listed first, without the catch-all services.
+*   **Home Assistant:** starts a stand-in for the Supervisor and checks the real requests: the notify service path, the add-on's token, the title and message, an unknown device, a refused device name, and Home Assistant being down.
+*   **Wiring:** `homeassistant_api: true` in `config.yaml`, the PHP command line in the image, the executable `report-reminders` service that runs the check every few minutes, the check refusing web requests, and the Administration card and menu.
+
+### 29. Static Code Analysis (`tests/static_checks.sh`)
 *   **Critical Paths:**
     *   Verifies Database path is `/data/grace.db`
     *   Verifies Upload path is `/data/uploads/`
@@ -178,19 +185,20 @@ The shell checks (PHP syntax and duplicate script tags) fail the run when they f
 *   **Duplicates:** Scans for duplicate `<script src="...">` tags in PHP files (prevent redeclaration errors).
 *   **PHP extensions:** Fails on `ctype_*` or `mb_*` functions. The add-on image only loads `pdo`, `pdo_sqlite` and `session` on top of PHP's core, so they would crash in production even though they work on a dev PC.
 
-### 29. Version Consistency (`tests/test_version_consistency.php`)
+### 30. Version Consistency (`tests/test_version_consistency.php`)
 *   **Why:** Ensures the version number is identical across:
     *   `config.yaml` (Home Assistant)
     *   `nav.php` (UI Display)
     *   `CHANGELOG.md` (Release Notes)
 
-### 30. PHP Syntax Check (`tests/syntax_check.sh`)
+### 31. PHP Syntax Check (`tests/syntax_check.sh`)
 *   **Linting:** Runs `php -l` on all PHP files in `grace_addon/files/general/www/public/` to catch syntax errors before runtime.
 
 ## Demo / Development Helpers (not part of CI)
 
 *   `tests/seed_demo_data.php [--force] [--legacy]` fills a dev database with realistic content (plants, ledger entries, companies, documents, manifests). `--legacy` shapes it like a 1.0.x install (old Genetics columns, UTC times) so you can watch the 1.1 upgrade run on the next page load. See DEVELOPMENT.md.
 *   `tests/demo_report_reminders.php [from] [to]` replays the dashboard reminder decisions for any date range against the dev database.
+*   `tests/ha_standin.php` stands in for Home Assistant's API so Administration → Report reminders can be tried on a dev machine. See "Trying report reminders" in DEVELOPMENT.md.
 *   `tests/capture_screenshots.ps1 [-Only name,name]` (Windows, headless Edge) retakes the screenshots in `docs/screenshots/` from the dev server, including the "What's new" pop-up. See "Refresh the screenshots" in DEVELOPMENT.md.
 
 ## Manual Verification Checklist
@@ -210,4 +218,5 @@ The CI suite is PHP-only, so browser behaviours still need a manual pass
 *   [ ] **License date picker**: on Company Licenses, the date picker stops at 15 months from today.
 *   [ ] **Dashboard cards**: "Plants growing" and "Plants drying" open List all plants with the filter already set, showing as many plants as the card says.
 *   [ ] **Manifest plants**: generate a plant manifest to an external company with "Then mark these plants as sent" on. Harvest / Destroy / Send opens with that many plants ticked (drying first), Send External and the company chosen; confirming marks them sent and returns to the manifest. With the toggle off it goes straight to the manifest.
+*   [ ] **Report reminders** (on a real Home Assistant): Administration → Report reminders lists the phones with the Home Assistant app, "Send a test notification" arrives on the chosen one, and after switching on and saving the page shows when the next reminder can go out.
 *   [ ] **Maker logo**: the Chill Division logo shows beside GRACe on the light and dark themes. At tablet width (about 820px) the menu folds into the hamburger with nothing squashed, and above 960px all four menu items sit on one line.

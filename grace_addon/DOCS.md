@@ -43,6 +43,8 @@ It also tells you when a report is due:
 
 "Open report" takes you straight to the right page. "Dismiss" hides that reminder until the next one is due. Reminders never pile up.
 
+Want the reminder on your phone too? Administration → **"Report reminders"**: switch it on and choose your phone (it needs the Home Assistant app, signed in to your Home Assistant), then "Send a test notification" to check it arrives. From 9am on the first weekday of each month, if a report is due, GRACe sends one notification. Months with nothing to report stay quiet, and if you've already sent or dismissed the report on the Dashboard, there's no notification.
+
 # Adding product
 
 ## Plants coming in

@@ -1,0 +1,9 @@
+#!/usr/bin/with-contenv sh
+# Report reminders on a phone (Administration -> Report reminders). Every few
+# minutes, ask GRACe whether one is due. report_reminder_notify.php sends at
+# most one a month, from 9am on the first weekday, and only if switched on.
+sleep 60
+while true; do
+    php83 /www/public/report_reminder_notify.php
+    sleep 300
+done

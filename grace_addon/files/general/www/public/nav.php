@@ -16,7 +16,7 @@ $navSections = [
     ],
     'administration.php' => [
         'label' => 'Administration',
-        'pages' => ['administration', 'add_verified_company', 'verified_companies', 'edit_verified_company', 'add_new_genetics', 'police_vet_check_records', 'sops', 'offtake_agreements', 'company_licenses', 'chain_of_custody_documents', 'own_company', 'admin_migrate_harvested', 'settings', 'whats_new'],
+        'pages' => ['administration', 'add_verified_company', 'verified_companies', 'edit_verified_company', 'add_new_genetics', 'police_vet_check_records', 'sops', 'offtake_agreements', 'company_licenses', 'chain_of_custody_documents', 'own_company', 'admin_migrate_harvested', 'settings', 'whats_new', 'report_reminders'],
     ],
 ];
 ?>
