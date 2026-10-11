@@ -107,6 +107,13 @@ require 'header.php';
                         <small>How big an entry can be before GRACe asks "are you sure?"</small>
                     </span>
                 </a>
+                <a class="nav-card" href="report_reminders.php">
+                    <span class="nav-card-icon" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.268 21a2 2 0 0 0 3.464 0"/><path d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326"/></svg></span>
+                    <span class="nav-card-body">
+                        <strong>Report reminders</strong>
+                        <small>A notification on your phone when a report is due</small>
+                    </span>
+                </a>
                 <a class="nav-card" href="show_database.php">
                     <span class="nav-card-icon" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14a9 3 0 0 0 18 0V5"/><path d="M3 12a9 3 0 0 0 18 0"/></svg></span>
                     <span class="nav-card-body">

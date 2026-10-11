@@ -322,6 +322,17 @@ else
     FAILures=$((FAILures+1))
 fi
 
+# Run Report Notify Test
+echo ""
+echo "--- Report Notify Test ---"
+php tests/test_report_notify.php
+if [ $? -eq 0 ]; then
+    echo -e "${GREEN}[PASS]${NC} Report reminders on a phone verified"
+else
+    echo -e "${RED}[FAIL]${NC} Report reminders on a phone failed"
+    FAILures=$((FAILures+1))
+fi
+
 # Run Syntax Check
 echo ""
 echo "--- PHP Syntax Check ---"

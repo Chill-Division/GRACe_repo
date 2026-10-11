@@ -101,6 +101,28 @@ demo in. The reminder logic itself is covered by
 story of the rules (window open/closed, quiet months, dismissals, the
 January double-up, fresh installs staying silent).
 
+## Trying report reminders
+
+Administration → "Report reminders" sends notifications through Home
+Assistant, which a dev machine doesn't have, so `tests/ha_standin.php`
+stands in for it with two pretend phones:
+
+```bash
+# from the repo root, in one terminal
+php -S 127.0.0.1:8899 tests/ha_standin.php
+
+# and the dev server in another, pointed at it
+cd grace_addon/files/general/www/public
+GRACE_SUPERVISOR_URL=http://127.0.0.1:8899 SUPERVISOR_TOKEN=dev-token php -S 127.0.0.1:8420
+```
+
+Everything GRACe sends lands in `grace-ha-standin.log` in the system temp
+folder (`/tmp` on Linux). In the add-on, `report_reminder_notify.php` runs
+from the command line every few minutes to send the monthly reminder. Run
+it by hand with the same two variables set to try it, but it only sends
+from 9am on the first weekday of a month; `tests/test_report_notify.php`
+covers the timing.
+
 ## Run the test suite
 
 Always run this before committing:

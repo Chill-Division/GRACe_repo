@@ -3,9 +3,12 @@ FROM $BUILD_FROM
 
 WORKDIR /data
 
+# php83 is the command line, for the report reminder check
+# (etc/services.d/report-reminders); php83-fpm serves the pages
 RUN apk -U upgrade && apk add --no-cache \
     curl \
     nginx \
+    php83 \
     php83-fpm \
     php83-pdo \
     php83-pdo_sqlite \
