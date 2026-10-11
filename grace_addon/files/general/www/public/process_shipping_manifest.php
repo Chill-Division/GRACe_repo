@@ -2,6 +2,7 @@
 require_once 'TCPDF/tcpdf.php';
 require_once 'init_db.php';
 require_once 'manifest_lib.php';
+require_once 'genetics_lib.php';
 
 // Initialize PDO connection
 $pdo = initializeDatabase();
@@ -42,12 +43,12 @@ if ($quantityError !== null) {
     backToFormWithError($quantityError);
 }
 
-$geneticsStmt = $pdo->prepare("SELECT id, name FROM Genetics WHERE id = ?");
-$geneticsStmt->execute([$geneticsId]);
-$genetics = $geneticsStmt->fetch(PDO::FETCH_ASSOC);
-if (!$genetics) {
-    backToFormWithError('Please select a valid genetics.');
+// Not a retired one either, in case the form was opened before it was retired
+$chosen = geneticsForNewEntry($pdo, $geneticsId);
+if ($chosen['error'] !== null) {
+    backToFormWithError($chosen['error']);
 }
+$genetics = $chosen['genetics'];
 
 // Resolve a party (sending or receiving) to a consistent shape
 function resolveParty($pdo, $ownCompany, $choice, $companyId) {

@@ -179,6 +179,17 @@ else
     FAILures=$((FAILures+1))
 fi
 
+# Run Retire Genetics Test
+echo ""
+echo "--- Retire Genetics Test ---"
+php tests/test_retire_genetics.php
+if [ $? -eq 0 ]; then
+    echo -e "${GREEN}[PASS]${NC} Retiring genetics verified"
+else
+    echo -e "${RED}[FAIL]${NC} Retiring genetics failed"
+    FAILures=$((FAILures+1))
+fi
+
 # Run Static Checks
 echo ""
 echo "--- Static Analysis ---"

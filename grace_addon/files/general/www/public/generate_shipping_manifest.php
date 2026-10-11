@@ -1,6 +1,7 @@
 <?php
 require_once 'init_db.php';
 require_once 'settings_lib.php';
+require_once 'genetics_lib.php';
 
 // Initialize PDO connection
 $pdo = initializeDatabase();
@@ -13,9 +14,9 @@ $ownCompany = $ownCompanyStmt->fetch(PDO::FETCH_ASSOC);
 $companiesStmt = $pdo->query("SELECT id, name, license_number, address, primary_contact_email FROM Companies ORDER BY name ASC");
 $companies = $companiesStmt->fetchAll(PDO::FETCH_ASSOC);
 
-// Fetch genetics for dropdown, sorted alphabetically by name
-$geneticsStmt = $pdo->query("SELECT id, name FROM Genetics ORDER BY name ASC");
-$geneticsList = $geneticsStmt->fetchAll(PDO::FETCH_ASSOC);
+// Genetics for the dropdown, sorted alphabetically by name. Retired
+// genetics are left out.
+$geneticsList = activeGenetics($pdo);
 
 // Above these the form asks for an extra tick before generating
 $limits = getEntryWarningLimits($pdo);

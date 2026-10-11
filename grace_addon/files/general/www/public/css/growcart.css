@@ -656,6 +656,25 @@ article {
   background: var(--g-danger-soft);
 }
 
+/* A button on a table row, e.g. Retire genetics: the column is only as wide
+   as the button, on the right */
+.table-wrap .row-actions {
+  width: 1%;
+  white-space: nowrap;
+  text-align: right;
+}
+
+.table-wrap form.row-action {
+  margin: 0;
+}
+
+.table-wrap form.row-action button {
+  width: auto;
+  margin: 0;
+  padding: 0.3rem 0.9rem;
+  font-size: 0.875rem;
+}
+
 /* --------------------------------------------------------------------------
    8. Badges (plant status etc.)
    -------------------------------------------------------------------------- */

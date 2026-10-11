@@ -8,6 +8,9 @@
  * refused that; manual entries used to take stock below zero).
  */
 
+// geneticsForNewEntry(): retired genetics can't get new entries
+require_once __DIR__ . '/genetics_lib.php';
+
 // Reasons allowed for each transaction type (what the form offers)
 const GRACE_FLOWER_REASONS = [
     'Add' => ['Harvest', 'Other'],
@@ -79,12 +82,12 @@ function recordFlowerTransaction(PDO $pdo, array $input)
         return ['success' => false, 'message' => $message, 'onHand' => null];
     };
 
-    $stmt = $pdo->prepare("SELECT id, name FROM Genetics WHERE id = ?");
-    $stmt->execute([(int) ($input['geneticsName'] ?? 0)]);
-    $genetics = $stmt->fetch(PDO::FETCH_ASSOC);
-    if (!$genetics) {
-        return $refuse('Please choose a genetics.');
+    // Not a retired one either, in case the form was opened before it was retired
+    $chosen = geneticsForNewEntry($pdo, $input['geneticsName'] ?? 0);
+    if ($chosen['error'] !== null) {
+        return $refuse($chosen['error']);
     }
+    $genetics = $chosen['genetics'];
 
     $weightText = trim((string) ($input['weight'] ?? ''));
     if (!preg_match('/^(\d+(\.\d*)?|\.\d+)$/D', $weightText) || (float) $weightText <= 0) {

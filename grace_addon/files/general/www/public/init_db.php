@@ -65,10 +65,14 @@ function initializeDatabase($dbPath = '/data/grace.db') {
             );",
 
             // Genetics (Breeder and Genetic Lineage were removed in 1.1.0,
-            // see removeLegacyGeneticsColumns() for how old installs upgrade)
+            // see removeLegacyGeneticsColumns() for how old installs upgrade).
+            // retired_at: when it was retired (Administration → Retire
+            // genetics), NULL while in use. Retiring only hides it from new
+            // entries; reports and history never change.
             "CREATE TABLE IF NOT EXISTS Genetics (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
-                name TEXT NOT NULL
+                name TEXT NOT NULL,
+                retired_at TEXT
             );",
 
             // Plants
@@ -301,6 +305,12 @@ function performMigrations($pdo) {
     }
 
     removeLegacyGeneticsColumns($pdo);
+    // Retired genetics (1.3.0): added in place, because Genetics is a parent
+    // table and rebuilding it would null out every plant's and flower's link
+    $geneticsColumns = array_column($pdo->query("PRAGMA table_info(Genetics)")->fetchAll(PDO::FETCH_ASSOC), 'name');
+    if ($geneticsColumns && !in_array('retired_at', $geneticsColumns, true)) {
+        $pdo->exec("ALTER TABLE Genetics ADD COLUMN retired_at TEXT");
+    }
     convertLedgerTimesToNzTime($pdo);
     runDataFixOnce($pdo, 'own-company-quotes', 'repairOwnCompanyQuotes');
 

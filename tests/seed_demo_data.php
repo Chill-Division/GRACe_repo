@@ -134,18 +134,24 @@ $pdo->exec("INSERT INTO Companies (name, license_number, address, primary_contac
             ('South Island Genetics', 'MCA-2026-0007', '2 Alpine Way, Christchurch 8011', 'Clive Clone', 'genetics@demo.example', '03 555 0007')");
 
 // --- Genetics ----------------------------------------------------------------
+// Whte Widow is a typo nobody used (so it can be retired) and Blue Dream is
+// retired, to show both on the Retire genetics page
 $pdo->exec("INSERT INTO Genetics (name) VALUES
-            ('Northern Lights'), ('White Widow'), ('GG4'), ('Wedding Cake'), ('Aotearoa Haze')");
+            ('Northern Lights'), ('White Widow'), ('GG4'), ('Wedding Cake'), ('Aotearoa Haze'), ('Whte Widow'), ('Blue Dream')");
 
 if ($legacy) {
     // Recreate the pre-1.1 shape: Breeder and Genetic Lineage columns, filled
     // in on SOME genetics and blank on others, like a real 1.0.x install
+    // (which couldn't retire genetics either)
+    $pdo->exec("ALTER TABLE Genetics DROP COLUMN retired_at");
     $pdo->exec("ALTER TABLE Genetics ADD COLUMN breeder TEXT");
     $pdo->exec("ALTER TABLE Genetics ADD COLUMN genetic_lineage TEXT");
     $pdo->exec("UPDATE Genetics SET breeder = 'Sensi Seeds', genetic_lineage = 'Afghani x Thai' WHERE name = 'Northern Lights'");
     $pdo->exec("UPDATE Genetics SET breeder = 'Green House Seeds' WHERE name = 'White Widow'");
     $pdo->exec("UPDATE Genetics SET genetic_lineage = 'Chem Sis x Sour Dubb x Chocolate Diesel' WHERE name = 'GG4'");
     $pdo->exec("UPDATE Genetics SET breeder = '', genetic_lineage = '' WHERE name = 'Wedding Cake'");
+} else {
+    $pdo->prepare("UPDATE Genetics SET retired_at = ? WHERE name = 'Blue Dream'")->execute([seedTime('-20 days')]);
 }
 
 // --- Plants in a spread of statuses and ages -------------------------------
@@ -259,7 +265,7 @@ if ($legacy) {
 $pdo->commit();
 
 echo "Demo data seeded into $dbPath\n";
-echo "  - 1 own company, 3 external companies, 5 genetics\n";
+echo "  - 1 own company, 3 external companies, 7 genetics" . ($legacy ? '' : ' (1 retired)') . "\n";
 echo "  - " . count($plantRows) . " plants (growing / drying / destroyed / sent)\n";
 echo "  - " . (int) $pdo->query("SELECT COUNT(*) FROM Flower")->fetchColumn() . " flower ledger entries\n";
 echo "  - 8 documents with downloadable demo PDFs in {$uploadDir}\n";
@@ -268,8 +274,8 @@ echo "  - 1 license expiring in ~10 days (exercises the expiry banner + dashboar
 echo "  - 1 expired-but-acknowledged license (must stay hidden from dashboard alerts)\n";
 if ($legacy) {
     echo "\nLegacy mode: Genetics still has the old Breeder and Genetic Lineage columns,\n";
-    echo "filled in on 3 of the 5 genetics, and plant and flower times are in UTC like\n";
+    echo "filled in on 3 of the 7 genetics, and plant and flower times are in UTC like\n";
     echo "1.0.x stored them. Load any page and GRACe upgrades the database: the columns\n";
-    echo "are removed (those 3 entries are kept in LegacyGeneticsDetails) and the times\n";
-    echo "are converted to NZ time.\n";
+    echo "are removed (those 3 entries are kept in LegacyGeneticsDetails), the 1.3\n";
+    echo "column for retiring genetics is added, and the times are converted to NZ time.\n";
 }
