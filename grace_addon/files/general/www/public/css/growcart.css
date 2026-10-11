@@ -204,6 +204,32 @@ header.app-header {
   color: var(--g-accent);
 }
 
+/* "by Chill Division", the maker's logo beside the GRACe name */
+.nav-brand-maker {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin-left: 0.2rem;
+  padding-left: 0.8rem;
+  border-left: 1px solid var(--g-border);
+}
+
+.nav-brand-by {
+  font-size: 0.68rem;
+  color: var(--g-text-muted);
+}
+
+.nav-maker-logo {
+  display: block;
+  width: auto;
+  height: 1.9rem;
+}
+
+/* The logo is a black wordmark: white on the dark theme */
+[data-theme="dark"] .nav-maker-logo {
+  filter: invert(1);
+}
+
 .nav-menu {
   display: flex;
   align-items: center;
@@ -279,7 +305,10 @@ header.app-header {
   cursor: pointer;
 }
 
-@media (max-width: 768px) {
+/* The menu folds into the hamburger below 960px, not the usual 768px: with
+   the maker's logo, the brand and all four menu items need about 890px to
+   sit on one line, so tablets in portrait (iPads are 810-834px) fold too */
+@media (max-width: 960px) {
   .nav-toggle-label {
     display: block;
     position: relative;

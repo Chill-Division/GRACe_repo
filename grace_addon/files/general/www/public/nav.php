@@ -27,7 +27,11 @@ $navSections = [
                 </span>
                 <span class="nav-brand-text">
                     <strong>GRACe</strong>
-                    <span class="nav-brand-sub">by Chill Division <small>v1.1.1</small></span>
+                    <span class="nav-brand-sub"><small>v1.1.1</small></span>
+                </span>
+                <span class="nav-brand-maker">
+                    <span class="nav-brand-by">by</span>
+                    <img class="nav-maker-logo" src="icons/chill-division-logo.png?v=<?php echo GRACE_ASSET_VERSION; ?>" alt="Chill Division" width="235" height="120">
                 </span>
             </a>
             <input type="checkbox" id="nav-toggle" class="nav-toggle">

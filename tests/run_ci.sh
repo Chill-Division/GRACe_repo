@@ -289,6 +289,17 @@ else
     FAILures=$((FAILures+1))
 fi
 
+# Run Nav Brand Test
+echo ""
+echo "--- Nav Brand Test ---"
+php tests/test_nav_brand.php
+if [ $? -eq 0 ]; then
+    echo -e "${GREEN}[PASS]${NC} Maker logo in the menu verified"
+else
+    echo -e "${RED}[FAIL]${NC} Maker logo in the menu failed"
+    FAILures=$((FAILures+1))
+fi
+
 # Run Syntax Check
 echo ""
 echo "--- PHP Syntax Check ---"
