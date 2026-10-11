@@ -6,8 +6,9 @@
  * Covers the 0.16.1 bug: plants that left stock MORE than one year before the
  * report year kept appearing in the opening balance forever, because the old
  * query only subtracted departures dated within the immediately-previous year.
- * Also covers the 31-December boundary (datetime vs date string comparison)
- * and "Harvested - Drying counts as active stock".
+ * Also covers the 31-December boundary (datetime vs date string comparison),
+ * "Harvested - Drying counts as active stock" and "Harvested - Destroyed
+ * counts as harvested" (1.2.0: it used to land under Destroyed).
  */
 
 $publicDir = __DIR__ . '/../grace_addon/files/general/www/public';
@@ -80,6 +81,26 @@ $b = $byName['Bravo'];
 check('Bravo (all departed before 2026) start is zero', $b['startAmount'], 0);
 check('Bravo end is zero', $b['end'], 0);
 check('Bravo shows zero activity in 2026', $b['in'] + $b['out'] + $b['harvested'] + $b['destroyed'], 0);
+
+// Charlie (genetics_id 3): "Harvested - Destroyed" counts as harvested, not
+// destroyed. A destroyed plant was still harvested; a sent one is Out.
+$pdo->exec("INSERT INTO Genetics (name) VALUES ('Charlie')");
+$pdo->exec("INSERT INTO Plants (genetics_id, status, date_created, date_harvested) VALUES
+    (3, 'Harvested - Destroyed', '2025-05-05 10:00:00', '2026-03-03 10:00:00'),  -- start + harvested
+    (3, 'Harvested - Destroyed', '2026-02-02 10:00:00', '2026-08-08 10:00:00'),  -- in + harvested
+    (3, 'Destroyed',             '2026-02-02 10:00:00', '2026-04-04 10:00:00'),  -- old status: in + destroyed
+    (3, 'Sent',                  '2026-02-02 10:00:00', '2026-05-05 10:00:00')   -- in + out");
+$c = null;
+foreach (computeAnnualPlantStocktake($pdo, $year) as $r) {
+    if ($r['geneticsName'] === 'Charlie') {
+        $c = $r;
+    }
+}
+check('Harvested - Destroyed plants count as harvested', $c['harvested'], 2);
+check('Only the old Destroyed status counts as destroyed', $c['destroyed'], 1);
+check('Sent plants still count as out', $c['out'], 1);
+// end = 1 + 3 - 1 - 2 - 1 = 0: every Charlie plant has left
+check('Charlie end balance', $c['end'], 0);
 
 // --- Flower ledger scenarios -------------------------------------------------
 $pdo->exec("INSERT INTO Flower (genetics_id, weight, transaction_type, reason, transaction_date) VALUES

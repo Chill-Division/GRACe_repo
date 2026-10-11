@@ -149,6 +149,8 @@ Use this in the first week of the new month. "This month's materials out" is onl
 
 Every January the Agency wants a stocktake as at midnight on 31 December. Reporting → **"Annual Stocktake"**, pick the year, and GRACe works out the opening stock, everything in and out, and the closing stock for plants and for flower. Tick "Hide rows with all zero values" to keep it tidy, then "Draft this in an email" as above. If you arrive here from the January reminder on the Dashboard, the report is generated for you already.
 
+For plants, the ones sent to another license holder count as **Out**, and the ones marked Harvested - Destroyed count as **Harvested**: even a destroyed plant was harvested first.
+
 <img src="https://raw.githubusercontent.com/Chill-Division/GRACe_repo/main/docs/screenshots/desktop-annual-stocktake.png" alt="Annual stocktake report" width="900">
 
 # Keeping your records

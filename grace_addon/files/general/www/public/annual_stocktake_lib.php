@@ -72,21 +72,26 @@ function computeAnnualPlantStocktake(PDO $pdo, int $year): array
         $stmt->execute([':geneticsId' => $genetic['id'], ':startDate' => $startDate, ':nextStartDate' => $nextStartDate]);
         $sentCount = (int) $stmt->fetchColumn();
 
-        // Legacy 'Harvested' during the year ("Harvested - Drying" stays in stock)
+        // Harvested during the year: 'Harvested - Destroyed' (gone from the
+        // site, whether destroyed or processed: either way it was harvested)
+        // and the legacy 'Harvested'. "Harvested - Drying" stays in stock.
         $stmt = $pdo->prepare(
             "SELECT COUNT(*) FROM Plants
-             WHERE genetics_id = :geneticsId AND status = 'Harvested'
+             WHERE genetics_id = :geneticsId
+               AND status IN ('Harvested', 'Harvested - Destroyed')
                AND date_harvested IS NOT NULL
                AND DATE(date_harvested) >= :startDate AND DATE(date_harvested) < :nextStartDate"
         );
         $stmt->execute([':geneticsId' => $genetic['id'], ':startDate' => $startDate, ':nextStartDate' => $nextStartDate]);
         $harvestedCount = (int) $stmt->fetchColumn();
 
-        // Destroyed during the year
+        // Destroyed during the year: only the plain 'Destroyed' status from
+        // before 0.14. Since then every plant that's gone is recorded as
+        // 'Harvested - Destroyed', which counts as harvested above.
         $stmt = $pdo->prepare(
             "SELECT COUNT(*) FROM Plants
              WHERE genetics_id = :geneticsId
-               AND status IN ('Destroyed', 'Harvested - Destroyed')
+               AND status = 'Destroyed'
                AND date_harvested IS NOT NULL
                AND DATE(date_harvested) >= :startDate AND DATE(date_harvested) < :nextStartDate"
         );
