@@ -101,6 +101,7 @@ The shell checks (PHP syntax and duplicate script tags) fail the run when they f
 *   **Opening balance:** Plants that left stock in any earlier year (destroyed / sent / legacy-harvested) must not appear in a later year's Start Amount.
 *   **Year boundaries:** Activity timestamped on 31 December still counts in that year's columns.
 *   **Status rules:** "Harvested - Drying" counts as active stock; flower balances reconcile start + in - out - destroyed = end.
+*   **Harvested, not destroyed:** "Harvested - Destroyed" plants count under Harvested, because a destroyed plant was still harvested (sent plants count as Out). Only the plain "Destroyed" status from before 0.14 counts under Destroyed. The totals don't change, only which column a plant is in.
 
 ### 15. Current Plants (`tests/test_current_plants.php`)
 *   **Drying counts:** the Current Plants report counts growing and drying plants, because drying plants are still on site until they're sent or destroyed. It used to count growing plants only, so a crop that had been cut and was drying disappeared from it.
