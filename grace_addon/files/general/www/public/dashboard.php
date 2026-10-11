@@ -102,11 +102,12 @@ require 'header.php';
         <?php endforeach; ?>
 
         <div class="stat-grid">
-            <a class="stat-card stat-card--link" href="current_plants.php">
+            <?php // The plant cards open List all plants filtered to the plants they count ?>
+            <a class="stat-card stat-card--link" href="list_all_genetics.php?status=Growing">
                 <span class="stat-value"><?php echo $stats['growing']; ?></span>
                 <span class="stat-label">Plants growing</span>
             </a>
-            <a class="stat-card stat-card--link" href="list_all_genetics.php">
+            <a class="stat-card stat-card--link" href="list_all_genetics.php?status=Harvested%20-%20Drying">
                 <span class="stat-value"><?php echo $stats['drying']; ?></span>
                 <span class="stat-label">Plants drying</span>
             </a>

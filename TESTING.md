@@ -159,7 +159,11 @@ The shell checks (PHP syntax and duplicate script tags) fail the run when they f
 *   **Both themes:** it's a black wordmark on a transparent background, and the dark theme turns it white.
 *   **Room in the menu:** with the logo, the brand and all four menu items need about 890px on one line, so the menu folds into the hamburger below 960px (not 768px). Tablets in portrait, like iPads at 810-834px, get the folded menu instead of a squashed one.
 
-### 26. Static Code Analysis (`tests/static_checks.sh`)
+### 26. Dashboard Links (`tests/test_dashboard_links.php`)
+*   **Cards open their list:** "Plants growing" and "Plants drying" on the Dashboard open List all plants already filtered to Growing or Harvested - Drying, the same statuses the cards count, so the number on the card matches the list.
+*   **Only real filters:** the list page applies a status from the address only if it's one of its filter choices, and loads its script with the version tag so the change reaches browsers after an update.
+
+### 27. Static Code Analysis (`tests/static_checks.sh`)
 *   **Critical Paths:**
     *   Verifies Database path is `/data/grace.db`
     *   Verifies Upload path is `/data/uploads/`
@@ -169,13 +173,13 @@ The shell checks (PHP syntax and duplicate script tags) fail the run when they f
 *   **Duplicates:** Scans for duplicate `<script src="...">` tags in PHP files (prevent redeclaration errors).
 *   **PHP extensions:** Fails on `ctype_*` or `mb_*` functions. The add-on image only loads `pdo`, `pdo_sqlite` and `session` on top of PHP's core, so they would crash in production even though they work on a dev PC.
 
-### 27. Version Consistency (`tests/test_version_consistency.php`)
+### 28. Version Consistency (`tests/test_version_consistency.php`)
 *   **Why:** Ensures the version number is identical across:
     *   `config.yaml` (Home Assistant)
     *   `nav.php` (UI Display)
     *   `CHANGELOG.md` (Release Notes)
 
-### 28. PHP Syntax Check (`tests/syntax_check.sh`)
+### 29. PHP Syntax Check (`tests/syntax_check.sh`)
 *   **Linting:** Runs `php -l` on all PHP files in `grace_addon/files/general/www/public/` to catch syntax errors before runtime.
 
 ## Demo / Development Helpers (not part of CI)
@@ -199,4 +203,5 @@ The CI suite is PHP-only, so browser behaviours still need a manual pass
 *   [ ] **Dashboard banners**: report reminder banners appear in their windows (use `dashboard.php?demo_date=YYYY-MM-DD`), Dismiss persists, and acknowledged licenses stay out of "License Renewals Due".
 *   [ ] **Draft email buttons**: open a pre-filled email in a new tab (webmail-safe) on the monthly and annual report pages.
 *   [ ] **License date picker**: on Company Licenses, the date picker stops at 15 months from today.
+*   [ ] **Dashboard cards**: "Plants growing" and "Plants drying" open List all plants with the filter already set, showing as many plants as the card says.
 *   [ ] **Maker logo**: the Chill Division logo shows beside GRACe on the light and dark themes. At tablet width (about 820px) the menu folds into the hamburger with nothing squashed, and above 960px all four menu items sit on one line.
