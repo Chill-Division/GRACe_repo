@@ -73,7 +73,7 @@ Plant Tracking → **"Harvest / Destroy / Send plants"** lists every live plant.
 - **Harvested - Destroyed** (or destroyed for any other reason): the plants are gone.
 - **Send External**: the plants went to another license holder. You'll be asked which company.
 
-Ticking 88 boxes out of 90 is tedious, so use **Quick select**: choose the genetics, type how many, and choose whether to start from the oldest or the youngest plants. GRACe ticks them for you. You can still untick a mother plant you want to keep, or tick extra ones, before you process.
+Ticking 88 boxes out of 90 is tedious, so use **Quick select**: choose the genetics, type how many, and choose whether to start from the oldest plants, the youngest, or the ones that are drying. GRACe ticks them for you. You can still untick a mother plant you want to keep, or tick extra ones, before you process.
 
 <img src="https://raw.githubusercontent.com/Chill-Division/GRACe_repo/main/docs/screenshots/desktop-harvest-quick-select.png" alt="Quick select on the harvest page" width="900">
 
@@ -116,6 +116,8 @@ Your plant counts don't change, and the sample shows in your monthly materials-o
 When product physically leaves your site, Plant Tracking → **"Generate Shipping Manifest"** produces the manifest PDF to print and send with it. Pick the sending and receiving parties, the product type, the genetics and the quantity.
 
 If you're sending flower to an external company, the shipped weight is **deducted from your dried-flower inventory automatically** when the manifest is generated, so you don't need a separate "Record dry weight change" entry. It shows in your monthly report like any other send.
+
+Sending **plants**? Leave **"Then mark these plants as sent"** on. Once the manifest is made, Harvest / Destroy / Send opens with that many plants of that genetics ticked (drying plants first) and the company chosen. Check they're the plants that went, confirm, and you're back at the manifest. If you turn it off, remember to mark the plants as sent yourself: until then they stay in your stock and aren't in your monthly report.
 
 <img src="https://raw.githubusercontent.com/Chill-Division/GRACe_repo/main/docs/screenshots/desktop-generate-manifest.png" alt="Generating a shipping manifest" width="900">
 

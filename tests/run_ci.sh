@@ -311,6 +311,17 @@ else
     FAILures=$((FAILures+1))
 fi
 
+# Run Manifest Mark Sent Test
+echo ""
+echo "--- Manifest Mark Sent Test ---"
+php tests/test_manifest_mark_sent.php
+if [ $? -eq 0 ]; then
+    echo -e "${GREEN}[PASS]${NC} Marking manifest plants as sent verified"
+else
+    echo -e "${RED}[FAIL]${NC} Marking manifest plants as sent failed"
+    FAILures=$((FAILures+1))
+fi
+
 # Run Syntax Check
 echo ""
 echo "--- PHP Syntax Check ---"

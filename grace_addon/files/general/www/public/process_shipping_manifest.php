@@ -227,5 +227,7 @@ try {
     backToFormWithError('Error generating manifest: ' . $e->getMessage());
 }
 
-header('Location: manifest_summary.php?id=' . $manifestId . '&created=1');
+// The summary or, for plants leaving us with "Then mark these plants as
+// sent" on, Harvest / Destroy / Send with them ticked to check and confirm
+header('Location: ' . manifestNextPage($productType, $sendingChoice, $receivingChoice, !empty($_POST['markPlantsSent']), $manifestId));
 exit();

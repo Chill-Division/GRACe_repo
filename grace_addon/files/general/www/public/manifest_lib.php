@@ -78,3 +78,48 @@ function manifestStatusBadge($manifest) {
     $class = $status === 'Completed' ? 'badge--growing' : 'badge--drying';
     return '<span class="badge ' . $class . '">' . htmlspecialchars($status) . '</span>';
 }
+
+/**
+ * Where to go once a manifest is generated: its summary or, for plants
+ * leaving us with "Then mark these plants as sent" on, Harvest / Destroy /
+ * Send with them ticked, to be checked and confirmed there. Nothing is
+ * marked as sent until then. Tested by tests/test_manifest_mark_sent.php.
+ */
+function manifestNextPage($productType, $sendingChoice, $receivingChoice, $markPlantsSent, $manifestId)
+{
+    if ($markPlantsSent && $productType === 'plant' && $sendingChoice === 'us' && $receivingChoice === 'external') {
+        return 'harvest_plants.php?manifest=' . (int) $manifestId;
+    }
+    return 'manifest_summary.php?id=' . (int) $manifestId . '&created=1';
+}
+
+/**
+ * A plant manifest from us to another company, for Harvest / Destroy / Send
+ * to fill in: which genetics, how many, and who to. Null for anything else
+ * (flower, plants coming in, a manifest that doesn't exist).
+ *
+ * @return array{id: int, geneticsName: string, quantity: int, companyId: int, companyName: string}|null
+ */
+function plantManifestToMarkSent(PDO $pdo, $manifestId)
+{
+    if (!preg_match('/^[0-9]+$/D', (string) $manifestId)) {
+        return null;
+    }
+    $stmt = $pdo->prepare("SELECT SM.id, SM.quantity, G.name AS genetics_name, C.id AS company_id, C.name AS company_name
+                           FROM ShippingManifests SM
+                           JOIN Genetics G ON G.id = SM.genetics_id
+                           JOIN Companies C ON C.id = SM.recipient_id
+                           WHERE SM.id = ? AND SM.product_type = 'plant' AND SM.sending_company_id IS NULL");
+    $stmt->execute([(int) $manifestId]);
+    $row = $stmt->fetch(PDO::FETCH_ASSOC);
+    if (!$row) {
+        return null;
+    }
+    return [
+        'id' => (int) $row['id'],
+        'geneticsName' => $row['genetics_name'],
+        'quantity' => (int) $row['quantity'],
+        'companyId' => (int) $row['company_id'],
+        'companyName' => $row['company_name'],
+    ];
+}
