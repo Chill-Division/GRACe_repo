@@ -27,7 +27,7 @@ $navSections = [
                 </span>
                 <span class="nav-brand-text">
                     <strong>GRACe</strong>
-                    <span class="nav-brand-sub"><small>v1.2.0</small></span>
+                    <span class="nav-brand-sub"><small>v1.3.0</small></span>
                 </span>
                 <span class="nav-brand-maker">
                     <span class="nav-brand-by">by</span>
