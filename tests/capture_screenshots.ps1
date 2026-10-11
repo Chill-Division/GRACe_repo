@@ -102,6 +102,7 @@ $shots = @(
     @('desktop-last-months-report',   '/last_months_flower_transactions.php',                   1280, 1000, 1, $false, ''),
     @('desktop-annual-stocktake',     "/annual_stocktake.php?year=$stocktakeYear&autorun=1",    1280, 1300, 1, $false, ''),
     @('desktop-administration',       '/administration.php',                                    1280, 1150, 1, $false, ''),
+    @('desktop-retire-genetics',      '/retire_genetics.php',                                   1280, 1100, 1, $false, ''),
     @('desktop-verified-companies',   '/verified_companies.php',                                1280, 800,  1, $false, ''),
     @('desktop-edit-company',         '/edit_verified_company.php?id=1',                        1280, 1000, 1, $false, ''),
     @('desktop-company-licenses',     '/company_licenses.php',                                  1280, 1000, 1, $false, ''),

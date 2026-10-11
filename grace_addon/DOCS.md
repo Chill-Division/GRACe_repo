@@ -22,7 +22,7 @@ GRACe works the same on a PC, a tablet, or a phone through the Home Assistant ap
 
 **1. Your company details.** The first time GRACe opens it asks for your company name, license number, address and contact email. These are printed on every Chain of Custody document and go in the subject line of your Agency emails, so get them right. You can change them later under Administration → "Update company information".
 
-**2. Your genetics.** Go to Administration → "Add New Genetics" and add every strain you have as plants or flower, or expect to have. You can't record a plant until its genetics exist. Don't worry about typing a name twice: GRACe spots names that differ only by capitals or spaces, so "white widow" won't become a second White Widow.
+**2. Your genetics.** Go to Administration → "Add New Genetics" and add every strain you have as plants or flower, or expect to have. You can't record a plant until its genetics exist. Don't worry about typing a name twice: GRACe spots names that differ only by capitals or spaces, so "white widow" won't become a second White Widow. Made a typo? You can retire it later (see "Retiring genetics").
 
 **3. Your verified companies.** Administration → "Add Verified Company" is where you add the testing labs and buyers you send product to. They then show up in a drop-down whenever you send something. Their license numbers change every year, so when that happens use "Edit Verified Companies" to update them (companies can be edited but never deleted, because your records refer to them). Forgot one? Choose **"+ Add new company…"** at the bottom of any company list, on Harvest / Destroy / Send, Record dry weight change or Generate Shipping Manifest, and add it there without losing what you've filled in.
 
@@ -164,6 +164,16 @@ Administration → **"Record Management"** holds your paperwork: Chain of Custod
 Give each **license** its expiry date when you upload it. Licenses are yearly, but a renewal can be issued up to 3 months early, so the date can be up to 15 months from today and an early renewal goes straight in. GRACe warns you on the Dashboard a month before a license expires and shows a red banner on every page in the last three days. Once you've renewed it, press "Acknowledge Alert" and the warning goes away.
 
 <img src="https://raw.githubusercontent.com/Chill-Division/GRACe_repo/main/docs/screenshots/desktop-company-licenses.png" alt="Company licenses with expiry tracking" width="900">
+
+# Retiring genetics
+
+Added a genetics with a typo, or stopped growing one? Administration → **"Retire genetics"** takes it off the lists you pick from when adding plants, recording flower or making a manifest. Your reports and history don't change: everything recorded against it still shows up, as it always has.
+
+A genetics can only be retired once none of it is left on site, with no plants growing or drying and no flower. The page shows what's still there for each one, such as "2 plants growing", so you know what has to be sent, destroyed or used up first.
+
+Changed your mind? Press **"Bring back"** next to it under Retired. Adding a retired genetics' name again, on Add New Genetics or with "+ Add new genetics…", brings it back too instead of making a second one.
+
+<img src="https://raw.githubusercontent.com/Chill-Division/GRACe_repo/main/docs/screenshots/desktop-retire-genetics.png" alt="Retire genetics, with genetics in use and one retired" width="900">
 
 # Backups
 

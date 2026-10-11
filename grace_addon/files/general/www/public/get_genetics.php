@@ -1,13 +1,14 @@
 <?php
 require_once 'init_db.php'; // Include your database initialization script
+require_once 'genetics_lib.php';
 
 try {
     // Get the PDO instance from the initializeDatabase function
-    $pdo = initializeDatabase(); 
+    $pdo = initializeDatabase();
 
-    // Fetch genetics data, sorted alphabetically by name
-    $stmt = $pdo->query("SELECT id, name FROM Genetics ORDER BY name ASC");
-    $genetics = $stmt->fetchAll();
+    // Genetics for the entry forms (receiving plants, recording flower),
+    // sorted alphabetically by name. Retired genetics are left out.
+    $genetics = activeGenetics($pdo);
 
     // Send data as JSON
     header('Content-Type: application/json');

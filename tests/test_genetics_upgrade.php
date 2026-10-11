@@ -125,7 +125,8 @@ echo "SQLite version: " . (new PDO('sqlite::memory:'))->query('SELECT sqlite_ver
 $freshDb = tempnam(sys_get_temp_dir(), 'grace_gen_fresh_') . '.db';
 $fresh = initializeDatabase($freshDb);
 performMigrations($fresh);
-check('Fresh install: Genetics has only id and name', columnsOf($fresh, 'Genetics'), 'id,name');
+// (retired_at is the 1.3.0 Retire genetics column, see test_retire_genetics.php)
+check('Fresh install: Genetics has no breeder or lineage columns', columnsOf($fresh, 'Genetics'), 'id,name,retired_at');
 check('Fresh install: no LegacyGeneticsDetails table', tableExists($fresh, 'LegacyGeneticsDetails'), false);
 $fresh->prepare("INSERT INTO Genetics (name) VALUES (?)")->execute(['Brand New']);
 check('Fresh install: adding a genetics by name works', (int) $fresh->query("SELECT COUNT(*) FROM Genetics")->fetchColumn(), 1);
@@ -169,7 +170,7 @@ unset($legacy);
 $pdo = initializeDatabase($legacyDb);
 performMigrations($pdo);
 
-check('Upgrade: breeder and genetic_lineage are removed from Genetics', columnsOf($pdo, 'Genetics'), 'id,name');
+check('Upgrade: breeder and genetic_lineage are removed from Genetics', columnsOf($pdo, 'Genetics'), 'id,name,retired_at');
 check('Upgrade: every genetics keeps its id and name', rowsAsText($pdo, "SELECT id, name FROM Genetics ORDER BY id"), $genBefore);
 check('Upgrade: every plant still points at the same genetics and company', rowsAsText($pdo, "SELECT id, genetics_id, company_id FROM Plants ORDER BY id"), $plantLinksBefore);
 check('Upgrade: every flower entry still points at the same genetics and company', rowsAsText($pdo, "SELECT id, genetics_id, company_id FROM Flower ORDER BY id"), $flowerLinksBefore);
@@ -188,7 +189,7 @@ check('Upgrade: each kept entry records when it was archived',
 
 // It runs on every page load, so a second run must change nothing
 performMigrations($pdo);
-check('Second run: Genetics still has only id and name', columnsOf($pdo, 'Genetics'), 'id,name');
+check('Second run: Genetics columns are unchanged', columnsOf($pdo, 'Genetics'), 'id,name,retired_at');
 check('Second run: kept details are not duplicated', scalar($pdo, "SELECT COUNT(*) FROM LegacyGeneticsDetails"), 3);
 
 // And GRACe keeps working afterwards
@@ -220,7 +221,7 @@ $unused->exec("INSERT INTO Genetics (name, breeder, genetic_lineage) VALUES ('Al
 unset($unused);
 $pdo = initializeDatabase($unusedDb);
 performMigrations($pdo);
-check('Unused fields: columns removed', columnsOf($pdo, 'Genetics'), 'id,name');
+check('Unused fields: columns removed', columnsOf($pdo, 'Genetics'), 'id,name,retired_at');
 check('Unused fields: no LegacyGeneticsDetails table is created', tableExists($pdo, 'LegacyGeneticsDetails'), false);
 check('Unused fields: genetics kept', rowsAsText($pdo, "SELECT name FROM Genetics ORDER BY id"), 'Alpha;Bravo');
 unset($pdo);

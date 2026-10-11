@@ -33,7 +33,7 @@ The shell checks (PHP syntax and duplicate script tags) fail the run when they f
 *   **Schema Check:** Ensures `init_db.php` creates the expected modern schema.
 
 ### 2. Genetics Upgrade (`tests/test_genetics_upgrade.php`)
-*   **Fresh installs:** the `Genetics` table has only `id` and `name` (Breeder and Genetic Lineage were removed in 1.1.0).
+*   **Fresh installs:** the `Genetics` table has no Breeder or Genetic Lineage columns (they were removed in 1.1.0).
 *   **Upgrading 1.0.x databases:** builds a database with the old schema, with the two fields filled in on some genetics and blank, empty or whitespace-only on others, then runs `performMigrations()`. The columns must be dropped while every genetics keeps its id and name, and every plant and flower entry keeps its genetics link (a careless table rebuild would wipe them through `ON DELETE SET NULL`). Foreign key and integrity checks must pass.
 *   **Nothing typed is lost:** filled-in values are kept in `LegacyGeneticsDetails`; blanks are not.
 *   **Safe to repeat:** a second run changes nothing, adding genetics and the stocktake reports keep working, and on SQLite older than 3.35 the columns are left in place instead.
@@ -179,7 +179,14 @@ The shell checks (PHP syntax and duplicate script tags) fail the run when they f
 *   **Fresh after an update:** every local script and stylesheet a page loads carries the asset version (`?v=` and `GRACE_ASSET_VERSION`, which each release bumps), so browsers fetch the new copy instead of keeping an old one. Many page scripts used to load without it.
 *   **Set before use:** every page that uses it loads `header.php`, which sets it, first; `footer.php` copies it into `$assetVersion`.
 
-### 30. Static Code Analysis (`tests/static_checks.sh`)
+### 30. Retiring Genetics (`tests/test_retire_genetics.php`)
+*   **Upgrading:** a 1.2 database gets the `retired_at` column in place, with every genetics in use and every plant and flower entry still linked to it. A second run changes nothing.
+*   **Only with nothing on site:** plants growing or drying, or flower on hand, stop it, and the message says what's there ("2 plants growing, 1 drying and 1,234.5 g of flower"). History alone doesn't, and neither do shipments already sent while their manifest is In Progress. A flower balance within 0.05 g of zero (hundredths from an older version) counts as none, so 0.1 g entries can always clear it.
+*   **Hidden from new entries:** Receive plants, Record dry weight change and Generate Shipping Manifest list only genetics in use, and receiving plants, recording flower and generating a manifest refuse a retired one, in case the form was opened before it was retired.
+*   **Reports never change:** the annual stocktake, Current Plants, the monthly report, recent entries and stock on hand are identical before and after retiring and bringing back. Only the genetics library, the database setup and the Retire genetics page know about `retired_at`.
+*   **Bring back:** "Bring back" undoes it, and adding a retired genetics' name again (any capitals or spaces) brings it back instead of making a second one.
+
+### 31. Static Code Analysis (`tests/static_checks.sh`)
 *   **Critical Paths:**
     *   Verifies Database path is `/data/grace.db`
     *   Verifies Upload path is `/data/uploads/`
@@ -189,19 +196,19 @@ The shell checks (PHP syntax and duplicate script tags) fail the run when they f
 *   **Duplicates:** Scans for duplicate `<script src="...">` tags in PHP files (prevent redeclaration errors).
 *   **PHP extensions:** Fails on `ctype_*` or `mb_*` functions. The add-on image only loads `pdo`, `pdo_sqlite` and `session` on top of PHP's core, so they would crash in production even though they work on a dev PC.
 
-### 31. Version Consistency (`tests/test_version_consistency.php`)
+### 32. Version Consistency (`tests/test_version_consistency.php`)
 *   **Why:** Ensures the version number is identical across:
     *   `config.yaml` (Home Assistant)
     *   `nav.php` (UI Display)
     *   `CHANGELOG.md` (Release Notes)
 *   **Release helper** (`tests/test_bump_version.php`): `tests/bump_version.php x.y.z` refuses a bad or older version and changes nothing until the changelog has the new entry; then it sets the version everywhere, and running it again changes nothing.
 
-### 32. PHP Syntax Check (`tests/syntax_check.sh`)
+### 33. PHP Syntax Check (`tests/syntax_check.sh`)
 *   **Linting:** Runs `php -l` on all PHP files in `grace_addon/files/general/www/public/` to catch syntax errors before runtime.
 
 ## Demo / Development Helpers (not part of CI)
 
-*   `tests/seed_demo_data.php [--force] [--legacy]` fills a dev database with realistic content (plants, ledger entries, companies, documents, manifests). `--legacy` shapes it like a 1.0.x install (old Genetics columns, UTC times) so you can watch the 1.1 upgrade run on the next page load. See DEVELOPMENT.md.
+*   `tests/seed_demo_data.php [--force] [--legacy]` fills a dev database with realistic content (plants, ledger entries, companies, documents, manifests, and a retired genetics). `--legacy` shapes it like a 1.0.x install (old Genetics columns, UTC times) so you can watch the 1.1 upgrade run on the next page load. See DEVELOPMENT.md.
 *   `tests/demo_report_reminders.php [from] [to]` replays the dashboard reminder decisions for any date range against the dev database.
 *   `tests/ha_standin.php` stands in for Home Assistant's API so Administration → Report reminders can be tried on a dev machine. See "Trying report reminders" in DEVELOPMENT.md.
 *   `tests/capture_screenshots.ps1 [-Only name,name]` (Windows, headless Edge) retakes the screenshots in `docs/screenshots/` from the dev server, including the "What's new" pop-up. See "Refresh the screenshots" in DEVELOPMENT.md.
@@ -226,3 +233,4 @@ The CI suite is PHP-only, so browser behaviours still need a manual pass
 *   [ ] **Manifest plants**: generate a plant manifest to an external company with "Then mark these plants as sent" on. Harvest / Destroy / Send opens with that many plants ticked (drying first), Send External and the company chosen; confirming marks them sent and returns to the manifest. With the toggle off it goes straight to the manifest.
 *   [ ] **Report reminders** (on a real Home Assistant): Administration → Report reminders lists the phones with the Home Assistant app, "Send a test notification" arrives on the chosen one, and after switching on and saving the page shows when the next reminder can go out.
 *   [ ] **Maker logo**: the Chill Division logo shows beside GRACe on the light and dark themes. At tablet width (about 820px) the menu folds into the hamburger with nothing squashed, and above 960px all four menu items sit on one line.
+*   [ ] **Retire genetics**: Administration → Retire genetics greys out Retire for genetics with plants or flower on site and says what's there. Retiring one with nothing on site asks first; afterwards it's missing from Receive plants, Record dry weight change and Generate Shipping Manifest, but still in every report. "Bring back" returns it, and so does typing its name in "+ Add new genetics…" (it's selected for you).

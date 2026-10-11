@@ -80,6 +80,13 @@ require 'header.php';
                         <small>Any genetics you'll have as either plants or flower</small>
                     </span>
                 </a>
+                <a class="nav-card" href="retire_genetics.php">
+                    <span class="nav-card-icon" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="5" x="2" y="3" rx="1"/><path d="M4 8v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8"/><path d="M10 12h4"/></svg></span>
+                    <span class="nav-card-body">
+                        <strong>Retire genetics</strong>
+                        <small>Hide genetics you no longer grow, or added by mistake, from new entries. Reports don't change.</small>
+                    </span>
+                </a>
             </div>
         </section>
 

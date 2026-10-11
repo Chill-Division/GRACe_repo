@@ -6,6 +6,7 @@
 
 // GRACE_MAX_PLANTS_PER_ENTRY, the most plants one entry can add
 require_once __DIR__ . '/settings_lib.php';
+require_once __DIR__ . '/genetics_lib.php';
 
 /**
  * Add new plants to the ledger, stamped with today's NZ time.
@@ -16,12 +17,12 @@ require_once __DIR__ . '/settings_lib.php';
  */
 function receivePlants(PDO $pdo, array $input)
 {
-    $stmt = $pdo->prepare("SELECT id, name FROM Genetics WHERE id = ?");
-    $stmt->execute([(int) ($input['geneticsName'] ?? 0)]);
-    $genetics = $stmt->fetch(PDO::FETCH_ASSOC);
-    if (!$genetics) {
-        return ['success' => false, 'message' => 'Please choose a genetics.'];
+    // Not a retired one either, in case the form was opened before it was retired
+    $chosen = geneticsForNewEntry($pdo, $input['geneticsName'] ?? 0);
+    if ($chosen['error'] !== null) {
+        return ['success' => false, 'message' => $chosen['error']];
     }
+    $genetics = $chosen['genetics'];
 
     // Whole plants only: "2.5" used to become 3 plants
     $countText = trim((string) ($input['plantCount'] ?? ''));
