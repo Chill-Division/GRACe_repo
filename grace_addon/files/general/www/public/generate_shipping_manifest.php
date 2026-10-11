@@ -42,7 +42,9 @@ require 'header.php';
             <p><strong>How this works:</strong> generating a manifest records it as <span class="badge badge--drying">In Progress</span>.
             If you are sending <strong>flower</strong> to an external company, the shipped weight is
             <strong>automatically deducted from your dried-flower inventory</strong> the moment the manifest is generated,
-            so no separate ledger entry is needed. The manifest stays In Progress until the signed Chain of Custody
+            so no separate ledger entry is needed. If you are sending <strong>plants</strong>, leave "Then mark these plants
+            as sent" on and Harvest / Destroy / Send opens next with them ticked, ready to check and confirm.
+            The manifest stays In Progress until the signed Chain of Custody
             (photo or PDF) is attached on the <a href="complete_manifest.php">Complete Manifest</a> page.</p>
         </article>
 
@@ -87,6 +89,14 @@ require 'header.php';
                     <?php endforeach; ?>
                 </select>
                 <small id="stockHint"></small>
+
+                <div id="markSentOption" class="form-toggle" hidden>
+                    <label>
+                        <input type="checkbox" role="switch" name="markPlantsSent" value="1" checked>
+                        Then mark these plants as sent
+                    </label>
+                    <small>Harvest / Destroy / Send opens next with the plants ticked and this company chosen, so you can check them and confirm.</small>
+                </div>
 
                 <button type="submit" class="button">Generate Manifest</button>
             </form>
@@ -219,6 +229,16 @@ require 'header.php';
         };
         productType.addEventListener('change', updateQuantityStep);
         updateQuantityStep();
+
+        // Plants leaving us: offer to mark them as sent straight afterwards
+        const markSentOption = document.getElementById('markSentOption');
+        const updateMarkSentOption = () => {
+            const plantsLeaving = productType.value === 'plant' && sendingChoice.value === 'us' && receivingChoice.value === 'external';
+            markSentOption.hidden = !plantsLeaving;
+            markSentOption.querySelector('input').disabled = !plantsLeaving;
+        };
+        [productType, sendingChoice, receivingChoice].forEach(el => el.addEventListener('change', updateMarkSentOption));
+        updateMarkSentOption();
 
         // An unusually large shipment (Administration → Entry warning limits)
         // has to be ticked as right first, to catch an extra zero

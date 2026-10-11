@@ -590,6 +590,16 @@ article {
   margin-bottom: 1rem;
 }
 
+/* A switch with a line of explanation under it */
+.form-toggle {
+  margin: 0.75rem 0 1.25rem;
+}
+
+.form-toggle small {
+  display: block;
+  color: var(--g-text-muted);
+}
+
 /* Bigger touch targets for mobile */
 @media (max-width: 768px) {
   input:not([type="checkbox"]):not([type="radio"]),

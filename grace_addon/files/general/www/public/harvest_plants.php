@@ -1,8 +1,12 @@
 <?php
 require_once 'init_db.php';
 require_once 'recent_lib.php';
+require_once 'manifest_lib.php';
 
-$recent = recentPlantMoves(initializeDatabase());
+$pdo = initializeDatabase();
+$recent = recentPlantMoves($pdo);
+// Arrived from a plant manifest with "Then mark these plants as sent" on
+$fromManifest = isset($_GET['manifest']) ? plantManifestToMarkSent($pdo, $_GET['manifest']) : null;
 
 $pageTitle = 'GRACe - Harvest/Destroy/Send Plants';
 require 'header.php';
@@ -13,6 +17,20 @@ require 'header.php';
             <h1>Harvest / Destroy / Send Plants</h1>
             <p>Select the plants below, choose an action, and process them in one go.</p>
         </hgroup>
+
+        <?php if ($fromManifest):
+            $plantWord = $fromManifest['quantity'] === 1 ? 'plant' : 'plants'; ?>
+        <article class="reminder-banner">
+            <span class="nav-card-icon" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z"/><path d="M12 22V12"/><path d="m3.3 7 7.703 4.734a2 2 0 0 0 1.994 0L20.7 7"/><path d="m7.5 4.27 9 5.15"/></svg></span>
+            <div class="reminder-banner-body">
+                <strong>Manifest #<?php echo $fromManifest['id']; ?> is ready. Now mark the plants as sent.</strong>
+                <small>GRACe has ticked <?php echo $fromManifest['quantity'] . ' ' . htmlspecialchars($fromManifest['geneticsName']) . ' ' . $plantWord; ?> below, drying plants first, to send to <?php echo htmlspecialchars($fromManifest['companyName']); ?>. Check they're the ones that went, then press "Process Selected".</small>
+            </div>
+            <div class="reminder-banner-actions">
+                <a href="manifest_summary.php?id=<?php echo $fromManifest['id']; ?>&amp;created=1" role="button" class="secondary outline">Skip, open the manifest</a>
+            </div>
+        </article>
+        <?php endif; ?>
 
         <div class="toolbar">
             <div>
@@ -48,6 +66,7 @@ require 'header.php';
                 <select id="quickSelectOrder" class="input">
                     <option value="oldest">Oldest first</option>
                     <option value="youngest">Youngest first</option>
+                    <option value="drying">Drying plants first</option>
                 </select>
             </div>
 
@@ -108,6 +127,16 @@ require 'header.php';
         const quickSelectOrder = document.getElementById('quickSelectOrder');
         const quickSelectButton = document.getElementById('quickSelectButton');
 
+        // Arrived from a plant manifest with "Then mark these plants as sent"
+        // on: choose Send External to its company and tick that many of its
+        // genetics, drying plants first. Nothing is saved until the plants
+        // are checked and Process Selected is confirmed.
+        const manifestPrefill = <?php echo json_encode($fromManifest, JSON_HEX_TAG | JSON_HEX_AMP); ?>;
+        if (manifestPrefill) {
+            actionDropdown.value = 'send';
+            companySelection.style.display = 'block';
+        }
+
         // Fetch plant data from the server
         fetch('get_plants_for_harvest.php')
             .then(response => response.json())
@@ -142,6 +171,17 @@ require 'header.php';
                     option.textContent = name;
                     quickSelectGenetics.appendChild(option);
                 });
+
+                if (manifestPrefill) {
+                    if ([...quickSelectGenetics.options].some(option => option.value === manifestPrefill.geneticsName)) {
+                        quickSelectGenetics.value = manifestPrefill.geneticsName;
+                        quickSelectCount.value = manifestPrefill.quantity;
+                        quickSelectOrder.value = 'drying';
+                        quickSelectButton.click();
+                    } else {
+                        showToast(`There are no ${manifestPrefill.geneticsName} plants in the list to mark as sent.`, 'error', 8000);
+                    }
+                }
             })
             .catch(error => console.error('Error fetching plant data:', error));
 
@@ -197,10 +237,18 @@ require 'header.php';
             }
 
             const rows = [...plantsTable.rows].filter(row => row.cells[1].textContent === genetics);
-            // Oldest first means highest age first; equal ages keep their table order
+            // Oldest first means highest age first; equal ages keep their table
+            // order. Drying plants first puts every plant that's been cut ahead
+            // of the growing ones, oldest first within each.
             rows.sort((a, b) => {
                 const ageA = parseInt(a.cells[2].textContent, 10) || 0;
                 const ageB = parseInt(b.cells[2].textContent, 10) || 0;
+                if (quickSelectOrder.value === 'drying') {
+                    const cutA = a.cells[3].textContent.trim() !== 'Growing';
+                    const cutB = b.cells[3].textContent.trim() !== 'Growing';
+                    if (cutA !== cutB) return cutA ? -1 : 1;
+                    return ageB - ageA;
+                }
                 return quickSelectOrder.value === 'oldest' ? ageB - ageA : ageA - ageB;
             });
 
@@ -293,7 +341,13 @@ require 'header.php';
                 .then(data => {
                     if (data.success) {
                         flashToast(data.message, 'success');
-                        location.reload();
+                        if (manifestPrefill) {
+                            // Back to the manifest. replace(), so going Back can't
+                            // reopen this page with the plants ticked again
+                            location.replace('manifest_summary.php?id=' + manifestPrefill.id);
+                        } else {
+                            location.reload();
+                        }
                     } else if (data.reload) {
                         // The list is out of date (e.g. processed in another
                         // tab): show why, with the current list underneath
@@ -325,6 +379,9 @@ require 'header.php';
                     option.textContent = company.name;
                     companyDropdown.appendChild(option);
                 });
+                if (manifestPrefill) {
+                    companyDropdown.value = String(manifestPrefill.companyId);
+                }
 
                 // "+ Add new company…" at the bottom of the list (quick_add.js)
                 enableQuickAddCompany(companyDropdown);
