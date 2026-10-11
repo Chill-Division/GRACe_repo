@@ -44,16 +44,18 @@ else
     echo "[PASS] No dangerous relative upload paths found"
 fi
 
-# 6. Check for duplicate script inclusions (catch Copy/Paste errors)
+# 6. Check for duplicate script inclusions (catch Copy/Paste errors). The loop
+#    reads find's output with process substitution, not a pipe: a piped loop
+#    runs in a subshell, so FAIL=1 was lost and duplicates still "passed".
 echo "Checking for duplicate script inclusions..."
-find grace_addon/files/general/www/public/ -name "*.php" -print0 | while IFS= read -r -d '' file; do
+while IFS= read -r -d '' file; do
     DUPLICATES=$(grep -o 'src="[^"]*"' "$file" | sort | uniq -d)
     if [ ! -z "$DUPLICATES" ]; then
         echo "[FAIL] Duplicate script(s) found in $file:"
         echo "$DUPLICATES"
         FAIL=1
     fi
-done
+done < <(find grace_addon/files/general/www/public/ -name "*.php" -print0)
 
 # 7. Only use PHP functions the add-on image has. Its Dockerfile loads just
 #    pdo, pdo_sqlite and session on top of PHP's core, so the ctype and

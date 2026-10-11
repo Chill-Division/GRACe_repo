@@ -115,6 +115,10 @@ static checks (persistent paths, duplicate script tags), version
 consistency, and PHP syntax across every file. [TESTING.md](TESTING.md)
 lists every stage.
 
+GitHub runs the same suite on every pull request and every push to `main`,
+inside the add-on's own image, so each PR shows whether it passes with the
+exact PHP the add-on has.
+
 ## Release checklist
 
 The version number lives in **three places** and the CI suite fails if they

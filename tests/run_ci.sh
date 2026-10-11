@@ -300,6 +300,17 @@ else
     FAILures=$((FAILures+1))
 fi
 
+# Run Check Script Test (the shell checks must fail when they find something)
+echo ""
+echo "--- Check Script Test ---"
+php tests/test_check_scripts.php
+if [ $? -eq 0 ]; then
+    echo -e "${GREEN}[PASS]${NC} Shell checks fail when they should"
+else
+    echo -e "${RED}[FAIL]${NC} Shell checks failed"
+    FAILures=$((FAILures+1))
+fi
+
 # Run Company Adding Test
 echo ""
 echo "--- Company Adding Test ---"

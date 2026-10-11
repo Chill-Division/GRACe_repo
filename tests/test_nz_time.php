@@ -188,16 +188,75 @@ if (function_exists('ledgerTimestamp')) {
 }
 
 // Nothing may write the database clock (UTC) any more
+
+/**
+ * PHP source with its comments removed. Strings, heredocs and the HTML
+ * around the PHP are left exactly as they are (byte for byte what
+ * token_get_all() gives). Written out by hand because the tokenizer
+ * extension isn't in the add-on's PHP, which CI runs these tests on.
+ */
 function codeWithoutComments($file)
 {
-    $code = '';
-    foreach (token_get_all(file_get_contents($file)) as $token) {
-        if (is_array($token) && in_array($token[0], [T_COMMENT, T_DOC_COMMENT], true)) {
-            continue;
+    $src = file_get_contents($file);
+    $len = strlen($src);
+    $out = '';
+    $i = 0;
+    while ($i < $len) {
+        // Outside PHP: copy up to and including the next opening tag
+        $open = strpos($src, '<?', $i);
+        if ($open === false) {
+            $out .= substr($src, $i);
+            break;
         }
-        $code .= is_array($token) ? $token[1] : $token;
+        $start = $open + (substr($src, $open, 5) === '<?php' ? 5 : 2);
+        $out .= substr($src, $i, $start - $i);
+        $i = $start;
+
+        // Inside PHP: drop comments, copy everything else, up to the closing tag
+        while ($i < $len) {
+            $two = substr($src, $i, 2);
+            $char = $src[$i];
+            if ($two === '?>') {
+                $out .= '?>';
+                $i += 2;
+                break;
+            }
+            if ($two === '/*') {
+                $end = strpos($src, '*/', $i + 2);
+                $i = $end === false ? $len : $end + 2;
+                continue;
+            }
+            if ($two === '//' || $char === '#') {
+                // A line comment ends at the end of the line, or at a closing tag on it
+                $stop = strpos($src, "\n", $i);
+                $stop = $stop === false ? $len : $stop;
+                $close = strpos($src, '?>', $i);
+                $i = ($close !== false && $close < $stop) ? $close : $stop;
+                continue;
+            }
+            if ($char === "'" || $char === '"' || $char === '`') {
+                $j = $i + 1;
+                while ($j < $len && $src[$j] !== $char) {
+                    $j += $src[$j] === '\\' ? 2 : 1;
+                }
+                $out .= substr($src, $i, $j + 1 - $i);
+                $i = $j + 1;
+                continue;
+            }
+            if (substr($src, $i, 3) === '<<<' && preg_match('/\G<<<[ \t]*([\'"]?)([A-Za-z_]\w*)\1\r?\n/', $src, $m, 0, $i)) {
+                // Heredoc or nowdoc: copy it through its closing identifier
+                $body = $i + strlen($m[0]);
+                $end = preg_match('/^[ \t]*' . $m[2] . '\b/m', $src, $close, PREG_OFFSET_CAPTURE, $body)
+                    ? $close[0][1] + strlen($close[0][0]) : $len;
+                $out .= substr($src, $i, $end - $i);
+                $i = $end;
+                continue;
+            }
+            $out .= $char;
+            $i++;
+        }
     }
-    return $code;
+    return $out;
 }
 
 $offenders = [];
