@@ -142,9 +142,11 @@ and layout:
 - What's new shows about the first 10 lines before "Show more…", so put
   what matters most to growers first.
 - What's new only shows the newest entry, so anyone who skips a version
-  never sees that version's notes. When a release follows one that was only
-  out briefly, bring the earlier entry's points into the new one and leave
-  the earlier entry as it was (1.1.1 does this for 1.1.0).
+  never sees that version's notes. While the previous release is still
+  recent (a few weeks), repeat its points underneath the new ones, under
+  headings like `### What's new in 1.1`, and leave the earlier entry as it
+  was (1.2.0 does this for 1.1). 1.1.1 folded 1.1.0's points in among its
+  own instead, because 1.1.0 was only out for a day.
 - Write for growers: what changed for them, not how. No file names,
   functions or tables. Use neutral examples ("Joe's Farm"), never strain
   names or real customer data.
