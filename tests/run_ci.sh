@@ -344,6 +344,17 @@ else
     FAILures=$((FAILures+1))
 fi
 
+# Run Phone Tables Test
+echo ""
+echo "--- Phone Tables Test ---"
+php tests/test_phone_tables.php
+if [ $? -eq 0 ]; then
+    echo -e "${GREEN}[PASS]${NC} Wide tables keep one value per line on a phone"
+else
+    echo -e "${RED}[FAIL]${NC} Wide tables squeeze their columns on a phone"
+    FAILures=$((FAILures+1))
+fi
+
 # Run Dashboard Link Test
 echo ""
 echo "--- Dashboard Link Test ---"

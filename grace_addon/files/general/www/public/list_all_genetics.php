@@ -26,7 +26,7 @@ require 'header.php';
         </div>
 
         <figure class="table-wrap">
-            <table id="geneticsListTable" class="table">
+            <table id="geneticsListTable" class="table wide-table">
                 <thead>
                     <tr>
                         <th>Genetics Name</th>

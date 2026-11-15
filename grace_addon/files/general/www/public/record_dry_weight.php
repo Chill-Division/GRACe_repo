@@ -64,7 +64,7 @@ require 'header.php';
             <h2>Recent entries</h2>
             <p class="recent-entries-note">Your last <?php echo GRACE_RECENT_ENTRIES; ?>, newest first, so you can check what you just did and spot anything entered twice.</p>
             <figure class="table-wrap">
-                <table>
+                <table class="wide-table">
                     <thead><tr><th>When</th><th>Genetics</th><th>In / out</th><th>Reason</th></tr></thead>
                     <tbody>
                         <?php foreach ($recent as $entry):
@@ -75,7 +75,7 @@ require 'header.php';
                             <td><?php echo htmlspecialchars(formatLedgerDateTime($entry['when'])); ?></td>
                             <td><?php echo htmlspecialchars($entry['genetics']); ?></td>
                             <td><?php echo ($entry['grams'] < 0 ? '−' : '+') . htmlspecialchars(formatFlowerGrams(abs($entry['grams']))); ?> g</td>
-                            <td><?php echo htmlspecialchars($reason); ?></td>
+                            <td class="cell-long"><?php echo htmlspecialchars($reason); ?></td>
                         </tr>
                         <?php endforeach; ?>
                     </tbody>

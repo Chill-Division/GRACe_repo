@@ -759,6 +759,34 @@ textarea {
   font-size: 0.875rem;
 }
 
+/* On a phone, or any screen under 768px wide, a table with more columns
+   than fit scrolls sideways, as it always has. A wide-table also keeps each
+   value on one line. Without it the browser squeezed every column down to
+   its longest word, so a date broke over three lines and an address ran
+   down the screen a word at a time. Its headers can wrap instead ("Weight
+   (grams)" over two lines), so they don't make a column wider than its
+   values need. A cell-long cell, like a company with its address, wraps at
+   a readable width. A row with one cell across the table ("Nothing to
+   report") wraps as usual. */
+@media (max-width: 767.98px) {
+  .table-wrap .wide-table th {
+    white-space: normal;
+  }
+
+  .table-wrap .wide-table td {
+    white-space: nowrap;
+  }
+
+  .table-wrap .wide-table td[colspan],
+  .table-wrap .wide-table td.cell-long {
+    white-space: normal;
+  }
+
+  .table-wrap .wide-table td.cell-long {
+    min-width: 17rem;
+  }
+}
+
 /* --------------------------------------------------------------------------
    8. Badges (plant status etc.)
    -------------------------------------------------------------------------- */

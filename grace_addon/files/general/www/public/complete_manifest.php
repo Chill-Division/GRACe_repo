@@ -37,7 +37,7 @@ require 'header.php';
                 <article class="form-card"><p>No manifests are awaiting completion. <a href="generate_shipping_manifest.php">Generate a shipping manifest</a> to start one.</p></article>
             <?php else: ?>
             <figure class="table-wrap">
-                <table>
+                <table class="wide-table">
                     <thead>
                         <tr>
                             <th>#</th>

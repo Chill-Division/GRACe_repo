@@ -60,7 +60,7 @@ require 'header.php';
 
         <h2>Flower Transactions</h2>
         <figure class="table-wrap">
-            <table id="flowerTransactionsTable" class="table">
+            <table id="flowerTransactionsTable" class="table wide-table">
                 <thead>
                     <tr>
                         <th>Genetics Name</th>
@@ -76,7 +76,7 @@ require 'header.php';
 
         <h2>Plant Transactions</h2>
         <figure class="table-wrap">
-            <table id="plantTransactionsTable" class="table">
+            <table id="plantTransactionsTable" class="table wide-table">
                 <thead>
                     <tr>
                         <th>Genetics Name</th>

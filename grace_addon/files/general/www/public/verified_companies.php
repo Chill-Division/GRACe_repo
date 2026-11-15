@@ -20,7 +20,7 @@ require 'header.php';
         </div>
 
         <figure class="table-wrap">
-            <table class="table">
+            <table class="table wide-table">
                 <thead>
                     <tr>
                         <th>Company</th>

@@ -2,6 +2,7 @@
 
 ### Minor bug fixes and reliability improvements
 - Fixed UI inconsistencies and ensured accurate reproduction across both dark and light-theme viewing, for desktop, tablet and mobile.
+- Embedded the Inter font so text looks the same on every device, and tested it with te reo Māori characters such as macrons (ā, ē, ī, ō, ū).
 
 ## [1.3.0] - 2026-10-11
 

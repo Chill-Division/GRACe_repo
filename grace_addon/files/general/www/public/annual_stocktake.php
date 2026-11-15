@@ -46,7 +46,7 @@ require 'header.php';
         <section id="plantStocktakeSection" style="display: none;">
             <h2>Plant Stocktake</h2>
             <figure class="table-wrap">
-                <table id="plantStocktakeTable" class="table">
+                <table id="plantStocktakeTable" class="table wide-table">
                     <thead>
                         <tr>
                             <th>Genetics Name</th>
@@ -67,7 +67,7 @@ require 'header.php';
         <section id="flowerStocktakeSection" style="display: none;">
             <h2>Flower Stocktake</h2>
             <figure class="table-wrap">
-                <table id="flowerStocktakeTable" class="table">
+                <table id="flowerStocktakeTable" class="table wide-table">
                     <thead>
                         <tr>
                             <th>Genetics Name</th>

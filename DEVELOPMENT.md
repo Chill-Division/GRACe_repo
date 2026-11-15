@@ -38,6 +38,12 @@ Tips:
 
 - Test mobile/tablet layouts with your browser dev tools' device toolbar
   (the UI is responsive down to ~375px wide).
+- On a phone, a table with more columns than fit scrolls sideways. Give it
+  `class="wide-table"` so each value stays on one line instead of being
+  squeezed (a date broken over three lines), and give a cell with long text,
+  like an address, `class="cell-long"` so it wraps at a readable width.
+  Leave tables that fit a phone alone. `tests/test_phone_tables.php` lists
+  the tables that have it.
 - Both themes matter: use the sun/moon toggle in the nav. The choice persists
   in `localStorage` under `grace-theme`. Each theme's colours live in the
   `:root[data-theme=...]` blocks at the top of `css/growcart.css`. Keep the

@@ -61,6 +61,7 @@ function initTransactionReport(endpoint, flowerTableElement, plantTableElement) 
                     weightCell.textContent = transaction.weight;
                     dateCell.textContent = formatLedgerDate(transaction.transaction_date);
                     companyCell.textContent = transaction.companyNameAddress || '-';
+                    companyCell.className = 'cell-long'; // a readable width on a phone
                 });
                 // Add Footer
                 const footerRow = flowerTbody.insertRow();
@@ -90,6 +91,7 @@ function initTransactionReport(endpoint, flowerTableElement, plantTableElement) 
                     countCell.textContent = transaction.plantCount;
                     dateCell.textContent = formatLedgerDate(transaction.transaction_date);
                     companyCell.textContent = transaction.companyNameAddress || '-';
+                    companyCell.className = 'cell-long'; // a readable width on a phone
                 });
                 // Add Footer
                 const footerRow = plantTbody.insertRow();

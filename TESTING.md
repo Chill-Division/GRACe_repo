@@ -170,34 +170,40 @@ The shell checks (PHP syntax and duplicate script tags) fail the run when they f
 *   **Real fonts, every letter:** both files are WOFF2 fonts (not a saved error page) covering every weight, and between them they cover plain Latin and the letters with macrons (ā, ē, ī, ō, ū and capitals). Inter comes first in the font list.
 *   **The detectors:** the url() reader, the relative path check and the unicode-range reader have known answers, so a mistake in them shows up.
 
-### 28. Dashboard Links (`tests/test_dashboard_links.php`)
+### 28. Tables on a Phone (`tests/test_phone_tables.php`)
+*   **One value per line:** under 768px wide, a table marked `wide-table` keeps each value on one line and scrolls sideways, instead of squeezing every column down to its longest word (a date over three lines, a company's address down the screen a word at a time). Its headers can wrap. A `cell-long` cell (an address, a route, a reason) wraps at a readable width, and a row with one cell across the table ("Nothing to report") wraps as usual.
+*   **Only on phones:** the rules sit under `@media (max-width: 767.98px)`, so tablets and PCs lay tables out as before.
+*   **Which tables:** the monthly reports, the annual stocktake, both tables on Harvest / Destroy / Send, List all plants, Verified Companies, Complete Manifest, Chain of Custody's shipment exchanges and Record dry weight's recent entries, with their long cells marked. Tables that fit a phone, or nearly do, stay unmarked (the file lists, Receive plants' recent entries), so they don't start scrolling sideways.
+*   **The detectors:** the @media block finder, the rule splitter and the declaration reader have known answers, so a mistake in them shows up.
+
+### 29. Dashboard Links (`tests/test_dashboard_links.php`)
 *   **Cards open their list:** "Plants growing" and "Plants drying" on the Dashboard open List all plants already filtered to Growing or Harvested - Drying, the same statuses the cards count, so the number on the card matches the list.
 *   **Only real filters:** the list page applies a status from the address only if it's one of its filter choices, and loads its script with the version tag so the change reaches browsers after an update.
 
-### 29. Marking Manifest Plants as Sent (`tests/test_manifest_mark_sent.php`)
+### 30. Marking Manifest Plants as Sent (`tests/test_manifest_mark_sent.php`)
 *   **Where the form goes:** a plant manifest from us to another company with "Then mark these plants as sent" on goes to Harvest / Destroy / Send; with it off, or for flower, plants coming in or between two other companies, it goes to the manifest as before.
 *   **What gets filled in:** only a plant manifest from us fills in its genetics, count and company; flower, incoming, unknown and non-numeric ids fill in nothing.
 *   **Nothing is saved early:** the plants are only ticked (drying plants first) and still have to be confirmed. Afterwards it returns to the manifest with `location.replace()`, so going Back can't reopen the ticked page.
 
-### 30. Report Reminders on a Phone (`tests/test_report_notify.php`)
+### 31. Report Reminders on a Phone (`tests/test_report_notify.php`)
 *   **When:** from 9am on the first weekday of the month (Monday when the 1st is a weekend), catching up within the Dashboard's first week if GRACe was off, and never twice in a month.
 *   **What:** off until switched on with a device chosen; nothing in a month with nothing to report, or once the report is sent or dismissed on the Dashboard; January names the materials-out report and the annual stocktake together; a failed send is tried again on the next check.
 *   **Settings:** only a device Home Assistant offers can be chosen, and reminders can't be switched on while Home Assistant can't be reached. Phones (the Home Assistant app) are listed first, without the catch-all services.
 *   **Home Assistant:** starts a stand-in for the Supervisor and checks the real requests: the notify service path, the add-on's token, the title and message, an unknown device, a refused device name, and Home Assistant being down.
 *   **Wiring:** `homeassistant_api: true` in `config.yaml`, the PHP command line in the image, the executable `report-reminders` service that runs the check every few minutes, the check refusing web requests, and the Administration card and menu.
 
-### 31. Asset Versions (`tests/test_asset_versions.php`)
+### 32. Asset Versions (`tests/test_asset_versions.php`)
 *   **Fresh after an update:** every local script and stylesheet a page loads carries the asset version (`?v=` and `GRACE_ASSET_VERSION`, which each release bumps), so browsers fetch the new copy instead of keeping an old one. Many page scripts used to load without it.
 *   **Set before use:** every page that uses it loads `header.php`, which sets it, first; `footer.php` copies it into `$assetVersion`.
 
-### 32. Retiring Genetics (`tests/test_retire_genetics.php`)
+### 33. Retiring Genetics (`tests/test_retire_genetics.php`)
 *   **Upgrading:** a 1.2 database gets the `retired_at` column in place, with every genetics in use and every plant and flower entry still linked to it. A second run changes nothing.
 *   **Only with nothing on site:** plants growing or drying, or flower on hand, stop it, and the message says what's there ("2 plants growing, 1 drying and 1,234.5 g of flower"). History alone doesn't, and neither do shipments already sent while their manifest is In Progress. A flower balance within 0.05 g of zero (hundredths from an older version) counts as none, so 0.1 g entries can always clear it.
 *   **Hidden from new entries:** Receive plants, Record dry weight change and Generate Shipping Manifest list only genetics in use, and receiving plants, recording flower and generating a manifest refuse a retired one, in case the form was opened before it was retired.
 *   **Reports never change:** the annual stocktake, Current Plants, the monthly report, recent entries and stock on hand are identical before and after retiring and bringing back. Only the genetics library, the database setup and the Retire genetics page know about `retired_at`.
 *   **Bring back:** "Bring back" undoes it, and adding a retired genetics' name again (any capitals or spaces) brings it back instead of making a second one.
 
-### 33. Static Code Analysis (`tests/static_checks.sh`)
+### 34. Static Code Analysis (`tests/static_checks.sh`)
 *   **Critical Paths:**
     *   Verifies Database path is `/data/grace.db`
     *   Verifies Upload path is `/data/uploads/`
@@ -207,14 +213,14 @@ The shell checks (PHP syntax and duplicate script tags) fail the run when they f
 *   **Duplicates:** Scans for duplicate `<script src="...">` tags in PHP files (prevent redeclaration errors).
 *   **PHP extensions:** Fails on `ctype_*` or `mb_*` functions. The add-on image only loads `pdo`, `pdo_sqlite` and `session` on top of PHP's core, so they would crash in production even though they work on a dev PC.
 
-### 34. Version Consistency (`tests/test_version_consistency.php`)
+### 35. Version Consistency (`tests/test_version_consistency.php`)
 *   **Why:** Ensures the version number is identical across:
     *   `config.yaml` (Home Assistant)
     *   `nav.php` (UI Display)
     *   `CHANGELOG.md` (Release Notes)
 *   **Release helper** (`tests/test_bump_version.php`): `tests/bump_version.php x.y.z` refuses a bad or older version and changes nothing until the changelog has the new entry; then it sets the version everywhere, and running it again changes nothing.
 
-### 35. PHP Syntax Check (`tests/syntax_check.sh`)
+### 36. PHP Syntax Check (`tests/syntax_check.sh`)
 *   **Linting:** Runs `php -l` on all PHP files in `grace_addon/files/general/www/public/` to catch syntax errors before runtime.
 
 ## Demo / Development Helpers (not part of CI)
@@ -245,5 +251,6 @@ The CI suite is PHP-only, so browser behaviours still need a manual pass
 *   [ ] **Report reminders** (on a real Home Assistant): Administration → Report reminders lists the phones with the Home Assistant app, "Send a test notification" arrives on the chosen one, and after switching on and saving the page shows when the next reminder can go out.
 *   [ ] **Theme colours and buttons**: in the light theme, buttons and links are GRACe green on the soft green-grey page (not Pico's blue on white), and pressing Tab through a form puts a solid green ring on each box. In both themes buttons are pill shaped, second actions (Cancel, Dismiss, Choose File, Retire) are outlines that turn green under the pointer, and fields and tick boxes have a clear edge. Check a phone, a tablet (about 820px) and a PC.
 *   [ ] **Inter font**: text on every page is Inter, the Chill Division font, even on a Home Assistant box with no internet. A name with macrons (Ōtaki, Māori) shows in the same font as the letters around it.
+*   [ ] **Tables on a phone**: at phone width (390px), Last month's report keeps each entry on one line, with the company and its address on two lines when you swipe across. Dates on Chain of Custody Documents and license numbers on Verified Companies stay on one line too. Tables that fitted the screen before, like Receive plants' recent entries, still do.
 *   [ ] **Maker logo**: the Chill Division logo shows beside GRACe on the light and dark themes. At tablet width (about 820px) the menu folds into the hamburger with nothing squashed, and above 960px all four menu items sit on one line.
 *   [ ] **Retire genetics**: Administration → Retire genetics greys out Retire for genetics with plants or flower on site and says what's there. Retiring one with nothing on site asks first; afterwards it's missing from Receive plants, Record dry weight change and Generate Shipping Manifest, but still in every report. "Bring back" returns it, and so does typing its name in "+ Add new genetics…" (it's selected for you).

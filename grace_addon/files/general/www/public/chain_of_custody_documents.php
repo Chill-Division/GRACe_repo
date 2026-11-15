@@ -32,7 +32,7 @@ require 'header.php';
         <section>
             <h2>Shipment Exchanges</h2>
             <figure class="table-wrap">
-                <table>
+                <table class="wide-table">
                     <thead>
                         <tr>
                             <th>#</th>
@@ -48,7 +48,7 @@ require 'header.php';
                         <tr>
                             <td><a href="manifest_summary.php?id=<?php echo (int) $manifest['id']; ?>"><?php echo (int) $manifest['id']; ?></a></td>
                             <td><?php echo htmlspecialchars($manifest['shipment_date']); ?></td>
-                            <td><?php echo htmlspecialchars(manifestRouteLabel($manifest)); ?></td>
+                            <td class="cell-long"><?php echo htmlspecialchars(manifestRouteLabel($manifest)); ?></td>
                             <td><?php echo htmlspecialchars(manifestShipmentLabel($manifest)); ?></td>
                             <td><?php echo manifestStatusBadge($manifest); ?></td>
                             <td>

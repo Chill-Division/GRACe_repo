@@ -74,7 +74,7 @@ require 'header.php';
         </div>
 
         <figure class="table-wrap">
-            <table id="plantsTable" class="table">
+            <table id="plantsTable" class="table wide-table">
                 <thead>
                     <tr>
                         <th><input type="checkbox" id="selectAllCheckbox" aria-label="Select all plants"></th>
@@ -95,7 +95,7 @@ require 'header.php';
             <h2>Recent entries</h2>
             <p class="recent-entries-note">Your last <?php echo GRACE_RECENT_ENTRIES; ?>, newest first, so you can check what you just did and spot anything entered twice.</p>
             <figure class="table-wrap">
-                <table>
+                <table class="wide-table">
                     <thead><tr><th>When</th><th>Action</th><th>Genetics</th><th>Plants</th><th>Company</th></tr></thead>
                     <tbody>
                         <?php foreach ($recent as $entry): ?>
