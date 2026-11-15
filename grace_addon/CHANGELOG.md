@@ -1,3 +1,8 @@
+## [1.3.1] - 2026-11-15
+
+### Minor bug fixes and reliability improvements
+- Fixed UI inconsistencies and ensured accurate reproduction across both dark and light-theme viewing, for desktop, tablet and mobile.
+
 ## [1.3.0] - 2026-10-11
 
 ### What's new
