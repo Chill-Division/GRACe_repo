@@ -322,6 +322,17 @@ else
     FAILures=$((FAILures+1))
 fi
 
+# Run Theme Override Test
+echo ""
+echo "--- Theme Override Test ---"
+php tests/test_theme_overrides.php
+if [ $? -eq 0 ]; then
+    echo -e "${GREEN}[PASS]${NC} Theme colours beat Pico's"
+else
+    echo -e "${RED}[FAIL]${NC} Theme colours lose to Pico's"
+    FAILures=$((FAILures+1))
+fi
+
 # Run Dashboard Link Test
 echo ""
 echo "--- Dashboard Link Test ---"

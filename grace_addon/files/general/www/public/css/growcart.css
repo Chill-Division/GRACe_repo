@@ -11,13 +11,19 @@
 :root {
   --pico-font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI",
     Roboto, "Helvetica Neue", Arial, sans-serif;
-  --pico-border-radius: 0.625rem;
+  /* Corners from the Chill Division brand guide: 10px for fields, 14px for
+     cards (buttons are pills, in section 6) */
+  --pico-border-radius: 10px;
   --pico-form-element-spacing-vertical: 0.65rem;
   --pico-transition: 0.18s ease-in-out;
-  --g-radius-lg: 0.875rem;
+  --g-radius-lg: 14px;
 }
 
-[data-theme="dark"] {
+/* The two theme blocks start with :root on purpose. Pico's light theme uses
+   :root:not([data-theme=dark]), which outranks a bare [data-theme="light"],
+   so without it the light theme showed Pico's blue buttons and white page
+   instead of these. With :root the two tie, and this file loads after Pico. */
+:root[data-theme="dark"] {
   --g-bg: #0f1512;
   --g-surface: #161f1a;
   --g-surface-raised: #1c2620;
@@ -51,15 +57,26 @@
   --pico-primary-inverse: #ffffff;
   --pico-primary-focus: rgba(74, 222, 128, 0.35);
   --pico-primary-underline: rgba(74, 222, 128, 0.5);
+  /* Second actions (Cancel, Dismiss, Choose file...) are the brand's outline
+     button: no fill, a light edge, green on hover */
+  --pico-secondary: var(--g-text);
+  --pico-secondary-background: transparent;
+  --pico-secondary-border: var(--g-text);
+  --pico-secondary-inverse: var(--g-text);
+  --pico-secondary-hover: var(--g-accent);
+  --pico-secondary-hover-background: transparent;
+  --pico-secondary-hover-border: var(--g-accent);
+  --pico-secondary-focus: var(--pico-primary-focus);
   --pico-form-element-background-color: #121a15;
-  --pico-form-element-border-color: var(--g-border);
+  /* Field and tick box edges at 3:1, the brand's minimum for graphics */
+  --pico-form-element-border-color: #627168;
   --pico-form-element-active-border-color: var(--g-accent-strong);
   --pico-form-element-focus-color: var(--pico-primary-focus);
   --pico-table-border-color: var(--g-border);
   --pico-table-row-stripped-background-color: rgba(255, 255, 255, 0.025);
 }
 
-[data-theme="light"] {
+:root[data-theme="light"] {
   --g-bg: #f4f7f5;
   --g-surface: #ffffff;
   --g-surface-raised: #fbfdfb;
@@ -84,19 +101,35 @@
   --pico-muted-border-color: var(--g-border);
   --pico-card-background-color: var(--g-surface);
   --pico-card-sectioning-background-color: var(--g-surface-raised);
-  --pico-primary: var(--g-accent);
-  --pico-primary-background: #16a34a;
-  --pico-primary-border: #16a34a;
-  --pico-primary-hover: #15803d;
-  --pico-primary-hover-background: #15803d;
-  --pico-primary-hover-border: #15803d;
+  /* Links and buttons use the darker green, the same buttons as the dark
+     theme: white on #16a34a is only 3.3:1, on #15803d it's 5:1, and #15803d
+     links stay above 4.5:1 on the page background */
+  --pico-primary: var(--g-accent-strong);
+  --pico-primary-background: #15803d;
+  --pico-primary-border: #15803d;
+  --pico-primary-hover: #166534;
+  --pico-primary-hover-background: #166534;
+  --pico-primary-hover-border: #166534;
   --pico-primary-inverse: #ffffff;
-  --pico-primary-focus: rgba(22, 163, 74, 0.3);
-  --pico-primary-underline: rgba(22, 163, 74, 0.5);
+  --pico-primary-focus: rgba(22, 163, 74, 0.5);
+  --pico-primary-underline: rgba(21, 128, 61, 0.5);
+  /* Second actions (Cancel, Dismiss, Choose file...) are the brand's outline
+     button: no fill, a dark edge, green on hover */
+  --pico-secondary: var(--g-text);
+  --pico-secondary-background: transparent;
+  --pico-secondary-border: var(--g-text);
+  --pico-secondary-inverse: var(--g-text);
+  --pico-secondary-hover: var(--g-accent-strong);
+  --pico-secondary-hover-background: transparent;
+  --pico-secondary-hover-border: var(--g-accent-strong);
+  --pico-secondary-focus: var(--pico-primary-focus);
   --pico-form-element-background-color: #ffffff;
-  --pico-form-element-border-color: var(--g-border);
-  --pico-form-element-active-border-color: var(--g-accent);
-  --pico-form-element-focus-color: var(--pico-primary-focus);
+  /* Field and tick box edges at 3:1, the brand's minimum for graphics
+     (--g-border nearly vanishes on a white card), and a solid ring around
+     the field you're typing in */
+  --pico-form-element-border-color: #86918b;
+  --pico-form-element-active-border-color: var(--g-accent-strong);
+  --pico-form-element-focus-color: var(--g-accent-strong);
   --pico-table-border-color: var(--g-border);
   --pico-table-row-stripped-background-color: rgba(16, 24, 20, 0.025);
 }
@@ -588,6 +621,32 @@ article {
 
 .form-card h2 {
   margin-bottom: 1rem;
+}
+
+/* Buttons follow the Chill Division brand guide: pill shaped, SemiBold, with
+   a 1.5px edge. The main action is filled GRACe green, a second action is an
+   outline (Pico's .secondary, see the theme blocks). Fields and tick boxes
+   get the same 1.5px edge. */
+button,
+[type="submit"],
+[type="button"],
+[type="reset"],
+[role="button"],
+[type="file"]::file-selector-button {
+  --pico-border-width: 1.5px;
+  border-radius: 999px;
+  font-weight: 600;
+}
+
+input,
+select,
+textarea {
+  --pico-border-width: 1.5px;
+}
+
+/* Tick boxes are rounded squares, so they don't look like round options */
+[type="checkbox"]:not([role="switch"]) {
+  border-radius: 6px;
 }
 
 /* A switch with a line of explanation under it */

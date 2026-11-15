@@ -39,7 +39,10 @@ Tips:
 - Test mobile/tablet layouts with your browser dev tools' device toolbar
   (the UI is responsive down to ~375px wide).
 - Both themes matter: use the sun/moon toggle in the nav. The choice persists
-  in `localStorage` under `grace-theme`.
+  in `localStorage` under `grace-theme`. Each theme's colours live in the
+  `:root[data-theme=...]` blocks at the top of `css/growcart.css`. Keep the
+  `:root`, or Pico's own light theme wins. `tests/test_theme_overrides.php`
+  checks that, and the contrast of the main colour pairs.
 - Assets are cache-busted by addon version (`?v=…`). If a CSS/JS change
   doesn't show up, hard-refresh (Ctrl+Shift+R).
 

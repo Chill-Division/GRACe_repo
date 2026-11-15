@@ -63,6 +63,6 @@ require 'header.php';
             <?php endif; ?>
         </article>
         
-        <p><a href="administration.php" role="button" class="secondary">Back to Administration</a></p>
+        <p><a href="administration.php" role="button" class="secondary outline">Back to Administration</a></p>
     </main>
 <?php require 'footer.php'; ?>

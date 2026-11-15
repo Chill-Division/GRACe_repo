@@ -116,7 +116,7 @@ function openQuickAddForm(options) {
                     ${fields}
                     <p class="quick-add-error" role="alert" hidden></p>
                     <footer>
-                        <button type="button" class="secondary" data-quick-add-cancel>Cancel</button>
+                        <button type="button" class="secondary outline" data-quick-add-cancel>Cancel</button>
                         <button type="submit">${escapeHtml(options.submitLabel)}</button>
                     </footer>
                 </form>

@@ -24,7 +24,7 @@ $assetVersion = defined('GRACE_ASSET_VERSION') ? GRACE_ASSET_VERSION : '0';
                 <?php echo $whatsNew['html']; ?>
             </div>
             <footer>
-                <button type="button" class="secondary" data-whats-new-more hidden>Show more…</button>
+                <button type="button" class="secondary outline" data-whats-new-more hidden>Show more…</button>
                 <button type="button" data-whats-new-close>Got it</button>
             </footer>
         </article>
