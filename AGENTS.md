@@ -70,9 +70,10 @@ an update: `performMigrations()` in `init_db.php` runs on every request.
   use relative URLs for links, assets and fetch calls, never paths that
   start with `/`.
 - No service worker or offline-first support. Users always reach GRACe over
-  their LAN through their Home Assistant server. Pico CSS and jQuery are
-  vendored (`css/vendor/`, `js/vendor/`) only because the Home Assistant
-  server itself may have no internet access.
+  their LAN through their Home Assistant server. Pico CSS, jQuery and the
+  Inter font are vendored (`css/vendor/`, `js/vendor/`, `fonts/inter/`) only
+  because the Home Assistant server itself may have no internet access.
+  Inter's licence (`fonts/inter/OFL.txt`) has to stay with its files.
 - The add-on image runs PHP 8.3 with only `pdo`, `pdo_sqlite` and `session`
   on top of PHP's core (see `grace_addon/Dockerfile`). Functions from other
   extensions, such as `ctype_digit()`, `mb_strtolower()` or `iconv()`, work

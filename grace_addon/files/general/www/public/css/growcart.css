@@ -8,9 +8,34 @@
    1. Design tokens + Pico overrides
    -------------------------------------------------------------------------- */
 
+/* Inter, the Chill Division font. The add-on serves it itself, so it works on
+   a Home Assistant box with no internet. Both files are variable fonts that
+   cover every weight. The first holds the letters with macrons (ā, ō) and
+   other accents, the second plain Latin. Inter is free under the SIL Open
+   Font License, which has to stay with the files (fonts/inter/OFL.txt). */
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("../fonts/inter/inter-latin-ext-wght-normal.woff2") format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329,
+    U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("../fonts/inter/inter-latin-wght-normal.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329,
+    U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
 :root {
-  --pico-font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI",
-    Roboto, "Helvetica Neue", Arial, sans-serif;
+  --pico-font-family: "Inter", ui-sans-serif, system-ui, -apple-system,
+    "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   /* Corners from the Chill Division brand guide: 10px for fields, 14px for
      cards (buttons are pills, in section 6) */
   --pico-border-radius: 10px;
@@ -873,7 +898,7 @@ textarea {
    -------------------------------------------------------------------------- */
 
 .grace-modal article {
-  max-width: 26rem;
+  max-width: 28rem;
   margin: 1rem;
   padding: 1.5rem;
   border: 1px solid var(--g-border);
@@ -905,8 +930,12 @@ textarea {
   margin-bottom: 0.2rem;
 }
 
+/* When the buttons don't fit side by side (a long label, or a phone), they
+   stack with the main action on top, instead of squeezing a label onto two
+   lines inside its pill. */
 .grace-modal article footer {
   display: flex;
+  flex-wrap: wrap-reverse;
   justify-content: flex-end;
   gap: 0.6rem;
   margin: 1.25rem -1.5rem -1.5rem;
@@ -1173,7 +1202,7 @@ a.stat-card:focus {
 
 .stat-card .stat-value {
   font-size: 1.6rem;
-  font-weight: 700;
+  font-weight: 800; /* ExtraBold, the brand guide's weight for big numbers */
   letter-spacing: -0.02em;
   color: var(--g-accent);
 }

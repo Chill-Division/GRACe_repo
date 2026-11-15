@@ -333,6 +333,17 @@ else
     FAILures=$((FAILures+1))
 fi
 
+# Run Font Test
+echo ""
+echo "--- Font Test ---"
+php tests/test_fonts.php
+if [ $? -eq 0 ]; then
+    echo -e "${GREEN}[PASS]${NC} Inter ships with the add-on, with its licence"
+else
+    echo -e "${RED}[FAIL]${NC} Inter is missing, unlicensed or loads from another site"
+    FAILures=$((FAILures+1))
+fi
+
 # Run Dashboard Link Test
 echo ""
 echo "--- Dashboard Link Test ---"

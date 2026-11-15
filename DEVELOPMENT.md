@@ -43,6 +43,11 @@ Tips:
   `:root[data-theme=...]` blocks at the top of `css/growcart.css`. Keep the
   `:root`, or Pico's own light theme wins. `tests/test_theme_overrides.php`
   checks that, and the contrast of the main colour pairs.
+- Text is Inter, the Chill Division font, served from `fonts/inter/` (the
+  same files as the Visitors add-on). It's free under the SIL Open Font
+  License, and `OFL.txt` has to stay with the files. Don't load fonts, or
+  anything else, from Google Fonts or a CDN: a Home Assistant box may have
+  no internet. `tests/test_fonts.php` checks both.
 - Assets are cache-busted by addon version (`?v=…`). If a CSS/JS change
   doesn't show up, hard-refresh (Ctrl+Shift+R).
 
