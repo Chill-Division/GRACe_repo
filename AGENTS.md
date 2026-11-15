@@ -122,9 +122,9 @@ an update: `performMigrations()` in `init_db.php` runs on every request.
 
 `grace_addon/CHANGELOG.md` is read by growers in two places: Home
 Assistant's add-on changelog, and GRACe's own "What's new" pop-up, which
-shows the newest entry the first time anyone opens the updated add-on
-(`whats_new_lib.php`). **The 1.2.0 entry is the standard.** Match its tone
-and layout:
+shows the newest entry the first time anyone opens the updated add-on, along
+with any earlier entries that install never showed (`whats_new_lib.php`).
+**The 1.2.0 entry is the standard.** Match its tone and layout:
 
 - Heading `## [x.y.z] - YYYY-MM-DD`, newest entry at the top.
 - One plain sentence summing up the release. Leave it out when the entry
@@ -145,7 +145,8 @@ and layout:
 - Each release's notes go in its own entry, once. Don't repeat an earlier
   release's notes in a new entry (say a `### What's new in 1.2` section
   under 1.3.0): Home Assistant's update dialog shows the whole file, so
-  they'd appear twice. Old entries can be trimmed once they're a few
+  they'd appear twice, and What's new already brings along the earlier
+  notes an install missed. Old entries can be trimmed once they're a few
   releases old.
 - Write for growers: what changed for them, not how. No file names,
   functions or tables. Use neutral examples ("Joe's Farm"), never strain

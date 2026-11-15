@@ -2,18 +2,25 @@
 require_once 'init_db.php';
 require_once 'whats_new_lib.php';
 
-// The latest update notes, on demand (Administration → What's new)
+// The update notes, on demand (Administration → What's new): any that nobody
+// on this system has seen yet (what the pop-up would show), otherwise the
+// latest
 $latestNotes = latestChangelogSection();
+$notesShown = $latestNotes !== null ? [$latestNotes] : [];
 $released = null;
 if ($latestNotes !== null) {
     // Reading them here counts as seeing them, so the pop-up won't appear too
     try {
-        markWhatsNewSeen(initializeDatabase(), $latestNotes['version']);
+        $whatsNewDb = initializeDatabase();
+        $unseenNotes = unseenChangelogSections($whatsNewDb);
+        if ($unseenNotes) {
+            $notesShown = $unseenNotes;
+        }
+        markWhatsNewSeen($whatsNewDb, $latestNotes['version']);
     } catch (Exception $e) {
         error_log("GRACe: could not record What's new as seen: " . $e->getMessage());
     }
-    $date = $latestNotes['date'] ? DateTimeImmutable::createFromFormat('!Y-m-d', $latestNotes['date']) : false;
-    $released = $date ? $date->format('j F Y') : $latestNotes['date'];
+    $released = whatsNewReleaseDate($latestNotes['date']);
 }
 
 $pageTitle = "GRACe - What's New";
@@ -28,7 +35,7 @@ require 'header.php';
 
         <?php if ($latestNotes): ?>
         <article class="form-card whats-new-page">
-            <?php echo renderChangelogMarkdown($latestNotes['lines']); ?>
+            <?php echo renderChangelogSections($notesShown); ?>
         </article>
         <p><small>Notes for earlier versions are in the add-on's changelog in Home Assistant.</small></p>
         <?php endif; ?>

@@ -1027,14 +1027,40 @@ textarea {
 }
 
 .whats-new-notes h4,
-.whats-new-page h4 {
+.whats-new-page h4,
+.whats-new-notes h5,
+.whats-new-page h5 {
   margin: 1rem 0 0.4rem;
   font-size: 0.95rem;
 }
 
 .whats-new-notes h4:first-child,
-.whats-new-page h4:first-child {
+.whats-new-page h4:first-child,
+.whats-new-version-label + h5 {
   margin-top: 0;
+}
+
+/* Notes for several versions at once (1.3.1, whats_new_lib.php): each one
+   starts with a small "GRACe x.y.z, released ..." label, newest first. The
+   headings under a label are h5, styled like the h4s of a single version. */
+.whats-new-notes h5,
+.whats-new-page h5 {
+  --pico-color: var(--pico-h4-color);
+}
+
+.whats-new-version + .whats-new-version {
+  margin-top: 1.1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--pico-muted-border-color);
+}
+
+.whats-new-notes .whats-new-version-label,
+.whats-new-page .whats-new-version-label {
+  margin: 0 0 0.5rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--g-text-muted);
 }
 
 .whats-new-notes ul,

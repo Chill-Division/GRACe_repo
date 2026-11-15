@@ -188,7 +188,7 @@ Administration → **"Download backup"** is only for an extra, ad-hoc copy, for 
 
 # After an update
 
-The first time anyone opens GRACe after it updates, a **"What's new"** summary pops up, once for everyone. Long notes start folded: tap "Show more…" to read the lot, then "Got it" when you're done. Missed it, or want to read it again? Administration → **"What's new"** shows it any time.
+The first time anyone opens GRACe after it updates, a **"What's new"** summary pops up, once for everyone. If GRACe has moved up more than one version since anyone last looked, you get the notes for each, newest first. Long notes start folded: tap "Show more…" to read the lot, then "Got it" when you're done. Missed it, or want to read it again? Administration → **"What's new"** shows it any time.
 
 <img src="https://raw.githubusercontent.com/Chill-Division/GRACe_repo/main/docs/screenshots/desktop-whats-new.png" alt="The What's new pop-up after an update" width="900">
 
