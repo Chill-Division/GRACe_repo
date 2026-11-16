@@ -125,12 +125,18 @@ an update: `performMigrations()` in `init_db.php` runs on every request.
   in JS). A card on Tracking, Reporting or Administration has the same name
   as the page it opens, in its heading and browser tab.
   `tests/test_wording.php` checks all of this.
+- Home Assistant renamed add-ons to apps in 2026.2. Anything growers read
+  says app, and Settings → Apps for where to find it. Keep add-on for the
+  technical side growers never see: the add-on image, `config.yaml` and
+  the `grace_addon` folder and slug. Never change the slug: Home Assistant
+  would treat GRACe as a different app, cut off from every install's data.
+  `tests/test_wording.php` checks the grower side too.
 
 ## 6. The changelog
 
-`grace_addon/CHANGELOG.md` is read by growers in two places: Home
-Assistant's add-on changelog, and GRACe's own "What's new" pop-up, which
-shows the newest entry the first time anyone opens the updated add-on, along
+`grace_addon/CHANGELOG.md` is read by growers in two places: the app's
+changelog in Home Assistant, and GRACe's own "What's new" pop-up, which
+shows the newest entry the first time anyone opens the updated app, along
 with any earlier entries that install never showed (`whats_new_lib.php`).
 **The 1.2.0 entry is the standard.** Match its tone and layout:
 

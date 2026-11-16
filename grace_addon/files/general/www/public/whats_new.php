@@ -37,7 +37,7 @@ require 'header.php';
         <article class="form-card whats-new-page">
             <?php echo renderChangelogSections($notesShown); ?>
         </article>
-        <p><small>Notes for earlier versions are in the add-on's changelog in Home Assistant.</small></p>
+        <p><small>Notes for earlier versions are in GRACe's changelog in Home Assistant, under Settings → Apps.</small></p>
         <?php endif; ?>
     </main>
 

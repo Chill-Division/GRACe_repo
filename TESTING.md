@@ -235,6 +235,7 @@ The shell checks (PHP syntax and duplicate script tags) fail the run when they f
 *   **The brand guide's writing rules:** headings, buttons, labels, table headers and cards are in sentence case (names like GRACe, Form D and SOPs keep their capitals), form labels have no colon at the end, a licence is spelt the NZ way, on-screen text has no semicolons or long dashes, and pages say they're in NZ English (`lang="en-NZ"`), so browsers spell-check the NZ way.
 *   **Dates and numbers:** dates on screen are 26/11/2026 (the Dashboard, the licence banner and the document lists showed 2026-11-26 or 26-11-2026). Materials-out and stocktake totals have no stray ".00", the Dashboard says "1 plant", and number columns are marked, right-aligned and in tabular figures so they line up.
 *   **Where things live:** the menu says Tracking, All plants sits under Reporting (and the menu highlights Reporting on it), and Receive plants or take clones asks for the genetics before the number, in a card as wide as the recent entries under it, like Record dry weight change.
+*   **Home Assistant's own word:** Home Assistant renamed add-ons to apps in 2026.2, so on-screen text, the user guide, the grower half of the README and the repository's name say app (and Settings → Apps), apart from one sentence telling older versions what apps used to be called. The README's install steps start with the one-click link. "add-on" stays for the technical side growers never see, like the add-on image and the `grace_addon` slug.
 
 ## Demo / Development Helpers (not part of CI)
 

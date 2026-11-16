@@ -12,10 +12,12 @@ GRACe works the same on a PC, a tablet, or a phone through the Home Assistant ap
 
 # Installation
 
-- Install the add-on
+Home Assistant has called add-ons apps since 2026.2, so an older version says add-on wherever this guide says app.
+
+- Install the app
 - Select "Show in sidebar" for easier access
 - Ensure "Start on boot" is ticked, as well as "Auto update"
-- Tap "Start" to start the add-on
+- Tap "Start" to start the app
 - Tap "Open WebUI" to go to the GRACe Portal
 
 # First-run setup (about five minutes)
@@ -177,10 +179,10 @@ Changed your mind? Press **"Bring back"** next to it under Retired. Adding a ret
 
 # Backups
 
-Your ledger and every document you've uploaded live inside the GRACe add-on, so **Home Assistant's own backups are your backup plan**. They save everything, and they're what you'd restore from if your Home Assistant box ever died. Set them up once:
+Your ledger and every document you've uploaded live inside the GRACe app, so **Home Assistant's own backups are your backup plan**. They save everything, and they're what you'd restore from if your Home Assistant box ever died. Set them up once:
 
 1. In Home Assistant, go to **Settings → System → Backups**.
-2. Turn on **automatic backups** (daily is a good choice) and make sure the **GRACe Portal** add-on is included.
+2. Turn on **automatic backups** (daily is a good choice) and make sure the **GRACe Portal** app is included.
 3. Add at least one **off-site location**, such as Home Assistant Cloud, Google Drive, or a network share. A backup that only lives on the same box won't help if that box fails.
 4. Every so often, check that the latest backup finished.
 

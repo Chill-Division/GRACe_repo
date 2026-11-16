@@ -14,6 +14,8 @@
  * - One date style on screen, 26/11/2026, and totals without a stray ".00".
  * - Small things growers saw: "1 plant", the logo's minimum size, number
  *   columns that line up, and Tracking / Reporting holding the right pages.
+ * - Home Assistant's own word: growers read "app" (Settings → Apps), since
+ *   Home Assistant renamed add-ons to apps in 2026.2.
  */
 
 $publicDir = __DIR__ . '/../grace_addon/files/general/www/public';
@@ -228,6 +230,37 @@ check('...in a card as wide as the recent entries under it', strpos($receive, 'f
     && strpos($receive, 'entry-fields') !== false, true);
 check('Record dry weight change is laid out the same way', strpos(page('record_dry_weight.php'), 'form-card form-card--wide') !== false
     && strpos(page('record_dry_weight.php'), 'entry-fields--grid') !== false, true);
+
+// --- Home Assistant's own word ------------------------------------------------------
+// Home Assistant renamed add-ons to apps in 2026.2. Growers read "app" and
+// Settings → Apps. "add-on" stays for the technical side they never see (the
+// add-on image, config.yaml, the grace_addon slug), so code and comments are left out.
+$addOn = [];
+foreach ($pages as $file) {
+    $visible = preg_replace(['#<\?php.*?(\?>|\z)#s', '#<\?=.*?\?>#s', '#<script\b.*?</script>#s', '#<style\b.*?</style>#s', '#<[^>]*>#'], ' ', page($file));
+    if (preg_match('/\badd-?ons?\b/i', $visible)) {
+        $addOn[] = $file;
+    }
+}
+$readme = file_get_contents(__DIR__ . '/../README.md');
+$forGrowers = [
+    'grace_addon/DOCS.md' => file_get_contents(__DIR__ . '/../grace_addon/DOCS.md'),
+    'README.md' => strstr($readme, '## For developers', true) ?: $readme,
+    'repository.yaml' => file_get_contents(__DIR__ . '/../repository.yaml'),
+];
+foreach ($forGrowers as $name => $text) {
+    // Links can say addon (my.home-assistant.io kept its old link names), and
+    // one sentence for older versions says what apps used to be called
+    $text = preg_replace(['#https?://[^\s)]+#', '/[^.\n]*2026\.2[^.\n]*\./'], '', $text);
+    if (preg_match_all('/\badd-?ons?\b/i', $text, $m)) {
+        $addOn[] = "$name: " . implode(', ', array_unique($m[0]));
+    }
+}
+check('Growers read "app", Home Assistant\'s word since 2026.2, not "add-on"', $addOn, []);
+check('The install steps go to Settings -> Apps, with the one-click link',
+    strpos($readme, 'Settings -> Apps') !== false && strpos($readme, 'supervisor_add_addon_repository/?repository_url=') !== false, true);
+check('...and the user guide tells older versions what apps used to be called',
+    strpos($forGrowers['grace_addon/DOCS.md'], 'called add-ons apps since 2026.2') !== false, true);
 
 if ($failures > 0) {
     echo "[FAIL] Wording tests: $failures failure(s)\n";

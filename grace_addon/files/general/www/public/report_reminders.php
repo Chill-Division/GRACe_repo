@@ -60,7 +60,7 @@ require 'header.php';
         </hgroup>
 
         <?php if ($services === null): ?>
-        <div class="status-message error" role="alert">GRACe can't reach Home Assistant right now, so it can't list your devices or send reminders. Try again in a minute, or restart the add-on.</div>
+        <div class="status-message error" role="alert">GRACe can't reach Home Assistant right now, so it can't list your devices or send reminders. Try again in a minute, or restart GRACe under Settings → Apps in Home Assistant.</div>
         <?php endif; ?>
 
         <article class="form-card">

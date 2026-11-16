@@ -179,7 +179,7 @@ It refuses to change anything until `grace_addon/CHANGELOG.md` starts with
 and `GRACE_ASSET_VERSION`, and checks all four agree.
 
 The new `grace_addon/CHANGELOG.md` section is what growers see in the
-"What's new" pop-up the first time anyone opens the updated add-on, so write
+"What's new" pop-up the first time anyone opens the updated app, so write
 it for them, modelled on the 1.2.0 entry (AGENTS.md section 6 has the
 standard). To see the pop-up locally, seed with `--legacy` (it behaves like
 an upgraded install) and open any page. A normal seed behaves like a new
