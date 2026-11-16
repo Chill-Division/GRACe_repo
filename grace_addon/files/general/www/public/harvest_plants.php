@@ -8,13 +8,13 @@ $recent = recentPlantMoves($pdo);
 // Arrived from a plant manifest with "Then mark these plants as sent" on
 $fromManifest = isset($_GET['manifest']) ? plantManifestToMarkSent($pdo, $_GET['manifest']) : null;
 
-$pageTitle = 'GRACe - Harvest/Destroy/Send Plants';
+$pageTitle = 'GRACe - Harvest / Destroy / Send plants';
 require 'header.php';
 ?>
 
     <main class="container">
         <hgroup class="page-header">
-            <h1>Harvest / Destroy / Send Plants</h1>
+            <h1>Harvest / Destroy / Send plants</h1>
             <p>Select the plants below, choose an action, and process them in one go.</p>
         </hgroup>
 
@@ -34,35 +34,35 @@ require 'header.php';
 
         <div class="toolbar">
             <div>
-                <label for="action">Action:</label>
+                <label for="action">Action</label>
                 <select id="action" name="action" class="input" required>
                     <option value="harvest">Harvested - Drying</option>
                     <option value="destroy">Harvested - Destroyed</option>
-                    <option value="send">Send External</option>
+                    <option value="send">Send external</option>
                 </select>
             </div>
 
             <div id="companySelection" style="display: none;">
-                <label for="companyId">Company:</label>
+                <label for="companyId">Company</label>
                 <select id="companyId" name="companyId" class="input">
-                    <option value="" disabled selected>Select Company</option>
+                    <option value="" disabled selected>Choose a company</option>
                 </select>
             </div>
 
             <div>
-                <label for="quickSelectGenetics">Quick select:</label>
+                <label for="quickSelectGenetics">Quick select</label>
                 <select id="quickSelectGenetics" class="input">
                     <option value="" disabled selected>Genetics</option>
                 </select>
             </div>
 
             <div>
-                <label for="quickSelectCount">How many:</label>
+                <label for="quickSelectCount">How many</label>
                 <input type="number" id="quickSelectCount" class="input" min="1" step="1" style="width: 7rem;">
             </div>
 
             <div>
-                <label for="quickSelectOrder">Starting with:</label>
+                <label for="quickSelectOrder">Starting with</label>
                 <select id="quickSelectOrder" class="input">
                     <option value="oldest">Oldest first</option>
                     <option value="youngest">Youngest first</option>
@@ -78,8 +78,8 @@ require 'header.php';
                 <thead>
                     <tr>
                         <th><input type="checkbox" id="selectAllCheckbox" aria-label="Select all plants"></th>
-                        <th>Genetics Name</th>
-                        <th>Age (Days)</th>
+                        <th>Genetics</th>
+                        <th class="num">Age (days)</th>
                         <th>Status</th>
                     </tr>
                 </thead>
@@ -88,7 +88,7 @@ require 'header.php';
             </table>
         </figure>
 
-        <button type="button" class="button" id="processSelectedButton">Process Selected</button>
+        <button type="button" class="button" id="processSelectedButton">Process selected</button>
 
         <?php if ($recent): ?>
         <section class="recent-entries">
@@ -96,14 +96,14 @@ require 'header.php';
             <p class="recent-entries-note">Your last <?php echo GRACE_RECENT_ENTRIES; ?>, newest first, so you can check what you just did and spot anything entered twice.</p>
             <figure class="table-wrap">
                 <table class="wide-table">
-                    <thead><tr><th>When</th><th>Action</th><th>Genetics</th><th>Plants</th><th>Company</th></tr></thead>
+                    <thead><tr><th>When</th><th>Action</th><th>Genetics</th><th class="num">Plants</th><th>Company</th></tr></thead>
                     <tbody>
                         <?php foreach ($recent as $entry): ?>
                         <tr>
                             <td><?php echo htmlspecialchars(formatLedgerDateTime($entry['when'])); ?></td>
                             <td><?php echo plantStatusBadge($entry['status']); ?></td>
                             <td><?php echo htmlspecialchars($entry['genetics']); ?></td>
-                            <td><?php echo (int) $entry['count']; ?></td>
+                            <td class="num"><?php echo (int) $entry['count']; ?></td>
                             <td><?php echo htmlspecialchars($entry['company'] ?? ''); ?></td>
                         </tr>
                         <?php endforeach; ?>
@@ -153,6 +153,7 @@ require 'header.php';
 
                     const nameCell = row.insertCell();
                     const ageCell = row.insertCell();
+                    ageCell.className = 'num';
                     const statusCell = row.insertCell();
 
                     nameCell.textContent = plant.geneticsName;
@@ -311,7 +312,7 @@ require 'header.php';
             const actionLabels = {
                 harvest: 'Harvested - Drying',
                 destroy: 'Harvested - Destroyed',
-                send: 'Send External'
+                send: 'Send external'
             };
             let actionText = actionLabels[selectedAction] || selectedAction;
             if (selectedAction === 'send') {

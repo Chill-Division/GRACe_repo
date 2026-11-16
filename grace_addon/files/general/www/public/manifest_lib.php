@@ -7,6 +7,7 @@
  * - complete_manifest.php (list + complete In Progress manifests)
  * - handle_complete_manifest.php (attach CoC + close out)
  * - chain_of_custody_documents.php (exchange list)
+ * - process_shipping_manifest.php (the manifest PDF)
  */
 
 const MANIFEST_SELECT = "SELECT SM.*,
@@ -122,4 +123,126 @@ function plantManifestToMarkSent(PDO $pdo, $manifestId)
         'companyId' => (int) $row['company_id'],
         'companyName' => $row['company_name'],
     ];
+}
+
+
+/**
+ * The shipping manifest as a PDF (the file's bytes), in the Chill Division
+ * brand look (1.4.0): the logo top left, Inter and sentence case labels.
+ * Inter lives in TCPDF/fonts, cut down to Latin, macrons and punctuation
+ * (tests/build_pdf_fonts.php), so a name like Ōtaki Whānau Growers prints
+ * properly. TCPDF's own Helvetica has no macrons and printed
+ * "?taki Wh?nau Growers". Tested by tests/test_manifest_pdf.php.
+ *
+ * @param array $m id, sender and receiver (name, license, email, address),
+ *                 genetics (name), productType, quantity, prepared (Y-m-d H:i:s)
+ * @return string
+ */
+function renderShippingManifestPdf(array $m)
+{
+    if (!defined('K_PATH_CACHE')) {
+        // TCPDF deletes any image under its cache folder once a PDF is done,
+        // and that folder defaults to the whole temp folder. Whenever GRACe
+        // itself sits under /tmp (a dev copy, a test run) that took the logo
+        // with it, so TCPDF gets a folder of its own.
+        $cache = rtrim(sys_get_temp_dir(), '/') . '/grace-tcpdf/';
+        if (!is_dir($cache)) {
+            @mkdir($cache, 0700, true);
+        }
+        define('K_PATH_CACHE', $cache);
+    }
+    require_once __DIR__ . '/TCPDF/tcpdf.php';
+    require_once __DIR__ . '/format_lib.php';
+
+    $manifestId = (int) $m['id'];
+    $sender = $m['sender'];
+    $receiver = $m['receiver'];
+    $genetics = ['name' => $m['genetics']];
+    $productType = $m['productType'];
+    $quantity = $m['quantity'];
+    $datePrepared = $m['prepared'];
+
+    $pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+    $pdf->SetCreator('GRACe by Chill Division');
+    $pdf->SetAuthor('Chill Division');
+    $pdf->SetTitle('Shipping manifest');
+    $pdf->setPrintHeader(false);
+    $pdf->setPrintFooter(false);
+    // Inter everywhere, set before the first page, so TCPDF never loads its
+    // default Helvetica (no macrons) even for the page set-up
+    $pdf->setHeaderFont(['inter', '', 10]);
+    $pdf->setFooterFont(['inter', '', 8]);
+    $pdf->SetDefaultMonospacedFont('inter');
+    $pdf->SetFont('inter', '', 10);
+    $pdf->SetMargins(15, 15, 15);
+    $pdf->SetAutoPageBreak(true, 15);
+    $pdf->AddPage();
+    $pdf->SetTextColor(44, 44, 42);
+    // 12 mm tall: the brand guide's smallest logo in print is 10 mm
+    $pdf->Image(__DIR__ . '/icons/chill-division-logo-print.png', 15, 14, 0, 12, 'PNG');
+    $pdf->SetY(31);
+
+    $senderName = htmlspecialchars($sender['name'] ?? '');
+    $senderLicense = htmlspecialchars($sender['license'] ?? '');
+    $senderEmail = htmlspecialchars($sender['email'] ?? '');
+    $receiverName = htmlspecialchars($receiver['name'] ?? '');
+    $receiverLicense = htmlspecialchars($receiver['license'] ?? '');
+    $geneticsName = htmlspecialchars($genetics['name']);
+    $formattedAddress = nl2br(htmlspecialchars($receiver['address'] ?? ''));
+    $quantityLabel = $productType === 'flower' ? $quantity . ' g' : $quantity;
+    $productLabel = htmlspecialchars(ucfirst($productType));
+    $preparedLabel = htmlspecialchars(formatLedgerDateTime($datePrepared));
+    $blank = '________________________';
+
+    $htmlContent = <<<EOD
+    <style>
+        h1 { color: #0d0d0d; font-size: 18pt; font-weight: bold; }
+        h2 { color: #0d0d0d; font-size: 12pt; font-weight: bold; }
+        td { padding: 4px; }
+        .note { color: #64645f; font-size: 9pt; }
+    </style>
+
+    <h1>Universal shipping manifest</h1>
+    <br />
+    <h2>Sending party</h2>
+    <table cellpadding="4">
+        <tr><td width="42%"><strong>Manifest number:</strong></td><td width="58%">{$manifestId}</td></tr>
+        <tr><td><strong>Staff name preparing the shipment:</strong></td><td>{$blank}</td></tr>
+        <tr><td><strong>Sending company and licence number:</strong></td><td>{$senderName} / {$senderLicense}</td></tr>
+        <tr><td><strong>Arrival notification email:</strong></td><td>{$senderEmail}</td></tr>
+        <tr><td><strong>Date and time prepared:</strong></td><td>{$preparedLabel}</td></tr>
+        <tr><td><strong>Product type:</strong></td><td>{$productLabel}</td></tr>
+        <tr><td><strong>Genetics:</strong></td><td>{$geneticsName}</td></tr>
+        <tr><td><strong>Number of items sent:</strong></td><td>{$quantityLabel}</td></tr>
+        <tr><td><strong>Shipment weight (net / gross):</strong></td><td>{$blank}</td></tr>
+        <tr><td><strong>Recipient staff name:</strong></td><td>{$blank}</td></tr>
+        <tr><td><strong>Receiving company and licence number:</strong></td><td>{$receiverName} / {$receiverLicense}</td></tr>
+        <tr><td><strong>Destination address:</strong></td><td>{$formattedAddress}</td></tr>
+        <tr><td><strong>Staff signature:</strong></td><td>{$blank}</td></tr>
+    </table>
+
+    <h2>Transit chain of custody (if applicable)</h2>
+    <table cellpadding="4">
+        <tr><td width="42%"><strong>Collected from the facility by:</strong></td><td width="58%">{$blank}</td></tr>
+        <tr><td><strong>Date and time collected:</strong></td><td>____/____/______ ____:____</td></tr>
+        <tr><td><strong>Number of items collected:</strong></td><td>{$blank}</td></tr>
+        <tr><td><strong>Collection signature or tracking number:</strong></td><td>{$blank}</td></tr>
+    </table>
+
+    <h2>Receiving party</h2>
+    <table cellpadding="4">
+        <tr><td width="42%"><strong>Received by (staff name):</strong></td><td width="58%">{$blank}</td></tr>
+        <tr><td><strong>Date and time received:</strong></td><td>____/____/______ ____:____</td></tr>
+        <tr><td><strong>Number of items received:</strong></td><td>{$blank}</td></tr>
+        <tr><td><strong>Shipment weight (net / gross):</strong></td><td>{$blank}</td></tr>
+        <tr><td><strong>Signature of receiving party:</strong></td><td>{$blank}</td></tr>
+    </table>
+
+    <p class="note">Please scan or photograph this when the goods arrive and send a copy to <strong>{$senderEmail}</strong>.</p>
+    <p class="note">This manifest is recorded in GRACe as In Progress (manifest #{$manifestId}). Complete it there with the
+    signed chain of custody attached once the shipment is received.</p>
+    EOD;
+
+    $pdf->writeHTML($htmlContent, true, false, true, false, '');
+    return $pdf->Output('shipping_manifest.pdf', 'S');
 }

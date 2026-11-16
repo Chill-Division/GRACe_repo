@@ -6,6 +6,7 @@
  */
 
 require_once __DIR__ . '/flower_lib.php';
+require_once __DIR__ . '/format_lib.php';
 
 const GRACE_RECENT_ENTRIES = 10;
 
@@ -92,15 +93,6 @@ function recentFlowerEntries(PDO $pdo, $limit = GRACE_RECENT_ENTRIES)
     ], $stmt->fetchAll(PDO::FETCH_ASSOC));
 }
 
-/** '2026-09-23 10:32:05' (stored NZ time) -> '23/09/2026 10:32'; a date alone -> '05/05/2024' */
-function formatLedgerDateTime($value)
-{
-    $value = (string) $value;
-    if (preg_match('/^(\d{4})-(\d{2})-(\d{2})(?: (\d{2}):(\d{2}))?/', $value, $m)) {
-        return "$m[3]/$m[2]/$m[1]" . (isset($m[4]) ? " $m[4]:$m[5]" : '');
-    }
-    return $value;
-}
 
 /** A plant status as a coloured badge (HTML, escaped), matching statusBadge() in growcart.js. */
 function plantStatusBadge($status)

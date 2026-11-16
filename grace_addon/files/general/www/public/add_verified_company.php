@@ -1,5 +1,5 @@
 <?php
-$pageTitle = 'GRACe - Add Verified Company';
+$pageTitle = 'GRACe - Add verified company';
 require 'header.php';
 ?>
 
@@ -7,31 +7,31 @@ require 'header.php';
         <div id="statusMessage" class="status-message" style="display: none;"></div>
 
         <hgroup class="page-header">
-            <h1>Add Verified Company</h1>
+            <h1>Add verified company</h1>
             <p>Companies added here will show up as a destination in the forms for CoC / Testing. Already added? You can <a href="verified_companies.php">view and edit existing companies</a> instead.</p>
         </hgroup>
 
         <article class="form-card">
             <form id="addCompanyForm" class="form">
-                <label for="companyName">Company Name:</label>
+                <label for="companyName">Company name</label>
                 <input type="text" id="companyName" name="companyName" class="input" required>
 
-                <label for="licenseNumber">License #:</label>
+                <label for="licenseNumber">Licence number</label>
                 <input type="text" id="licenseNumber" name="licenseNumber" class="input" required>
 
-                <label for="address">Address:</label>
+                <label for="address">Address</label>
                 <textarea id="address" name="address" class="input" rows="3" required></textarea>
 
-                <label for="contactName">Primary Contact Name:</label>
+                <label for="contactName">Primary contact name</label>
                 <input type="text" id="contactName" name="contactName" class="input" required>
 
-                <label for="contactEmail">Primary Contact Email:</label>
+                <label for="contactEmail">Primary contact email</label>
                 <input type="email" id="contactEmail" name="contactEmail" class="input" required>
 
-                <label for="contactPhone">Primary Contact Phone:</label>
+                <label for="contactPhone">Primary contact phone</label>
                 <input type="tel" id="contactPhone" name="contactPhone" class="input" required>
 
-                <button type="submit" class="button">Add Company</button>
+                <button type="submit" class="button">Add company</button>
             </form>
         </article>
     </main>

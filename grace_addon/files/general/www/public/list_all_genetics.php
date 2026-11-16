@@ -1,22 +1,22 @@
 <?php
-$pageTitle = 'GRACe - List All Genetics';
+$pageTitle = 'GRACe - All plants';
 require 'header.php';
 ?>
 
     <main class="container">
         <hgroup class="page-header">
-            <h1>List All Genetics</h1>
-            <p>Current and historical plants: live, harvested, destroyed, and sent.</p>
+            <h1>All plants</h1>
+            <p>Every plant, current and past, with where it is now: growing, drying, harvested, destroyed or sent.</p>
         </hgroup>
 
         <div class="toolbar">
             <div>
-                <label for="statusFilter">Filter by Status:</label>
+                <label for="statusFilter">Show</label>
                 <select id="statusFilter" name="statusFilter" class="input">
-                    <option value="">All</option>
-                    <option value="Harvested-all">Harvested (All)</option>
+                    <option value="">All plants</option>
+                    <option value="Harvested-all">Harvested (all)</option>
                     <option value="Growing">Growing</option>
-                    <option value="Harvested">Harvested (Legacy)</option>
+                    <option value="Harvested">Harvested (legacy)</option>
                     <option value="Harvested - Drying">Harvested - Drying</option>
                     <option value="Harvested - Destroyed">Harvested - Destroyed</option>
                     <option value="Destroyed">Destroyed</option>
@@ -29,8 +29,8 @@ require 'header.php';
             <table id="geneticsListTable" class="table wide-table">
                 <thead>
                     <tr>
-                        <th>Genetics Name</th>
-                        <th>Age (Days)</th>
+                        <th>Genetics</th>
+                        <th class="num">Age (days)</th>
                         <th>Status</th>
                     </tr>
                 </thead>

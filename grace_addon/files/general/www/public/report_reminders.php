@@ -45,7 +45,7 @@ $known = $services !== null && in_array($chosen, array_column($services, 'servic
 $now = new DateTimeImmutable('now');
 $next = nextReportNotificationTime($now, getSetting($pdo, 'reportNotifyLastSent'));
 
-$pageTitle = 'GRACe - Report Reminders';
+$pageTitle = 'GRACe - Report reminders';
 require 'header.php';
 ?>
 
@@ -55,7 +55,7 @@ require 'header.php';
         <?php endif; ?>
 
         <hgroup class="page-header">
-            <h1>Report Reminders</h1>
+            <h1>Report reminders</h1>
             <p>Get a notification on your phone when a report is due to the Agency, as well as the banner on the Dashboard.</p>
         </hgroup>
 
@@ -73,7 +73,7 @@ require 'header.php';
                     <small>From 9am on the first weekday of each month, if last month's materials-out report is due, and in January the annual stocktake too. Never more than one a month, and none when there's nothing to report.</small>
                 </div>
 
-                <label for="service">Send to:</label>
+                <label for="service">Send to</label>
                 <select id="service" name="service" class="input"<?php echo empty($services) ? ' disabled' : ''; ?>>
                     <option value="" disabled<?php echo $known ? '' : ' selected'; ?>>Choose a device</option>
                     <?php foreach ($services ?? [] as $device): ?>

@@ -355,6 +355,28 @@ else
     FAILures=$((FAILures+1))
 fi
 
+# Run Manifest PDF Test
+echo ""
+echo "--- Manifest PDF Test ---"
+php tests/test_manifest_pdf.php
+if [ $? -eq 0 ]; then
+    echo -e "${GREEN}[PASS]${NC} Manifest PDFs are in Inter, with macrons and the logo"
+else
+    echo -e "${RED}[FAIL]${NC} Manifest PDF failed"
+    FAILures=$((FAILures+1))
+fi
+
+# Run Wording Test
+echo ""
+echo "--- Wording Test ---"
+php tests/test_wording.php
+if [ $? -eq 0 ]; then
+    echo -e "${GREEN}[PASS]${NC} Names, sentence case, NZ spelling, dates and totals are consistent"
+else
+    echo -e "${RED}[FAIL]${NC} Wording consistency failed"
+    FAILures=$((FAILures+1))
+fi
+
 # Run Dashboard Link Test
 echo ""
 echo "--- Dashboard Link Test ---"

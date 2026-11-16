@@ -10,6 +10,16 @@
  * the flower/plant transaction tables with totals.
  */
 
+/**
+ * The table's total in grams, written like its rows: 5628, or 5628.5 when
+ * there's a part gram. Rounds to 0.01 g first, so adding up 0.1s doesn't
+ * print 217.29999999999998 (1.4.0, it used to be 217.00 every time). The
+ * stat card above the table uses formatGrams(), like the Dashboard: 5,628.
+ */
+function formatReportGrams(grams) {
+    return String(Math.round(Number(grams) * 100) / 100);
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     const flowerTable = document.getElementById('flowerTransactionsTable');
     const plantTable = document.getElementById('plantTransactionsTable');
@@ -54,6 +64,7 @@ function initTransactionReport(endpoint, flowerTableElement, plantTableElement) 
                     const row = flowerTbody.insertRow();
                     const nameCell = row.insertCell();
                     const weightCell = row.insertCell();
+                    weightCell.className = 'num';
                     const dateCell = row.insertCell();
                     const companyCell = row.insertCell();
 
@@ -67,7 +78,9 @@ function initTransactionReport(endpoint, flowerTableElement, plantTableElement) 
                 const footerRow = flowerTbody.insertRow();
                 footerRow.style.fontWeight = 'bold';
                 footerRow.insertCell().textContent = 'Total';
-                footerRow.insertCell().textContent = flowerReportTotal.toFixed(2);
+                const flowerTotalCell = footerRow.insertCell();
+                flowerTotalCell.className = 'num';
+                flowerTotalCell.textContent = formatReportGrams(flowerReportTotal);
                 footerRow.insertCell(); // Date placeholder
                 footerRow.insertCell(); // Company placeholder
             }
@@ -84,6 +97,7 @@ function initTransactionReport(endpoint, flowerTableElement, plantTableElement) 
                     const row = plantTbody.insertRow();
                     const nameCell = row.insertCell();
                     const countCell = row.insertCell();
+                    countCell.className = 'num';
                     const dateCell = row.insertCell();
                     const companyCell = row.insertCell();
 
@@ -97,13 +111,15 @@ function initTransactionReport(endpoint, flowerTableElement, plantTableElement) 
                 const footerRow = plantTbody.insertRow();
                 footerRow.style.fontWeight = 'bold';
                 footerRow.insertCell().textContent = 'Total';
-                footerRow.insertCell().textContent = plantReportTotal;
+                const plantTotalCell = footerRow.insertCell();
+                plantTotalCell.className = 'num';
+                plantTotalCell.textContent = plantReportTotal;
                 footerRow.insertCell(); // Date placeholder
                 footerRow.insertCell(); // Company placeholder
             }
 
             if (totalWeightSentSpan) {
-                totalWeightSentSpan.textContent = totalWeight.toFixed(2);
+                totalWeightSentSpan.textContent = formatGrams(totalWeight);
             }
         })
         .catch(error => {

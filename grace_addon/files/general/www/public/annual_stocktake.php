@@ -15,7 +15,7 @@ try {
     error_log("Database error: " . $e->getMessage());
 }
 
-$pageTitle = 'GRACe - Annual Stocktake';
+$pageTitle = 'GRACe - Annual stocktake';
 require 'header.php';
 ?>
 
@@ -23,16 +23,16 @@ require 'header.php';
           data-company-name="<?php echo htmlspecialchars($companyName); ?>"
           data-company-license="<?php echo htmlspecialchars($companyLicense); ?>">
         <hgroup class="page-header">
-            <h1>Annual Stocktake</h1>
-            <p>This will generate a full in / out of plants / flower for you to stock-take, and reconcile against prior to sending details through to the Medicinal Cannabis Agency in January.</p>
+            <h1>Annual stocktake</h1>
+            <p>This will generate a full in / out of plants / flower for you to stocktake, and reconcile against prior to sending details through to the Medicinal Cannabis Agency in January.</p>
         </hgroup>
 
         <div class="toolbar">
             <div>
-                <label for="year">Select Year:</label>
+                <label for="year">Year</label>
                 <input type="number" id="year" name="year" class="input" value="<?php echo date('Y') - 1; ?>" min="2000" max="<?php echo date('Y'); ?>" required>
             </div>
-            <button type="button" class="button" id="generateReportButton">Generate Report</button>
+            <button type="button" class="button" id="generateReportButton">Show report</button>
             <label>
                 <input type="checkbox" id="hideZeroRowsCheckbox"> Hide rows with all zero values
             </label>
@@ -44,18 +44,18 @@ require 'header.php';
         </div>
 
         <section id="plantStocktakeSection" style="display: none;">
-            <h2>Plant Stocktake</h2>
+            <h2>Plant stocktake</h2>
             <figure class="table-wrap">
                 <table id="plantStocktakeTable" class="table wide-table">
                     <thead>
                         <tr>
-                            <th>Genetics Name</th>
-                            <th>Start Amount</th>
-                            <th>In</th>
-                            <th>Out</th>
-                            <th>Harvested</th>
-                            <th>Destroyed</th>
-                            <th>End</th>
+                            <th>Genetics</th>
+                            <th class="num">Start amount</th>
+                            <th class="num">In</th>
+                            <th class="num">Out</th>
+                            <th class="num">Harvested</th>
+                            <th class="num">Destroyed</th>
+                            <th class="num">End</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -65,17 +65,17 @@ require 'header.php';
         </section>
 
         <section id="flowerStocktakeSection" style="display: none;">
-            <h2>Flower Stocktake</h2>
+            <h2>Flower stocktake</h2>
             <figure class="table-wrap">
                 <table id="flowerStocktakeTable" class="table wide-table">
                     <thead>
                         <tr>
-                            <th>Genetics Name</th>
-                            <th>Start Weight (g)</th>
-                            <th>In (g)</th>
-                            <th>Out (g)</th>
-                            <th>Destroyed (g)</th>
-                            <th>End (g)</th>
+                            <th>Genetics</th>
+                            <th class="num">Start weight (g)</th>
+                            <th class="num">In (g)</th>
+                            <th class="num">Out (g)</th>
+                            <th class="num">Destroyed (g)</th>
+                            <th class="num">End (g)</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -145,6 +145,7 @@ require 'header.php';
                 Object.values(item).forEach((value, index) => {
                     const cell = row.insertCell();
                     cell.textContent = value;
+                    if (index > 0) cell.className = 'num';
 
                     // Add to total if index > 0 (assuming first column 'Genetics Name' is not numeric to sum)
                     if (index > 0) {
@@ -164,11 +165,11 @@ require 'header.php';
                     if (index === 0) {
                         cell.textContent = 'Totals';
                     } else {
-                        // Check if integer (plant counts) or float (weights).
-                        // Simplistic check: if rounded total equals total, show integer, else fixed(2)
-                        // Or safer: just fixed(2) for weight tables, but plant tables are ints.
-                        // Let's use simple logic: if sum % 1 === 0 show int, else fixed(2)
-                        cell.textContent = (total % 1 === 0) ? total : total.toFixed(2);
+                        // Written like the rows: 12, or 217.3 when there's a part gram.
+                        // Rounded to 0.01 first, so adding up 0.1s can't print
+                        // 217.29999999999998 (1.4.0, it used to show 217.30).
+                        cell.className = 'num';
+                        cell.textContent = String(Math.round(total * 100) / 100);
                     }
                 });
             }

@@ -23,7 +23,7 @@ if ($latestNotes !== null) {
     $released = whatsNewReleaseDate($latestNotes['date']);
 }
 
-$pageTitle = "GRACe - What's New";
+$pageTitle = "GRACe - What's new";
 require 'header.php';
 ?>
 

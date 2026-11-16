@@ -10,27 +10,34 @@ require 'header.php';
         </hgroup>
 
         <section class="hub-section">
-            <h2>Inventory Reports</h2>
+            <h2>Inventory reports</h2>
             <div class="card-grid">
                 <a class="nav-card" href="current_dried_flower.php">
                     <span class="nav-card-icon" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg></span>
                     <span class="nav-card-body">
-                        <strong>Current Dried Flower</strong>
+                        <strong>Current dried flower</strong>
                         <small>Total dried flower weight on hand, by genetics</small>
                     </span>
                 </a>
                 <a class="nav-card" href="current_plants.php">
                     <span class="nav-card-icon" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 20h10"/><path d="M10 20c5.5-2.5.8-6.4 3-10"/><path d="M9.5 9.4c1.1.8 1.8 2.2 2.3 3.7-2 .4-3.5.4-4.8-.3-1.2-.6-2.3-1.9-3-4.2 2.8-.5 4.4 0 5.5.8Z"/><path d="M14.1 6a7 7 0 0 0-1.1 4c1.9-.1 3.3-.6 4.3-1.4 1-1 1.6-2.3 1.7-4.6-2.7.1-4 1-4.9 2Z"/></svg></span>
                     <span class="nav-card-body">
-                        <strong>Current Plants</strong>
+                        <strong>Current plants</strong>
                         <small>Growing and drying plants on hand, by genetics</small>
+                    </span>
+                </a>
+                <a class="nav-card" href="list_all_genetics.php">
+                    <span class="nav-card-icon" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M12 11h4"/><path d="M12 16h4"/><path d="M8 11h.01"/><path d="M8 16h.01"/></svg></span>
+                    <span class="nav-card-body">
+                        <strong>All plants</strong>
+                        <small>Every plant, current and past, with where it is now</small>
                     </span>
                 </a>
             </div>
         </section>
 
         <section class="hub-section">
-            <h2>Transaction Reports</h2>
+            <h2>Transaction reports</h2>
             <p>These are pre-formatted and ready to send to the Agency.</p>
             <div class="card-grid">
                 <a class="nav-card" href="this_months_flower_transactions.php">

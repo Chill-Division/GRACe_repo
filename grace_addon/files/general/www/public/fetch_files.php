@@ -17,7 +17,7 @@ $files = $stmt->fetchAll(PDO::FETCH_ASSOC);
 foreach ($files as &$file) {
     if (isset($file['upload_date']) && $file['upload_date']) {
         $dateTime = new DateTime($file['upload_date'], new DateTimeZone('Pacific/Auckland'));
-        $file['upload_date'] = $dateTime->format('d-m-Y H:i');
+        $file['upload_date'] = $dateTime->format('d/m/Y H:i');
     }
 }
 

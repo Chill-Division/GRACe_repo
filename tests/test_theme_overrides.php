@@ -252,6 +252,7 @@ $pairs = [
     ['Field and tick box edges on the page', '--pico-form-element-border-color', '--g-bg', 3.0],
     ['Field and tick box edges on a raised panel', '--pico-form-element-border-color', '--g-surface-raised', 3.0],
     ['The edge of the field you are in', '--pico-form-element-active-border-color', '--g-surface', 3.0],
+    ['The version number in the menu bar', '--g-accent-text', '--g-surface', 4.5],
 ];
 foreach (['light', 'dark'] as $theme) {
     $tokens = themeTokens($grace, $theme);
@@ -265,6 +266,42 @@ foreach (['light', 'dark'] as $theme) {
         $ratio = contrastRatio($f, $b);
         check(sprintf('%s: %s is %.2f:1, at least %.1f:1', ucfirst($theme), $what, $ratio, $minimum), $ratio >= $minimum, true);
     }
+}
+
+// Small coloured text on its own tint (1.4.0): badges, the menu item you're
+// on, status messages and the licence banner. The tint is see-through, so
+// it's mixed with the card or page under it first. Before 1.4.0 the light
+// theme used the tints' own colours for the text: 2.8 to 4.4:1.
+$tinted = [
+    ['Green badges, the menu item you are on and success messages', '--g-accent-text', '--g-accent-soft'],
+    ['Amber badges', '--g-warning-text', '--g-warning-soft'],
+    ['Red badges, error messages and the licence banner', '--g-danger-text', '--g-danger-soft'],
+    ['Blue badges', '--g-info-text', '--g-info-soft'],
+];
+foreach (['light', 'dark'] as $theme) {
+    $tokens = themeTokens($grace, $theme);
+    foreach ($tinted as [$what, $front, $tint]) {
+        foreach (['--g-surface' => 'a card', '--g-bg' => 'the page'] as $base => $where) {
+            $f = tokenColour($tokens, $front);
+            $t = tokenColour($tokens, $tint);
+            $b = tokenColour($tokens, $base);
+            if ($f === null || $t === null || $b === null) {
+                check("$theme: $what ($front on $tint) are colours GRACe sets", false, true);
+                continue;
+            }
+            $a = $t[3];
+            $under = [$t[0] * $a + $b[0] * (1 - $a), $t[1] * $a + $b[1] * (1 - $a), $t[2] * $a + $b[2] * (1 - $a), 1.0];
+            $ratio = contrastRatio($f, $under);
+            check(sprintf('%s: %s, on their tint over %s, are %.2f:1, at least 4.5:1', ucfirst($theme), $what, $where, $ratio), $ratio >= 4.5, true);
+        }
+    }
+}
+$cssNoComments = preg_replace('#/\*.*?\*/#s', '', $grace);
+foreach (['.badge--growing' => '--g-accent-text', '.badge--drying' => '--g-warning-text', '.badge--destroyed' => '--g-danger-text',
+          '.badge--sent' => '--g-info-text', '.nav-menu li a.active' => '--g-accent-text', '.status-message.success' => '--g-accent-text',
+          '.status-message.error' => '--g-danger-text', '.nav-brand-sub small' => '--g-accent-text'] as $selector => $token) {
+    check("$selector uses $token for its text",
+        (bool) preg_match('/(^|\n)' . preg_quote($selector, '/') . '\s*\{[^}]*color:\s*var\(' . preg_quote($token, '/') . '\)/', $cssNoComments), true);
 }
 
 // The specificity counting itself

@@ -49,6 +49,11 @@
    so without it the light theme showed Pico's blue buttons and white page
    instead of these. With :root the two tie, and this file loads after Pico. */
 :root[data-theme="dark"] {
+  /* Small coloured text: the dark theme's own colours already read well */
+  --g-accent-text: var(--g-accent);
+  --g-danger-text: var(--g-danger);
+  --g-warning-text: var(--g-warning);
+  --g-info-text: var(--g-info);
   --g-bg: #0f1512;
   --g-surface: #161f1a;
   --g-surface-raised: #1c2620;
@@ -117,6 +122,12 @@
   --g-warning-soft: rgba(217, 119, 6, 0.12);
   --g-info: #2563eb;
   --g-info-soft: rgba(37, 99, 235, 0.08);
+  /* Small coloured text (badges, the menu, messages) on white or a tint:
+     the colours above are 2.8 to 4.4:1 there, these are 5.3:1 or more */
+  --g-accent-text: #166534;
+  --g-danger-text: #b91c1c;
+  --g-warning-text: #92400e;
+  --g-info-text: #1d4ed8;
   --g-header-bg: rgba(255, 255, 255, 0.85);
   --g-shadow: 0 1px 2px rgba(16, 24, 20, 0.06), 0 8px 24px rgba(16, 24, 20, 0.06);
 
@@ -259,7 +270,7 @@ header.app-header {
 
 .nav-brand-sub small {
   font-size: inherit;
-  color: var(--g-accent);
+  color: var(--g-accent-text);
 }
 
 /* "by Chill Division", the maker's logo beside the GRACe name */
@@ -277,10 +288,12 @@ header.app-header {
   color: var(--g-text-muted);
 }
 
+/* At least 34px tall, the brand guide's smallest logo on screen (the dots
+   on the i fill in below that). 1.9rem alone is 30px on a phone. */
 .nav-maker-logo {
   display: block;
   width: auto;
-  height: 1.9rem;
+  height: max(1.9rem, 34px);
 }
 
 /* The logo is a black wordmark: white on the dark theme */
@@ -325,7 +338,7 @@ header.app-header {
 }
 
 .nav-menu li a.active {
-  color: var(--g-accent);
+  color: var(--g-accent-text);
   background: var(--g-accent-soft);
 }
 
@@ -486,11 +499,11 @@ header.app-header {
 }
 
 .license-alert strong {
-  color: var(--g-danger);
+  color: var(--g-danger-text);
 }
 
 .license-alert a {
-  color: var(--g-danger);
+  color: var(--g-danger-text);
   font-weight: 600;
   text-decoration: underline;
 }
@@ -621,7 +634,7 @@ a.nav-card:focus {
   padding: 0.1rem 0.5rem;
   border-radius: 99px;
   background: var(--g-warning-soft);
-  color: var(--g-warning);
+  color: var(--g-warning-text);
   font-size: 0.7rem;
   font-weight: 600;
   text-transform: uppercase;
@@ -642,6 +655,67 @@ article {
 
 .form-card {
   max-width: 42rem;
+}
+
+/* Entry forms across the page (1.4.0): Receive plants or take clones and
+   Record dry weight change set their fields side by side, in a card as wide
+   as the "Recent entries" table under it, the way Harvest / Destroy / Send
+   lays out its controls. On a phone they stack, as before. */
+.form-card--wide {
+  max-width: none;
+}
+
+.entry-hint {
+  display: block;
+}
+
+@media (min-width: 768px) {
+  .entry-fields {
+    display: grid;
+    gap: 1rem;
+    align-items: end;
+  }
+
+  .entry-fields--inline {
+    grid-template-columns: minmax(0, 2fr) minmax(9rem, 1fr) auto;
+  }
+
+  .entry-fields--grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .entry-fields .field--wide {
+    grid-column: 1 / -1;
+  }
+
+  .entry-fields .field > :is(input, select, textarea) {
+    margin-bottom: 0;
+  }
+
+  .entry-fields > button[type="submit"],
+  .entry-actions > button[type="submit"] {
+    width: auto;
+    margin-bottom: 0;
+    padding-inline: 2rem;
+  }
+
+  .entry-hint:not(:empty) {
+    margin-top: 0.6rem;
+  }
+
+  .entry-actions {
+    margin-top: 1.25rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .entry-fields--grid {
+    grid-template-columns: minmax(0, 1.6fr) repeat(3, minmax(0, 1fr));
+  }
+
+  .entry-fields--grid .field--wide {
+    grid-column: span 2;
+  }
 }
 
 .form-card h2 {
@@ -800,27 +874,27 @@ textarea {
   line-height: 1.5;
   white-space: nowrap;
   background: var(--g-accent-soft);
-  color: var(--g-accent);
+  color: var(--g-accent-text);
 }
 
 .badge--growing {
   background: var(--g-accent-soft);
-  color: var(--g-accent);
+  color: var(--g-accent-text);
 }
 
 .badge--drying {
   background: var(--g-warning-soft);
-  color: var(--g-warning);
+  color: var(--g-warning-text);
 }
 
 .badge--destroyed {
   background: var(--g-danger-soft);
-  color: var(--g-danger);
+  color: var(--g-danger-text);
 }
 
 .badge--sent {
   background: var(--g-info-soft);
-  color: var(--g-info);
+  color: var(--g-info-text);
 }
 
 .badge--neutral {
@@ -843,13 +917,13 @@ textarea {
 .status-message.success {
   background: var(--g-accent-soft);
   border-color: var(--g-accent-strong);
-  color: var(--g-accent);
+  color: var(--g-accent-text);
 }
 
 .status-message.error {
   background: var(--g-danger-soft);
   border-color: var(--g-danger);
-  color: var(--g-danger);
+  color: var(--g-danger-text);
 }
 
 #selectionCounter {
@@ -1077,6 +1151,16 @@ textarea {
 .grace-modal .whats-new-notes p,
 .grace-modal .whats-new-notes li {
   color: var(--pico-color);
+}
+
+/* Number columns (1.4.0, from the brand guide): right-aligned with tabular
+   figures, so weights and counts line up by place value. Only cells marked
+   .num: Inter's tabular setting also widens hyphens, colons and full stops,
+   which spaced out dates and times when it was tried on whole tables. */
+th.num,
+td.num {
+  font-variant-numeric: tabular-nums;
+  text-align: right;
 }
 
 /* "Recent entries" under the entry forms (recent_lib.php) */

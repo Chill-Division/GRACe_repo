@@ -67,7 +67,7 @@ check('Re-saving unchanged values succeeds',
 // Uniqueness is enforced against OTHER companies only
 check('Taking another company\'s license number is blocked',
     updateVerifiedCompany($pdo, editInput(['licenseNumber' => 'MCA-200'])),
-    'Error: Another company already has that license number.');
+    'Error: Another company already has that licence number.');
 check('Taking another company\'s contact email is blocked',
     updateVerifiedCompany($pdo, editInput(['licenseNumber' => 'MCA-101', 'contactEmail' => 'bob@bravo.example'])),
     'Error: Another company already has that contact email.');

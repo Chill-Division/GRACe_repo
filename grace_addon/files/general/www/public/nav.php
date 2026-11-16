@@ -7,12 +7,12 @@ $navSections = [
         'pages' => ['dashboard'],
     ],
     'tracking.php' => [
-        'label' => 'Plant Tracking',
-        'pages' => ['tracking', 'list_all_genetics', 'receive_genetics', 'harvest_plants', 'record_dry_weight', 'generate_shipping_manifest', 'complete_manifest', 'manifest_summary'],
+        'label' => 'Tracking',
+        'pages' => ['tracking', 'receive_genetics', 'harvest_plants', 'record_dry_weight', 'generate_shipping_manifest', 'complete_manifest', 'manifest_summary'],
     ],
     'reporting.php' => [
         'label' => 'Reporting',
-        'pages' => ['reporting', 'current_dried_flower', 'current_plants', 'this_months_flower_transactions', 'last_months_flower_transactions', 'annual_stocktake'],
+        'pages' => ['reporting', 'current_dried_flower', 'current_plants', 'list_all_genetics', 'this_months_flower_transactions', 'last_months_flower_transactions', 'annual_stocktake'],
     ],
     'administration.php' => [
         'label' => 'Administration',
@@ -27,7 +27,7 @@ $navSections = [
                 </span>
                 <span class="nav-brand-text">
                     <strong>GRACe</strong>
-                    <span class="nav-brand-sub"><small>v1.3.1</small></span>
+                    <span class="nav-brand-sub"><small>v1.4.0</small></span>
                 </span>
                 <span class="nav-brand-maker">
                     <span class="nav-brand-by">by</span>
@@ -49,18 +49,20 @@ $navSections = [
         <?php
         require_once 'init_db.php';
         require_once 'license_alerts_lib.php';
+        require_once 'format_lib.php';
         try {
             $pdo_nav = initializeDatabase();
-            // Banner for licenses expiring within 72 hours (or expired) that
-            // haven't been acknowledged on the Company Licenses page
+            // Banner for licences expiring within 72 hours (or expired) that
+            // haven't been acknowledged on the Company licences page
             $expiringDocs = getUnacknowledgedExpiringLicenses($pdo_nav, 3);
 
             if ($expiringDocs) {
                 echo '<div class="license-alert" role="alert">';
                 foreach ($expiringDocs as $doc) {
                     $fName = htmlspecialchars($doc['original_filename']);
-                    $uDate = htmlspecialchars($doc['expiry_date']);
-                    echo "<div><strong>Alert:</strong> License '$fName' is expiring soon or expired (Date: $uDate). Please renew. <a href='company_licenses.php'>Go to Licenses</a></div>";
+                    $uDate = htmlspecialchars(formatLedgerDateTime($doc['expiry_date']));
+                    $expired = $doc['expiry_date'] < date('Y-m-d');
+                    echo '<div><strong>' . ($expired ? 'Licence expired.' : 'Licence renewal due.') . "</strong> '$fName' " . ($expired ? 'expired' : 'expires') . " on $uDate. <a href='company_licenses.php'>Go to company licences</a></div>";
                 }
                 echo '</div>';
             }

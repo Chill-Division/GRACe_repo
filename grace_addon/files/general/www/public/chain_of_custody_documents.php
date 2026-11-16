@@ -1,36 +1,37 @@
 <?php
 require_once 'init_db.php';
+require_once 'format_lib.php';
 require_once 'manifest_lib.php';
 
 $pdo = initializeDatabase();
 $manifests = fetchManifests($pdo);
 
-$pageTitle = 'GRACe - Chain of Custody Documents';
+$pageTitle = 'GRACe - Chain of custody documents';
 $useJquery = true;
 require 'header.php';
 ?>
 
     <main class="container">
         <hgroup class="page-header">
-            <h1>Chain of Custody Documents</h1>
+            <h1>Chain of custody documents</h1>
             <p>Store signed CoC paperwork for every transfer. Images over 1MB are compressed automatically.</p>
         </hgroup>
 
         <article class="form-card">
-            <h2>Upload New Custody Documents</h2>
+            <h2>Upload new custody documents</h2>
             <form id="uploadForm">
                 <input type="file" name="file" required>
                 <input type="hidden" name="category" value="coc">
                 <button type="submit">Upload</button>
             </form>
             <p><small>Uploads here are stored as standalone documents. To close out a manifest in transit,
-            attach its CoC on the <a href="complete_manifest.php">Complete Manifest</a> page. Documents
+            attach its CoC on the <a href="complete_manifest.php">Complete manifest</a> page. Documents
             uploaded here can be selected there too.</small></p>
         </article>
 
         <?php if ($manifests): ?>
         <section>
-            <h2>Shipment Exchanges</h2>
+            <h2>Shipment exchanges</h2>
             <figure class="table-wrap">
                 <table class="wide-table">
                     <thead>
@@ -47,7 +48,7 @@ require 'header.php';
                         <?php foreach ($manifests as $manifest): ?>
                         <tr>
                             <td><a href="manifest_summary.php?id=<?php echo (int) $manifest['id']; ?>"><?php echo (int) $manifest['id']; ?></a></td>
-                            <td><?php echo htmlspecialchars($manifest['shipment_date']); ?></td>
+                            <td><?php echo htmlspecialchars(formatLedgerDateTime($manifest['shipment_date'])); ?></td>
                             <td class="cell-long"><?php echo htmlspecialchars(manifestRouteLabel($manifest)); ?></td>
                             <td><?php echo htmlspecialchars(manifestShipmentLabel($manifest)); ?></td>
                             <td><?php echo manifestStatusBadge($manifest); ?></td>
@@ -67,11 +68,11 @@ require 'header.php';
         <?php endif; ?>
 
         <section>
-            <h2>Existing Custody Documents</h2>
+            <h2>Existing custody documents</h2>
             <div id="sortContainer">
-                <label>Sort by:</label>
+                <label>Sort by</label>
                 <select id="sortOrder">
-                    <option value="date_desc">Newest First</option>
+                    <option value="date_desc">Newest first</option>
                     <option value="name_asc">Name A-Z</option>
                 </select>
             </div>
@@ -79,8 +80,8 @@ require 'header.php';
                 <table>
                     <thead>
                         <tr>
-                            <th>File Name</th>
-                            <th>Upload Date</th>
+                            <th>File name</th>
+                            <th>Uploaded</th>
                             <th>Download</th>
                         </tr>
                     </thead>

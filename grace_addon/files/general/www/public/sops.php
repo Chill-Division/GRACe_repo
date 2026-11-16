@@ -1,17 +1,17 @@
 <?php
-$pageTitle = 'GRACe - Standard Operating Procedures (SOPs)';
+$pageTitle = 'GRACe - SOPs';
 $useJquery = true;
 require 'header.php';
 ?>
 
     <main class="container">
         <hgroup class="page-header">
-            <h1>Standard Operating Procedures (SOPs)</h1>
+            <h1>SOPs</h1>
             <p>Upload and keep your SOPs on file. Images over 1MB are compressed automatically.</p>
         </hgroup>
 
         <article class="form-card">
-            <h2>Upload New SOP</h2>
+            <h2>Upload a new SOP</h2>
             <form id="uploadForm">
                 <input type="file" name="file" required>
                 <input type="hidden" name="category" value="sops">
@@ -22,9 +22,9 @@ require 'header.php';
         <section>
             <h2>Existing SOPs</h2>
             <div id="sortContainer">
-                <label>Sort by:</label>
+                <label>Sort by</label>
                 <select id="sortOrder">
-                    <option value="date_desc">Newest First</option>
+                    <option value="date_desc">Newest first</option>
                     <option value="name_asc">Name A-Z</option>
                 </select>
             </div>
@@ -32,8 +32,8 @@ require 'header.php';
                 <table>
                     <thead>
                         <tr>
-                            <th>File Name</th>
-                            <th>Upload Date</th>
+                            <th>File name</th>
+                            <th>Uploaded</th>
                             <th>Download</th>
                         </tr>
                     </thead>

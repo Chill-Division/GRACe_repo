@@ -217,6 +217,34 @@ takes the two "What's new" shots last, marking the notes unseen for those
 only. Look through the new PNGs before committing them. To add a shot, add a
 line to `$shots` in the script and show the PNG in `grace_addon/DOCS.md`.
 
+The script marks the notes in `/data/grace.db`, the usual dev database. If
+yours is somewhere else, such as a scratch copy that keeps your real `/data`
+out of it, pass its path in WSL with `-Database /path/to/grace.db`.
+
+## The manifest PDF's fonts
+
+The shipping manifest PDF is set in Inter, from font files TCPDF makes:
+`TCPDF/fonts/inter.*` (regular) and `interb.*` (semibold), with Inter's licence
+beside them as `inter-OFL.txt`. They're cut down to plain Latin, macrons and
+common punctuation, about 25 KB each. To make them again, say for a newer
+Inter, start from Inter's static TTF files (from rsms.me/inter, not the WOFF2
+files the pages use) and Python's fontTools:
+
+```bash
+U="U+0020-007E,U+00A0-00FF,U+0100-017F,U+0180-024F,U+2010-2015,U+2018-201E,U+2022,U+2026,U+2032-2033,U+20AC,U+2122,U+2190-2193"
+pyftsubset Inter-Regular.ttf --unicodes="$U" --layout-features='' --no-hinting --desubroutinize --output-file=inter.ttf
+pyftsubset Inter-SemiBold.ttf --unicodes="$U" --layout-features='' --no-hinting --desubroutinize --output-file=interb.ttf
+php tests/build_pdf_fonts.php inter.ttf interb.ttf
+```
+
+Keep those file names: TCPDF names a font after its file, and
+`SetFont('inter')` then finds `inter.php` for plain text and `interb.php` for
+bold. `tests/test_manifest_pdf.php` checks a manifest prints macrons.
+
+The logo on the manifest, `icons/chill-division-logo-print.png`, is a grey PNG
+with no alpha channel. TCPDF reads those itself, while one with alpha needs GD
+or Imagick, which the add-on image doesn't have.
+
 ## Rules
 
 The rules every change must follow live in [AGENTS.md](AGENTS.md), where AI

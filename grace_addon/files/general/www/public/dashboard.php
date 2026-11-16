@@ -2,6 +2,7 @@
 require_once 'init_db.php';
 require_once 'report_reminders_lib.php';
 require_once 'license_alerts_lib.php';
+require_once 'format_lib.php';
 
 // All dashboard queries are read-only summaries of the ledger
 $dueReminders = [];
@@ -116,7 +117,7 @@ require 'header.php';
                 <span class="stat-label">Dried flower on hand</span>
             </a>
             <a class="stat-card stat-card--link" href="this_months_flower_transactions.php">
-                <span class="stat-value"><?php echo formatGrams($stats['sentThisMonthGrams']); ?> g<?php if ($stats['sentThisMonthPlants'] > 0): ?> + <?php echo $stats['sentThisMonthPlants']; ?> plants<?php endif; ?></span>
+                <span class="stat-value"><?php echo formatGrams($stats['sentThisMonthGrams']); ?> g<?php if ($stats['sentThisMonthPlants'] > 0): ?> + <?php echo $stats['sentThisMonthPlants'] . ($stats['sentThisMonthPlants'] == 1 ? ' plant' : ' plants'); ?><?php endif; ?></span>
                 <span class="stat-label">Materials out this month</span>
             </a>
             <a class="stat-card stat-card--link" href="complete_manifest.php">
@@ -127,13 +128,13 @@ require 'header.php';
 
         <?php if ($expiringLicenses): ?>
         <section class="hub-section">
-            <h2>License Renewals Due</h2>
+            <h2>Licence renewals due</h2>
             <figure class="table-wrap">
                 <table>
                     <thead>
                         <tr>
-                            <th>License</th>
-                            <th>Expiry Date</th>
+                            <th>Licence</th>
+                            <th>Expiry date</th>
                             <th></th>
                         </tr>
                     </thead>
@@ -141,7 +142,7 @@ require 'header.php';
                         <?php foreach ($expiringLicenses as $doc): ?>
                         <tr class="<?php echo $doc['expiry_date'] < date('Y-m-d') ? 'expiring' : ''; ?>">
                             <td><?php echo htmlspecialchars($doc['original_filename']); ?></td>
-                            <td><?php echo htmlspecialchars($doc['expiry_date']); ?></td>
+                            <td><?php echo htmlspecialchars(formatLedgerDateTime($doc['expiry_date'])); ?></td>
                             <td><a href="company_licenses.php">Manage</a></td>
                         </tr>
                         <?php endforeach; ?>
@@ -152,12 +153,12 @@ require 'header.php';
         <?php endif; ?>
 
         <section class="hub-section">
-            <h2>Quick Actions</h2>
+            <h2>Quick actions</h2>
             <div class="card-grid">
                 <a class="nav-card" href="receive_genetics.php">
                     <span class="nav-card-icon" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 20h10"/><path d="M10 20c5.5-2.5.8-6.4 3-10"/><path d="M9.5 9.4c1.1.8 1.8 2.2 2.3 3.7-2 .4-3.5.4-4.8-.3-1.2-.6-2.3-1.9-3-4.2 2.8-.5 4.4 0 5.5.8Z"/><path d="M14.1 6a7 7 0 0 0-1.1 4c1.9-.1 3.3-.6 4.3-1.4 1-1 1.6-2.3 1.7-4.6-2.7.1-4 1-4.9 2Z"/></svg></span>
                     <span class="nav-card-body">
-                        <strong>Receive plants / take clones</strong>
+                        <strong>Receive plants or take clones</strong>
                         <small>Add new plants to the ledger</small>
                     </span>
                 </a>
@@ -178,7 +179,7 @@ require 'header.php';
                 <a class="nav-card" href="generate_shipping_manifest.php">
                     <span class="nav-card-icon" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M15 18H9"/><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14"/><circle cx="17" cy="18" r="2"/><circle cx="7" cy="18" r="2"/></svg></span>
                     <span class="nav-card-body">
-                        <strong>Generate Shipping Manifest</strong>
+                        <strong>Generate shipping manifest</strong>
                         <small>Paperwork for outgoing product</small>
                     </span>
                 </a>

@@ -117,6 +117,14 @@ an update: `performMigrations()` in `init_db.php` runs on every request.
   read by growers, not developers. Keep it short and plain: say what changed
   for them and skip the technical detail.
 - Don't use em-dashes anywhere. Rephrase so the sentence doesn't need one.
+- On-screen text follows the Chill Division brand guide (1.4.0): sentence
+  case for headings, buttons, labels, table headers and cards (names keep
+  their capitals: GRACe, Form D, SOPs), New Zealand English (a licence, to
+  license), no semicolons, and no colon at the end of a form label. Dates
+  show as 26/11/2026 (`formatLedgerDateTime()` in PHP, `formatLedgerDate()`
+  in JS). A card on Tracking, Reporting or Administration has the same name
+  as the page it opens, in its heading and browser tab.
+  `tests/test_wording.php` checks all of this.
 
 ## 6. The changelog
 

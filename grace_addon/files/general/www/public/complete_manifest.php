@@ -1,5 +1,6 @@
 <?php
 require_once 'init_db.php';
+require_once 'format_lib.php';
 require_once 'manifest_lib.php';
 
 $pdo = initializeDatabase();
@@ -20,19 +21,19 @@ if (!$manifest) {
     $availableCocDocs = $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
-$pageTitle = 'GRACe - Complete Manifest';
+$pageTitle = 'GRACe - Complete manifest';
 require 'header.php';
 ?>
 
     <main class="container">
         <hgroup class="page-header">
-            <h1>Complete Manifest</h1>
-            <p>Attach the signed Chain of Custody and close out manifests in transit.</p>
+            <h1>Complete manifest</h1>
+            <p>Attach the signed chain of custody and close out manifests in transit.</p>
         </hgroup>
 
 <?php if (!$manifest): ?>
         <section>
-            <h2>Manifests Awaiting Completion</h2>
+            <h2>Manifests awaiting completion</h2>
             <?php if (!$pendingManifests): ?>
                 <article class="form-card"><p>No manifests are awaiting completion. <a href="generate_shipping_manifest.php">Generate a shipping manifest</a> to start one.</p></article>
             <?php else: ?>
@@ -51,7 +52,7 @@ require 'header.php';
                         <?php foreach ($pendingManifests as $row): ?>
                         <tr>
                             <td><?php echo (int) $row['id']; ?></td>
-                            <td><?php echo htmlspecialchars($row['shipment_date']); ?></td>
+                            <td><?php echo htmlspecialchars(formatLedgerDateTime($row['shipment_date'])); ?></td>
                             <td><?php echo htmlspecialchars($row['receiving_company_name']); ?></td>
                             <td><?php echo htmlspecialchars(manifestShipmentLabel($row)); ?></td>
                             <td>
@@ -76,7 +77,7 @@ require 'header.php';
             <figure class="table-wrap">
                 <table>
                     <tbody>
-                        <tr><td><strong>Prepared</strong></td><td><?php echo htmlspecialchars($manifest['shipment_date']); ?></td></tr>
+                        <tr><td><strong>Prepared</strong></td><td><?php echo htmlspecialchars(formatLedgerDateTime($manifest['shipment_date'])); ?></td></tr>
                         <tr><td><strong>Route</strong></td><td><?php echo htmlspecialchars(manifestRouteLabel($manifest)); ?></td></tr>
                         <tr><td><strong>Shipment</strong></td><td><?php echo htmlspecialchars(manifestShipmentLabel($manifest)); ?></td></tr>
                     </tbody>
@@ -86,28 +87,28 @@ require 'header.php';
         </article>
 
         <article class="form-card">
-            <h2>Attach Chain of Custody &amp; Complete</h2>
-            <p>A manifest cannot be completed without its signed Chain of Custody (photo or PDF).
+            <h2>Attach the chain of custody and complete</h2>
+            <p>A manifest cannot be completed without its signed chain of custody (photo or PDF).
                Images over 1MB are compressed automatically.</p>
             <form id="completeManifestForm">
                 <input type="hidden" name="manifest_id" value="<?php echo (int) $manifest['id']; ?>">
 
-                <label for="cocFile">Upload the signed Chain of Custody:</label>
+                <label for="cocFile">Upload the signed chain of custody</label>
                 <input type="file" id="cocFile" name="file" accept="image/*,.pdf">
 
                 <?php if (!empty($availableCocDocs)): ?>
-                <label for="existingDocId">…or attach one already uploaded on the Chain of Custody page:</label>
+                <label for="existingDocId">Or attach one already uploaded to Chain of custody documents</label>
                 <select id="existingDocId" name="existing_document_id">
                     <option value="">Select an uploaded document</option>
                     <?php foreach ($availableCocDocs as $doc): ?>
                     <option value="<?php echo (int) $doc['id']; ?>">
-                        <?php echo htmlspecialchars($doc['original_filename'] . ' (uploaded ' . $doc['upload_date'] . ')'); ?>
+                        <?php echo htmlspecialchars($doc['original_filename'] . ' (uploaded ' . formatLedgerDateTime($doc['upload_date']) . ')'); ?>
                     </option>
                     <?php endforeach; ?>
                 </select>
                 <?php endif; ?>
 
-                <button type="submit">Complete Manifest</button>
+                <button type="submit">Complete manifest</button>
             </form>
         </article>
 
@@ -124,7 +125,7 @@ require 'header.php';
                 const existingDocId = existingSelect ? existingSelect.value : '';
 
                 if (!file && !existingDocId) {
-                    showToast('Attach a Chain of Custody photo or PDF before completing the manifest.', 'error');
+                    showToast('Attach a chain of custody photo or PDF before completing the manifest.', 'error');
                     return;
                 }
                 if (file && existingDocId) {
@@ -134,8 +135,8 @@ require 'header.php';
 
                 const confirmed = await confirmAction({
                     title: 'Complete manifest #<?php echo (int) $manifest['id']; ?>?',
-                    message: 'The Chain of Custody will be attached and the manifest closed. This cannot be undone.',
-                    confirmLabel: 'Complete Manifest'
+                    message: 'The chain of custody will be attached and the manifest closed. This cannot be undone.',
+                    confirmLabel: 'Complete manifest'
                 });
                 if (!confirmed) return;
 
@@ -162,12 +163,12 @@ require 'header.php';
                     } else {
                         showToast(result.message || 'Failed to complete the manifest.', 'error');
                         submitButton.disabled = false;
-                        submitButton.textContent = 'Complete Manifest';
+                        submitButton.textContent = 'Complete manifest';
                     }
                 } catch (error) {
                     showToast('Error: ' + error.message, 'error');
                     submitButton.disabled = false;
-                    submitButton.textContent = 'Complete Manifest';
+                    submitButton.textContent = 'Complete manifest';
                 }
             });
         </script>

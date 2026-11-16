@@ -70,7 +70,7 @@ check('Another company\'s contact email is refused, as before',
 
 // --- Missing details -------------------------------------------------------------
 $labels = [
-    'companyName' => 'company name', 'licenseNumber' => 'license number', 'address' => 'address',
+    'companyName' => 'company name', 'licenseNumber' => 'licence number', 'address' => 'address',
     'contactName' => 'contact name', 'contactEmail' => 'contact email', 'contactPhone' => 'contact phone',
 ];
 foreach ($labels as $field => $label) {

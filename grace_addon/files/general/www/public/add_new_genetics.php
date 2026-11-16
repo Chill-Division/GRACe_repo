@@ -1,5 +1,5 @@
 <?php
-$pageTitle = 'GRACe - Add New Genetics';
+$pageTitle = 'GRACe - Add new genetics';
 require 'header.php';
 ?>
 
@@ -7,16 +7,16 @@ require 'header.php';
         <div id="statusMessage" class="status-message" style="display: none;"></div>
 
         <hgroup class="page-header">
-            <h1>Add New Genetics</h1>
+            <h1>Add new genetics</h1>
             <p>Prior to genetics being available to clone or receive, they need to be added into your system here.</p>
         </hgroup>
 
         <article class="form-card">
             <form id="addGeneticsForm" class="form" action="handle_add_new_genetics.php" method="post">
-                <label for="geneticsName">Genetics Name:</label>
+                <label for="geneticsName">Genetics name</label>
                 <input type="text" id="geneticsName" name="geneticsName" class="input" required>
 
-                <button type="submit" class="button">Add Genetics</button>
+                <button type="submit" class="button">Add genetics</button>
             </form>
         </article>
     </main>

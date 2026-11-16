@@ -12,9 +12,9 @@ try {
     if ($companyData) {
         $companyName = $companyData['company_name'];
         $companyLicense = $companyData['company_license_number'];
-        $pageTitle = "Current month's materials out for $companyName ($companyLicense)";
+        $pageTitle = "This month's materials out for $companyName ($companyLicense)";
     } else {
-        $pageTitle = "Current month's materials out"; // Fallback if no company data
+        $pageTitle = "This month's materials out"; // Fallback if no company data
     }
 
 } catch (PDOException $e) {
@@ -38,14 +38,14 @@ require 'header.php';
             <span class="stat-label">Total weight sent out</span>
         </div>
 
-        <h2>Flower Transactions</h2>
+        <h2>Flower transactions</h2>
         <figure class="table-wrap">
             <table id="flowerTransactionsTable" class="table wide-table">
                 <thead>
                     <tr>
-                        <th>Genetics Name</th>
-                        <th>Weight (grams)</th>
-                        <th>Transaction Date</th>
+                        <th>Genetics</th>
+                        <th class="num">Weight (g)</th>
+                        <th>Transaction date</th>
                         <th>Company</th>
                     </tr>
                 </thead>
@@ -54,14 +54,14 @@ require 'header.php';
             </table>
         </figure>
 
-        <h2>Plant Transactions</h2>
+        <h2>Plant transactions</h2>
         <figure class="table-wrap">
             <table id="plantTransactionsTable" class="table wide-table">
                 <thead>
                     <tr>
-                        <th>Genetics Name</th>
-                        <th># of Plants</th>
-                        <th>Transaction Date</th>
+                        <th>Genetics</th>
+                        <th class="num">Plants</th>
+                        <th>Transaction date</th>
                         <th>Company</th>
                     </tr>
                 </thead>

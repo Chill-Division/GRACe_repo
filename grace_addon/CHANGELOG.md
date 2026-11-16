@@ -1,8 +1,16 @@
-## [1.3.1] - 2026-11-16
+## [1.4.0] - 2026-11-16
+A tidy-up across GRACe: clearer names, easier forms, and manifests that print macrons properly.
+
+### Changes
+- "Plant Tracking" is now **Tracking**, and "List all plants" is now **All plants**, under Reporting.
+- Receive plants and Record dry weight change lay their fields out side by side on a PC, above your recent entries.
+- If you skipped an update, What's new now shows its notes too.
 
 ### Minor bug fixes and reliability improvements
 - Fixed UI inconsistencies and ensured accurate reproduction across both dark and light-theme viewing, for desktop, tablet and mobile.
 - Embedded fonts to ensure accurate reproduction of macrons and te reo Māori characters across all device types.
+- Shipping manifests print names with macrons properly, in the Chill Division look.
+- Totals no longer end in .00, dates read 26/11/2026 everywhere, and the Dashboard says "1 plant".
 
 ## [1.3.0] - 2026-10-11
 

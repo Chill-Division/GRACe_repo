@@ -34,13 +34,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['migrate'])) {
         $message = "Error during migration: " . $e->getMessage();
     }
 }
-$pageTitle = 'GRACe - Migrate Legacy Harvest Status';
+$pageTitle = 'GRACe - Migrate legacy harvest status';
 require 'header.php';
 ?>
 
     <main class="container">
         <hgroup class="page-header">
-            <h1>Migrate Legacy Harvest Status</h1>
+            <h1>Migrate legacy harvest status</h1>
             <p>This tool migrates all plants with the legacy status 'Harvested' to the new status 'Harvested - Destroyed'. Plants currently in 'Harvested - Drying' are not affected.</p>
         </hgroup>
 
@@ -51,12 +51,12 @@ require 'header.php';
         <?php endif; ?>
 
         <article class="form-card">
-            <header><strong>Migration Status</strong></header>
+            <header><strong>Migration status</strong></header>
             <p>Plants pending migration (Status: 'Harvested'): <strong><?php echo $countToMigrate; ?></strong></p>
             
             <?php if ($countToMigrate > 0): ?>
                 <form method="post">
-                    <button type="submit" name="migrate" class="contrast">Migrate All to 'Harvested - Destroyed'</button>
+                    <button type="submit" name="migrate" class="contrast">Migrate all to 'Harvested - Destroyed'</button>
                 </form>
             <?php else: ?>
                 <button disabled>No plants to migrate</button>

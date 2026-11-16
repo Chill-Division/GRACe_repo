@@ -1,11 +1,11 @@
 <?php
-$pageTitle = 'GRACe - Current Dried Flower';
+$pageTitle = 'GRACe - Current dried flower';
 require 'header.php';
 ?>
 
     <main class="container">
         <hgroup class="page-header">
-            <h1>Current Dried Flower</h1>
+            <h1>Current dried flower</h1>
             <p>Total dried flower weight on hand, by genetics.</p>
         </hgroup>
 
@@ -20,8 +20,8 @@ require 'header.php';
             <table id="driedFlowerTable" class="table">
                 <thead>
                     <tr>
-                        <th>Genetics Name</th>
-                        <th>Total Weight (grams)</th>
+                        <th>Genetics</th>
+                        <th class="num">Total weight (g)</th>
                     </tr>
                 </thead>
                 <tbody>
