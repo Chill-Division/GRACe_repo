@@ -2,7 +2,7 @@
 A tidy-up across GRACe: clearer names, easier forms, and manifests that print macrons properly.
 
 ### Changes
-- "Plant Tracking" is now **Tracking**, and "List all plants" is now **All plants**, under Reporting.
+- "Plant Tracking" is now "Tracking", and "List all plants" is now "All plants", under Reporting.
 - Receive plants and Record dry weight change lay their fields out side by side on a PC, above your recent entries.
 - If you skipped an update, What's new now shows its notes too.
 
