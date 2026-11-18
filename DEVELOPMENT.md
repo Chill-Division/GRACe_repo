@@ -38,8 +38,22 @@ Tips:
 
 - Test mobile/tablet layouts with your browser dev tools' device toolbar
   (the UI is responsive down to ~375px wide).
+- On a phone, a table with more columns than fit scrolls sideways. Give it
+  `class="wide-table"` so each value stays on one line instead of being
+  squeezed (a date broken over three lines), and give a cell with long text,
+  like an address, `class="cell-long"` so it wraps at a readable width.
+  Leave tables that fit a phone alone. `tests/test_phone_tables.php` lists
+  the tables that have it.
 - Both themes matter: use the sun/moon toggle in the nav. The choice persists
-  in `localStorage` under `grace-theme`.
+  in `localStorage` under `grace-theme`. Each theme's colours live in the
+  `:root[data-theme=...]` blocks at the top of `css/growcart.css`. Keep the
+  `:root`, or Pico's own light theme wins. `tests/test_theme_overrides.php`
+  checks that, and the contrast of the main colour pairs.
+- Text is Inter, the Chill Division font, served from `fonts/inter/` (the
+  same files as the Visitors add-on). It's free under the SIL Open Font
+  License, and `OFL.txt` has to stay with the files. Don't load fonts, or
+  anything else, from Google Fonts or a CDN: a Home Assistant box may have
+  no internet. `tests/test_fonts.php` checks both.
 - Assets are cache-busted by addon version (`?v=…`). If a CSS/JS change
   doesn't show up, hard-refresh (Ctrl+Shift+R).
 
@@ -165,11 +179,12 @@ It refuses to change anything until `grace_addon/CHANGELOG.md` starts with
 and `GRACE_ASSET_VERSION`, and checks all four agree.
 
 The new `grace_addon/CHANGELOG.md` section is what growers see in the
-"What's new" pop-up the first time anyone opens the updated add-on, so write
+"What's new" pop-up the first time anyone opens the updated app, so write
 it for them, modelled on the 1.2.0 entry (AGENTS.md section 6 has the
 standard). To see the pop-up locally, seed with `--legacy` (it behaves like
 an upgraded install) and open any page. A normal seed behaves like a new
-install, which never shows it.
+install, which never shows it. To see notes for skipped versions stack up,
+set `whatsNewSeenVersion` in the `Settings` table to an older version first.
 
 If the release changes how pages look, refresh the screenshots in
 `docs/screenshots/` too: the user guide and README use them, and every one
@@ -201,6 +216,34 @@ The script fills in the forms so the guide shows realistic entries, and it
 takes the two "What's new" shots last, marking the notes unseen for those
 only. Look through the new PNGs before committing them. To add a shot, add a
 line to `$shots` in the script and show the PNG in `grace_addon/DOCS.md`.
+
+The script marks the notes in `/data/grace.db`, the usual dev database. If
+yours is somewhere else, such as a scratch copy that keeps your real `/data`
+out of it, pass its path in WSL with `-Database /path/to/grace.db`.
+
+## The manifest PDF's fonts
+
+The shipping manifest PDF is set in Inter, from font files TCPDF makes:
+`TCPDF/fonts/inter.*` (regular) and `interb.*` (semibold), with Inter's licence
+beside them as `inter-OFL.txt`. They're cut down to plain Latin, macrons and
+common punctuation, about 25 KB each. To make them again, say for a newer
+Inter, start from Inter's static TTF files (from rsms.me/inter, not the WOFF2
+files the pages use) and Python's fontTools:
+
+```bash
+U="U+0020-007E,U+00A0-00FF,U+0100-017F,U+0180-024F,U+2010-2015,U+2018-201E,U+2022,U+2026,U+2032-2033,U+20AC,U+2122,U+2190-2193"
+pyftsubset Inter-Regular.ttf --unicodes="$U" --layout-features='' --no-hinting --desubroutinize --output-file=inter.ttf
+pyftsubset Inter-SemiBold.ttf --unicodes="$U" --layout-features='' --no-hinting --desubroutinize --output-file=interb.ttf
+php tests/build_pdf_fonts.php inter.ttf interb.ttf
+```
+
+Keep those file names: TCPDF names a font after its file, and
+`SetFont('inter')` then finds `inter.php` for plain text and `interb.php` for
+bold. `tests/test_manifest_pdf.php` checks a manifest prints macrons.
+
+The logo on the manifest, `icons/chill-division-logo-print.png`, is a grey PNG
+with no alpha channel. TCPDF reads those itself, while one with alpha needs GD
+or Imagick, which the add-on image doesn't have.
 
 ## Rules
 

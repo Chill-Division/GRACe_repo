@@ -29,6 +29,7 @@ function initDriedFlowerReport(tableElement) {
                 const row = tbody.insertRow();
                 const nameCell = row.insertCell();
                 const weightCell = row.insertCell();
+                weightCell.className = 'num';
 
                 nameCell.textContent = item.geneticsName;
                 weightCell.textContent = item.totalWeight;

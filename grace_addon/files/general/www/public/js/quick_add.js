@@ -116,7 +116,7 @@ function openQuickAddForm(options) {
                     ${fields}
                     <p class="quick-add-error" role="alert" hidden></p>
                     <footer>
-                        <button type="button" class="secondary" data-quick-add-cancel>Cancel</button>
+                        <button type="button" class="secondary outline" data-quick-add-cancel>Cancel</button>
                         <button type="submit">${escapeHtml(options.submitLabel)}</button>
                     </footer>
                 </form>
@@ -188,7 +188,7 @@ function enableQuickAddCompany(select, onSaved) {
         onSaved: onSaved,
         fields: [
             { name: 'companyName', label: 'Company name', type: 'text', required: true, autocomplete: 'organization' },
-            { name: 'licenseNumber', label: 'License #', type: 'text', required: true, autocomplete: 'off' },
+            { name: 'licenseNumber', label: 'Licence number', type: 'text', required: true, autocomplete: 'off' },
             { name: 'address', label: 'Address', type: 'textarea', required: true },
             { name: 'contactName', label: 'Primary contact name', type: 'text', required: true, autocomplete: 'off' },
             { name: 'contactEmail', label: 'Primary contact email', type: 'email', required: true, autocomplete: 'off' },

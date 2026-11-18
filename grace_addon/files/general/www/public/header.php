@@ -7,12 +7,12 @@
  *   $useJquery  - set true on pages that use the jQuery document manager
  */
 if (!defined('GRACE_ASSET_VERSION')) {
-    define('GRACE_ASSET_VERSION', '1.3.0');
+    define('GRACE_ASSET_VERSION', '1.4.0');
 }
 $pageTitle = $pageTitle ?? 'GRACe';
 ?>
 <!doctype html>
-<html lang="en" data-theme="light">
+<html lang="en-NZ" data-theme="light">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">

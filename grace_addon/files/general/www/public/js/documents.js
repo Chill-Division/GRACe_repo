@@ -65,12 +65,12 @@ function initDocumentManager(options) {
                                 }
                             }
                         }
-                        expiryCell = `<td>${file.expiry_date || '-'}</td>`;
+                        expiryCell = `<td>${file.expiry_date ? formatLedgerDate(file.expiry_date) : 'None'}</td>`;
 
                         // Acknowledgment Logic (Only if hasExpiry + hasAcknowledgment check)
                         if (hasAcknowledgment) {
                             let ackButton = showAck
-                                ? `<button class="secondary outline" onclick="acknowledgeAlert(${file.id})">Acknowledge Alert</button>`
+                                ? `<button class="secondary outline" onclick="acknowledgeAlert(${file.id})">Acknowledge</button>`
                                 : (isAck ? '<small>Acknowledged</small>' : '');
                             actionCell = `<td>${ackButton}</td>`;
                         }

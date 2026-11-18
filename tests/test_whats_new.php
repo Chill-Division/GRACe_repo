@@ -2,12 +2,14 @@
 /**
  * Regression tests for "What's new" (1.1.0), whats_new_lib.php.
  *
- * After an update, the first person to open GRACe sees the newest section of
+ * After an update, the first person to open GRACe sees the update notes from
  * grace_addon/CHANGELOG.md, once for the whole system (not once per browser).
  * - New installs never see it.
  * - Installs upgraded from a version that didn't have this feature still see
- *   the latest notes.
- * - Only the latest version is shown, never a backlog of skipped versions.
+ *   the latest notes, and only those.
+ * - An install that missed a version's notes (it skipped the version, or
+ *   nobody opened GRACe before the next update) sees them too, newest first
+ *   (1.3.1).
  */
 
 define('GRACE_TEST_MODE', true);
@@ -42,7 +44,7 @@ function freshDb()
     return [$path, initializeDatabase($path)];
 }
 
-foreach (['latestChangelogSection', 'renderChangelogMarkdown', 'recordWhatsNewBaseline', 'whatsNewPending', 'markWhatsNewSeen', 'whatsNewToShow'] as $function) {
+foreach (['changelogSections', 'latestChangelogSection', 'renderChangelogMarkdown', 'renderChangelogSections', 'whatsNewReleaseDate', 'recordWhatsNewBaseline', 'whatsNewPending', 'markWhatsNewSeen', 'unseenChangelogSections', 'whatsNewToShow'] as $function) {
     if (!function_exists($function)) {
         check("whats_new_lib.php provides $function()", false, true);
     }
@@ -77,6 +79,25 @@ check('Headings, lists and bold become HTML, and anything else is escaped', $htm
 check('A changelog with no versions in it gives nothing', latestChangelogSection("# Changelog\n\nNothing yet.\n"), null);
 check('An empty changelog gives nothing', latestChangelogSection(''), null);
 
+$all = changelogSections($sample);
+check('Every version is read, in the file\'s order', array_column($all, 'version'), ['1.2.0', '1.1.0']);
+check('...each with only its own lines', $all[1]['lines'] ?? null, ['- Something from the version before']);
+check('...and the first is the same as the latest section', $all[0] ?? null, $section);
+check('No versions means an empty list', changelogSections("# Changelog\n"), []);
+
+check('Release dates read the way growers write them', [whatsNewReleaseDate('2026-11-16'), whatsNewReleaseDate(null), whatsNewReleaseDate('soon')], ['16 November 2026', null, 'soon']);
+check('Several versions\' notes are labelled, newest first, with their headings one level down',
+    renderChangelogSections($all),
+    '<div class="whats-new-version"><h4 class="whats-new-version-label">GRACe 1.2.0, released 1 December 2026</h4>'
+    . '<p>A big one.</p>'
+    . '<h5>What&#039;s new</h5>'
+    . '<ul><li><strong>Bold thing</strong> does <code>code</code> &amp; &lt;b&gt;tags&lt;/b&gt;</li><li>Second thing</li></ul>'
+    . '<h5>Fixes</h5>'
+    . '<ul><li>A fix</li></ul></div>'
+    . '<div class="whats-new-version"><h4 class="whats-new-version-label">GRACe 1.1.0, released 24 September 2026</h4>'
+    . '<ul><li>Something from the version before</li></ul></div>');
+check('One version\'s notes look the same as before, with no label', renderChangelogSections([$section]), $html);
+
 // --- The real changelog -------------------------------------------------------------
 $real = latestChangelogSection();
 preg_match('/version: "([^"]+)"/', source($repoRoot, 'grace_addon/config.yaml'), $config);
@@ -85,6 +106,13 @@ check('Its newest section is the version in config.yaml', $real['version'] ?? nu
 $realHtml = renderChangelogMarkdown($real['lines'] ?? []);
 check('The real notes render with no markdown markers left over',
     $realHtml !== '' && strpos($realHtml, '**') === false && strpos($realHtml, '###') === false, true);
+$realVersions = array_column(changelogSections(), 'version');
+$newestFirst = $realVersions;
+usort($newestFirst, function ($a, $b) {
+    return version_compare($b, $a);
+});
+check('The real changelog lists its versions newest first, each once (missed notes are picked by version)',
+    [$realVersions, count(array_unique($realVersions))], [$newestFirst, count($realVersions)]);
 
 // --- New installs never see it ---------------------------------------------------------
 [$pathA, $pdo] = freshDb();
@@ -123,15 +151,44 @@ performMigrations($pdo);
 check('Plants in the ledger count as in use too, even without company details', whatsNewPending($pdo), true);
 @unlink($pathC);
 
-// --- Only the latest, never a backlog ------------------------------------------------------
+// --- Catching up on notes nobody saw ----------------------------------------------------------
+$three = "## [1.3.0] - 2026-12-10\n"
+    . "### Minor bug fixes and reliability improvements\n"
+    . "- Newest fix\n\n"
+    . $sample;
 [$pathD, $pdo] = freshDb();
 performMigrations($pdo);
-$pdo->exec("UPDATE Settings SET value = '1.0.0' WHERE name = 'whatsNewSeenVersion'");
-$shown = whatsNewToShow($pdo, $sample);
-check('After skipping versions, only the newest notes are shown',
-    [$shown['version'] ?? null, strpos($shown['html'] ?? '', 'version before')], ['1.2.0', false]);
-$pdo->exec("UPDATE Settings SET value = '9.9.9' WHERE name = 'whatsNewSeenVersion'");
-check('Going back to an older version shows nothing', whatsNewToShow($pdo, $sample), null);
+$setSeen = function ($value) use ($pdo) {
+    $pdo->prepare("UPDATE Settings SET value = ? WHERE name = 'whatsNewSeenVersion'")->execute([$value]);
+};
+
+$setSeen('1.2.0');
+$shown = whatsNewToShow($pdo, $three);
+check('Seen the version before: just the newest notes, with no label (as before 1.3.1)',
+    [$shown['version'] ?? null, $shown['html'] ?? null], ['1.3.0', renderChangelogMarkdown(latestChangelogSection($three)['lines'])]);
+
+$setSeen('1.1.0');
+$shown = whatsNewToShow($pdo, $three);
+$catchUp = $shown['html'] ?? '';
+check('Missed a version: its notes come too, after the newest',
+    [$shown['version'] ?? null, array_column(unseenChangelogSections($pdo, $three), 'version')], ['1.3.0', ['1.3.0', '1.2.0']]);
+check('...each under its own label, newest first',
+    strpos($catchUp, 'GRACe 1.3.0, released 10 December 2026') !== false
+    && strpos($catchUp, 'GRACe 1.3.0') < strpos($catchUp, 'GRACe 1.2.0, released 1 December 2026'), true);
+check('...and nothing from the version it had already seen', strpos($catchUp, 'version before'), false);
+
+$setSeen('1.0.0');
+check('Missed several: all of them, newest first',
+    array_column(unseenChangelogSections($pdo, $three), 'version'), ['1.3.0', '1.2.0', '1.1.0']);
+
+$setSeen('');
+check('An install from before What\'s new existed gets only the newest, not the whole history',
+    array_column(unseenChangelogSections($pdo, $three), 'version'), ['1.3.0']);
+
+$setSeen('1.3.0');
+check('Up to date: nothing to show', [unseenChangelogSections($pdo, $three), whatsNewToShow($pdo, $three)], [[], null]);
+$setSeen('9.9.9');
+check('Going back to an older version shows nothing', whatsNewToShow($pdo, $three), null);
 check('No readable changelog means no pop-up (and no error)', whatsNewToShow($pdo, ''), null);
 @unlink($pathD);
 
@@ -153,9 +210,10 @@ check('handle_whats_new.php only accepts POST and saves through markWhatsNewSeen
 check('The shared menu doesn\'t leak its loop variables into pages (it used to overwrite the What\'s new page\'s notes)',
     strpos(source($publicDir, 'nav.php'), 'unset($href, $section, $isActive)') !== false
     && strpos(source($publicDir, 'whats_new.php'), '$section') === false, true);
-check('Administration → What\'s new shows the notes on demand',
+check('Administration → What\'s new shows the notes on demand, including any nobody has seen yet',
     strpos(source($publicDir, 'administration.php'), 'href="whats_new.php"') !== false
-    && strpos(source($publicDir, 'whats_new.php'), 'renderChangelogMarkdown(') !== false, true);
+    && strpos(source($publicDir, 'whats_new.php'), 'renderChangelogSections(') !== false
+    && strpos(source($publicDir, 'whats_new.php'), 'unseenChangelogSections(') !== false, true);
 check('The add-on image includes the changelog where GRACe looks for it',
     strpos(source($repoRoot, 'grace_addon/Dockerfile'), 'COPY CHANGELOG.md /www/CHANGELOG.md') !== false
     && strpos(source($publicDir, 'whats_new_lib.php'), "__DIR__ . '/../CHANGELOG.md'") !== false, true);

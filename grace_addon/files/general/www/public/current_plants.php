@@ -1,11 +1,11 @@
 <?php
-$pageTitle = 'GRACe - Current Plants';
+$pageTitle = 'GRACe - Current plants';
 require 'header.php';
 ?>
 
     <main class="container">
         <hgroup class="page-header">
-            <h1>Current Plants</h1>
+            <h1>Current plants</h1>
             <p>Growing and drying plants on hand, by genetics.</p>
         </hgroup>
 
@@ -20,8 +20,8 @@ require 'header.php';
             <table id="plantsTable" class="table">
                 <thead>
                     <tr>
-                        <th>Genetics Name</th>
-                        <th>Number of Plants</th>
+                        <th>Genetics</th>
+                        <th class="num">Plants</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -42,6 +42,7 @@ require 'header.php';
                     const row = plantsTable.insertRow();
                     const nameCell = row.insertCell();
                     const countCell = row.insertCell();
+                    countCell.className = 'num';
 
                     nameCell.textContent = item.geneticsName;
                     countCell.textContent = item.plantCount;

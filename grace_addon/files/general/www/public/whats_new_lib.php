@@ -1,14 +1,17 @@
 <?php
 /**
  * "What's new" (1.1.0): after an update, the first person to open GRACe sees
- * the newest section of the changelog, once for the whole system. Tested by
+ * the update notes from the changelog, once for the whole system. Tested by
  * tests/test_whats_new.php.
  *
  * - New installs never see it: the first time this version runs on a
  *   database with nothing in it, it's marked as already seen.
- * - Installs that were already in use (including ones upgraded from versions
- *   without this feature) see the latest notes once.
- * - Only the newest version's notes are shown, never a backlog.
+ * - Installs that were already in use see the notes for every version
+ *   nobody on them has seen yet, newest first (1.3.1). So a version that
+ *   came and went while nobody opened GRACe, or one an update jumped past,
+ *   still gets its notes shown.
+ * - Installs upgraded from versions without this feature have no starting
+ *   point, so they see only the newest notes, not the whole history.
  *
  * The notes come straight from grace_addon/CHANGELOG.md, which the
  * Dockerfile copies to /www/CHANGELOG.md, so whatever the changelog says is
@@ -30,6 +33,48 @@ function whatsNewChangelogPath()
 }
 
 /**
+ * Every version's section of the changelog, in the file's order (newest
+ * first).
+ *
+ * @param string|null $markdown the changelog text; null reads GRACe's own
+ * @return array<int, array{version: string, date: string|null, lines: string[]}>
+ */
+function changelogSections($markdown = null)
+{
+    static $ownSections = null;
+    if ($markdown === null) {
+        if ($ownSections !== null) {
+            return $ownSections; // read once per page
+        }
+        $path = whatsNewChangelogPath();
+        $text = $path === null ? false : file_get_contents($path);
+        return $ownSections = ($text === false ? [] : changelogSections($text));
+    }
+
+    $sections = [];
+    foreach (preg_split('/\r\n|\r|\n/', (string) $markdown) as $line) {
+        if (preg_match('/^## \[([^\]]+)\](?:\s*-\s*(.+?))?\s*$/', $line, $m)) {
+            $sections[] = ['version' => trim($m[1]), 'date' => isset($m[2]) ? trim($m[2]) : null, 'lines' => []];
+            continue;
+        }
+        if ($sections) {
+            $sections[count($sections) - 1]['lines'][] = rtrim($line);
+        }
+    }
+    foreach (array_keys($sections) as $i) {
+        $lines = $sections[$i]['lines'];
+        while ($lines && end($lines) === '') {
+            array_pop($lines);
+        }
+        while ($lines && $lines[0] === '') {
+            array_shift($lines);
+        }
+        $sections[$i]['lines'] = $lines;
+    }
+    return $sections;
+}
+
+/**
  * The newest version's section of the changelog.
  *
  * @param string|null $markdown the changelog text; null reads GRACe's own
@@ -37,39 +82,8 @@ function whatsNewChangelogPath()
  */
 function latestChangelogSection($markdown = null)
 {
-    static $ownSection = false;
-    if ($markdown === null) {
-        if ($ownSection !== false) {
-            return $ownSection; // read once per page
-        }
-        $path = whatsNewChangelogPath();
-        $text = $path === null ? false : file_get_contents($path);
-        return $ownSection = ($text === false ? null : latestChangelogSection($text));
-    }
-
-    $section = null;
-    foreach (preg_split('/\r\n|\r|\n/', (string) $markdown) as $line) {
-        if (preg_match('/^## \[([^\]]+)\](?:\s*-\s*(.+?))?\s*$/', $line, $m)) {
-            if ($section !== null) {
-                break; // the version before: stop
-            }
-            $section = ['version' => trim($m[1]), 'date' => isset($m[2]) ? trim($m[2]) : null, 'lines' => []];
-            continue;
-        }
-        if ($section !== null) {
-            $section['lines'][] = rtrim($line);
-        }
-    }
-    if ($section === null) {
-        return null;
-    }
-    while ($section['lines'] && end($section['lines']) === '') {
-        array_pop($section['lines']);
-    }
-    while ($section['lines'] && $section['lines'][0] === '') {
-        array_shift($section['lines']);
-    }
-    return $section;
+    $sections = changelogSections($markdown);
+    return $sections ? $sections[0] : null;
 }
 
 /** The version GRACe is running: the newest heading in its changelog. */
@@ -82,9 +96,10 @@ function currentGraceVersion()
 /**
  * Turn changelog lines into HTML. Only what the changelog uses: "### "
  * headings, "- " bullets, **bold**, `code` and plain paragraphs. Everything
- * is escaped first.
+ * is escaped first. Headings are h4, or $headingTag when the notes sit under
+ * a version label (renderChangelogSections()).
  */
-function renderChangelogMarkdown(array $lines)
+function renderChangelogMarkdown(array $lines, $headingTag = 'h4')
 {
     $inline = function ($text) {
         $html = htmlspecialchars($text, ENT_QUOTES, 'UTF-8');
@@ -110,12 +125,49 @@ function renderChangelogMarkdown(array $lines)
             }
             $html .= '<li>' . $inline(trim($item[1])) . '</li>';
         } elseif (preg_match('/^#{1,6}\s+(.+)$/', trim($line), $heading)) {
-            $html .= '<h4>' . $inline($heading[1]) . '</h4>';
+            $html .= '<' . $headingTag . '>' . $inline($heading[1]) . '</' . $headingTag . '>';
         } else {
             $html .= '<p>' . $inline(trim($line)) . '</p>';
         }
     }
     return $html . ($inList ? '</ul>' : '');
+}
+
+/** A changelog date (YYYY-MM-DD) the way growers read it: "16 November 2026". */
+function whatsNewReleaseDate($date)
+{
+    if ($date === null || $date === '') {
+        return null;
+    }
+    $parsed = DateTimeImmutable::createFromFormat('!Y-m-d', $date);
+    return $parsed ? $parsed->format('j F Y') : $date;
+}
+
+/**
+ * Notes for one or more versions as HTML, newest first. One version renders
+ * just as renderChangelogMarkdown() does. With several, each starts with a
+ * "GRACe x.y.z, released ..." label, so it's clear which update brought what.
+ *
+ * @param array<int, array{version: string, date: string|null, lines: string[]}> $sections
+ */
+function renderChangelogSections(array $sections)
+{
+    if (count($sections) === 1) {
+        return renderChangelogMarkdown($sections[0]['lines']);
+    }
+    $html = '';
+    foreach ($sections as $notes) {
+        $label = 'GRACe ' . $notes['version'];
+        $released = whatsNewReleaseDate($notes['date']);
+        if ($released !== null) {
+            $label .= ', released ' . $released;
+        }
+        $html .= '<div class="whats-new-version">'
+            . '<h4 class="whats-new-version-label">' . htmlspecialchars($label, ENT_QUOTES, 'UTF-8') . '</h4>'
+            . renderChangelogMarkdown($notes['lines'], 'h5')
+            . '</div>';
+    }
+    return $html;
 }
 
 /**
@@ -173,20 +225,44 @@ function markWhatsNewSeen(PDO $pdo, $version)
 }
 
 /**
- * What the pop-up should show on this page, or null.
+ * The notes nobody on this system has seen yet: every version newer than the
+ * one it last saw, newest first. An install from before What's new existed
+ * has no starting point, so it gets only the newest.
+ *
+ * @param string|null $markdown the changelog text; null reads GRACe's own
+ * @return array<int, array{version: string, date: string|null, lines: string[]}>
+ */
+function unseenChangelogSections(PDO $pdo, $markdown = null)
+{
+    $sections = changelogSections($markdown);
+    if (!$sections || !whatsNewPending($pdo, $sections[0]['version'])) {
+        return [];
+    }
+    $seen = (string) getSetting($pdo, 'whatsNewSeenVersion');
+    if ($seen === '') {
+        return [$sections[0]];
+    }
+    return array_values(array_filter($sections, function ($notes) use ($seen) {
+        return version_compare($notes['version'], $seen, '>');
+    }));
+}
+
+/**
+ * What the pop-up should show on this page, or null. 'version' is the newest
+ * one shown, which is what closing the pop-up marks seen.
  *
  * @param string|null $markdown the changelog text; null reads GRACe's own
  * @return array{version: string, date: string|null, html: string}|null
  */
 function whatsNewToShow(PDO $pdo, $markdown = null)
 {
-    $section = latestChangelogSection($markdown);
-    if ($section === null || !whatsNewPending($pdo, $section['version'])) {
+    $unseen = unseenChangelogSections($pdo, $markdown);
+    if (!$unseen) {
         return null;
     }
     return [
-        'version' => $section['version'],
-        'date' => $section['date'],
-        'html' => renderChangelogMarkdown($section['lines']),
+        'version' => $unseen[0]['version'],
+        'date' => $unseen[0]['date'],
+        'html' => renderChangelogSections($unseen),
     ];
 }

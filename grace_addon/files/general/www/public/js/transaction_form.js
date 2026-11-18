@@ -2,7 +2,7 @@
  * transaction_form.js
  * 
  * Called from:
- * - record_dry_weight.php: To handle the "Record Flower Transaction" form.
+ * - record_dry_weight.php: To handle the "Record dry weight change" form.
  * 
  * Why:
  * Manages complex form logic including:
@@ -109,12 +109,12 @@ function initTransactionForm() {
         // Save current selection if possible, though options change
         const currentReason = reasonDropdown.value;
 
-        reasonDropdown.innerHTML = '<option value="" disabled selected>Select Reason</option>';
+        reasonDropdown.innerHTML = '<option value="" disabled selected>Choose a reason</option>';
         if (transactionTypeDropdown.value === 'Subtract') {
             reasonDropdown.innerHTML += `
                 <option value="Testing">Testing</option>
                 <option value="Destroy">Destroy</option>
-                <option value="Send external">Send External</option>
+                <option value="Send external">Send external</option>
                 <option value="Other">Other</option>
             `;
         } else {

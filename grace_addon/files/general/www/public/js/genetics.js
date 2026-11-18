@@ -3,7 +3,7 @@
  *
  * Called from:
  * - list_all_genetics.php: To display the list of all genetics with status filtering.
- * - receive_genetics.php: To handle the "Receive Genetics" form, including fetching genetics list and showing status messages.
+ * - receive_genetics.php: To handle the "Receive plants or take clones" form, including fetching genetics list and showing status messages.
  */
 
 // Function to list all genetics with status filter (from list_all_genetics.php)
@@ -35,7 +35,9 @@ function initGeneticsList() {
                 geneticsData.forEach(genetics => {
                     const row = tbody.insertRow();
                     row.insertCell().textContent = genetics.geneticsName;
-                    row.insertCell().textContent = genetics.age;
+                    const ageCell = row.insertCell();
+                    ageCell.className = 'num';
+                    ageCell.textContent = genetics.age;
 
                     const statusCell = row.insertCell();
                     if (typeof statusBadge === 'function') {

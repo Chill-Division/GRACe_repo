@@ -1,17 +1,17 @@
 <?php
-$pageTitle = 'GRACe - Police Vet Check Records';
+$pageTitle = 'GRACe - Police vet check records';
 $useJquery = true;
 require 'header.php';
 ?>
 
     <main class="container">
         <hgroup class="page-header">
-            <h1>Police Vet Check Records</h1>
+            <h1>Police vet check records</h1>
             <p>Store vetting records for staff and key personnel. Images over 1MB are compressed automatically.</p>
         </hgroup>
 
         <article class="form-card">
-            <h2>Upload New Record</h2>
+            <h2>Upload a new record</h2>
             <form id="uploadForm">
                 <input type="file" name="file" required>
                 <input type="hidden" name="category" value="other_records">
@@ -20,11 +20,11 @@ require 'header.php';
         </article>
 
         <section>
-            <h2>Existing Records</h2>
+            <h2>Existing records</h2>
             <div id="sortContainer">
-                <label>Sort by:</label>
+                <label>Sort by</label>
                 <select id="sortOrder">
-                    <option value="date_desc">Newest First</option>
+                    <option value="date_desc">Newest first</option>
                     <option value="name_asc">Name A-Z</option>
                 </select>
             </div>
@@ -32,8 +32,8 @@ require 'header.php';
                 <table>
                     <thead>
                         <tr>
-                            <th>File Name</th>
-                            <th>Upload Date</th>
+                            <th>File name</th>
+                            <th>Uploaded</th>
                             <th>Download</th>
                         </tr>
                     </thead>

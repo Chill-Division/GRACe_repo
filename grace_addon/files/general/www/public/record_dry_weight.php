@@ -8,7 +8,7 @@ $pdo = initializeDatabase();
 $limits = getEntryWarningLimits($pdo);
 $recent = recentFlowerEntries($pdo);
 
-$pageTitle = 'GRACe - Record Flower Transaction';
+$pageTitle = 'GRACe - Record dry weight change';
 require 'header.php';
 ?>
 
@@ -16,46 +16,52 @@ require 'header.php';
         <div id="statusMessage" class="status-message" style="display: none;"></div>
 
         <hgroup class="page-header">
-            <h1>Record Flower Transaction</h1>
+            <h1>Record dry weight change</h1>
             <p>If you are harvesting flower, receiving a sample, destroying, or sending off for testing, you can do it all from here.</p>
         </hgroup>
 
-        <article class="form-card">
+        <article class="form-card form-card--wide">
             <form id="recordFlowerTransactionForm" class="form" action="record_flower_transaction.php" method="post"
                   data-large-grams="<?php echo (int) $limits['grams']; ?>">
-                <label for="geneticsName">Genetics:</label>
-                <select id="geneticsName" name="geneticsName" class="input" required>
-                    <option value="" disabled selected>Select Genetics</option>
-                </select>
-                <small id="stockHint" aria-live="polite"></small>
-
-                <label for="weight">Weight (grams):</label>
-                <input type="number" id="weight" name="weight" class="input" min="0.1" step="0.1" inputmode="decimal" required>
-
-                <label for="transactionType">Transaction Type:</label>
-                <select id="transactionType" name="transactionType" class="input" required>
-                    <option value="Add">Add</option>
-                    <option value="Subtract">Subtract</option>
-                </select>
-
-                <label for="reason">Reason:</label>
-                <select id="reason" name="reason" class="input" required>
-                    <option value="" disabled selected>Select Reason</option>
-                </select>
-
-                <div id="companySelection" style="display: none;">
-                    <label for="companyId">Company:</label>
-                    <select id="companyId" name="companyId" class="input">
-                        <option value="" disabled selected>Select Company</option>
-                    </select>
+                <div class="entry-fields entry-fields--grid">
+                    <div class="field">
+                        <label for="geneticsName">Genetics</label>
+                        <select id="geneticsName" name="geneticsName" class="input" required>
+                            <option value="" disabled selected>Choose genetics</option>
+                        </select>
+                    </div>
+                    <div class="field">
+                        <label for="weight">Weight (g)</label>
+                        <input type="number" id="weight" name="weight" class="input" min="0.1" step="0.1" inputmode="decimal" required>
+                    </div>
+                    <div class="field">
+                        <label for="transactionType">Add or subtract</label>
+                        <select id="transactionType" name="transactionType" class="input" required>
+                            <option value="Add">Add</option>
+                            <option value="Subtract">Subtract</option>
+                        </select>
+                    </div>
+                    <div class="field">
+                        <label for="reason">Reason</label>
+                        <select id="reason" name="reason" class="input" required>
+                            <option value="" disabled selected>Choose a reason</option>
+                        </select>
+                    </div>
+                    <div id="companySelection" class="field field--wide" style="display: none;">
+                        <label for="companyId">Company</label>
+                        <select id="companyId" name="companyId" class="input">
+                            <option value="" disabled selected>Choose a company</option>
+                        </select>
+                    </div>
+                    <div id="otherReasonSection" class="field field--wide" style="display: none;">
+                        <label for="otherReason">Other reason</label>
+                        <textarea id="otherReason" name="otherReason" class="input" rows="2"></textarea>
+                    </div>
                 </div>
-
-                <div id="otherReasonSection" style="display: none;">
-                    <label for="otherReason">Other Reason:</label>
-                    <textarea id="otherReason" name="otherReason" class="input" rows="3"></textarea>
+                <small id="stockHint" class="entry-hint" aria-live="polite"></small>
+                <div class="entry-actions">
+                    <button type="submit" class="button">Record change</button>
                 </div>
-
-                <button type="submit" class="button">Record Transaction</button>
             </form>
         </article>
 
@@ -64,8 +70,8 @@ require 'header.php';
             <h2>Recent entries</h2>
             <p class="recent-entries-note">Your last <?php echo GRACE_RECENT_ENTRIES; ?>, newest first, so you can check what you just did and spot anything entered twice.</p>
             <figure class="table-wrap">
-                <table>
-                    <thead><tr><th>When</th><th>Genetics</th><th>In / out</th><th>Reason</th></tr></thead>
+                <table class="wide-table">
+                    <thead><tr><th>When</th><th>Genetics</th><th class="num">In / out</th><th>Reason</th></tr></thead>
                     <tbody>
                         <?php foreach ($recent as $entry):
                             $reason = $entry['reason'] . ($entry['company'] !== null ? ', ' . $entry['company'] : '')
@@ -74,8 +80,8 @@ require 'header.php';
                         <tr>
                             <td><?php echo htmlspecialchars(formatLedgerDateTime($entry['when'])); ?></td>
                             <td><?php echo htmlspecialchars($entry['genetics']); ?></td>
-                            <td><?php echo ($entry['grams'] < 0 ? '−' : '+') . htmlspecialchars(formatFlowerGrams(abs($entry['grams']))); ?> g</td>
-                            <td><?php echo htmlspecialchars($reason); ?></td>
+                            <td class="num"><?php echo ($entry['grams'] < 0 ? '−' : '+') . htmlspecialchars(formatFlowerGrams(abs($entry['grams']))); ?> g</td>
+                            <td class="cell-long"><?php echo htmlspecialchars($reason); ?></td>
                         </tr>
                         <?php endforeach; ?>
                     </tbody>

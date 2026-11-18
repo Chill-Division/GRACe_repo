@@ -1,6 +1,7 @@
 <?php
 require_once 'init_db.php';
 require_once 'genetics_lib.php';
+require_once 'format_lib.php';
 
 // Retire genetics (1.3.0): hide genetics from new entries, or bring them
 // back. Tested by tests/test_retire_genetics.php.
@@ -40,12 +41,12 @@ foreach ($pdo->query("SELECT id, name, retired_at FROM Genetics ORDER BY name AS
         $inUse[] = $genetics;
     } else {
         $retiredTime = strtotime($genetics['retired_at']);
-        $genetics['retiredOn'] = $retiredTime ? date('j M Y', $retiredTime) : $genetics['retired_at'];
+        $genetics['retiredOn'] = $retiredTime ? formatLedgerDateTime(date('Y-m-d', $retiredTime)) : $genetics['retired_at'];
         $retired[] = $genetics;
     }
 }
 
-$pageTitle = 'GRACe - Retire Genetics';
+$pageTitle = 'GRACe - Retire genetics';
 require 'header.php';
 ?>
 
@@ -55,7 +56,7 @@ require 'header.php';
         <?php endif; ?>
 
         <hgroup class="page-header">
-            <h1>Retire Genetics</h1>
+            <h1>Retire genetics</h1>
             <p>Retired genetics don't show when adding plants, recording flower or making a manifest, so a typo or a genetics you've stopped growing stays out of the way. Reports and history never change, and you can bring a genetics back at any time.</p>
         </hgroup>
 
@@ -73,7 +74,7 @@ require 'header.php';
                     </thead>
                     <tbody>
                         <?php if (!$inUse): ?>
-                        <tr><td colspan="3">No genetics in use. <a href="add_new_genetics.php">Add New Genetics</a></td></tr>
+                        <tr><td colspan="3">No genetics in use. <a href="add_new_genetics.php">Add new genetics</a></td></tr>
                         <?php endif; ?>
                         <?php foreach ($inUse as $genetics): ?>
                         <tr>

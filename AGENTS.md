@@ -70,9 +70,10 @@ an update: `performMigrations()` in `init_db.php` runs on every request.
   use relative URLs for links, assets and fetch calls, never paths that
   start with `/`.
 - No service worker or offline-first support. Users always reach GRACe over
-  their LAN through their Home Assistant server. Pico CSS and jQuery are
-  vendored (`css/vendor/`, `js/vendor/`) only because the Home Assistant
-  server itself may have no internet access.
+  their LAN through their Home Assistant server. Pico CSS, jQuery and the
+  Inter font are vendored (`css/vendor/`, `js/vendor/`, `fonts/inter/`) only
+  because the Home Assistant server itself may have no internet access.
+  Inter's licence (`fonts/inter/OFL.txt`) has to stay with its files.
 - The add-on image runs PHP 8.3 with only `pdo`, `pdo_sqlite` and `session`
   on top of PHP's core (see `grace_addon/Dockerfile`). Functions from other
   extensions, such as `ctype_digit()`, `mb_strtolower()` or `iconv()`, work
@@ -116,14 +117,28 @@ an update: `performMigrations()` in `init_db.php` runs on every request.
   read by growers, not developers. Keep it short and plain: say what changed
   for them and skip the technical detail.
 - Don't use em-dashes anywhere. Rephrase so the sentence doesn't need one.
+- On-screen text follows the Chill Division brand guide (1.4.0): sentence
+  case for headings, buttons, labels, table headers and cards (names keep
+  their capitals: GRACe, Form D, SOPs), New Zealand English (a licence, to
+  license), no semicolons, and no colon at the end of a form label. Dates
+  show as 26/11/2026 (`formatLedgerDateTime()` in PHP, `formatLedgerDate()`
+  in JS). A card on Tracking, Reporting or Administration has the same name
+  as the page it opens, in its heading and browser tab.
+  `tests/test_wording.php` checks all of this.
+- Home Assistant renamed add-ons to apps in 2026.2. Anything growers read
+  says app, and Settings → Apps for where to find it. Keep add-on for the
+  technical side growers never see: the add-on image, `config.yaml` and
+  the `grace_addon` folder and slug. Never change the slug: Home Assistant
+  would treat GRACe as a different app, cut off from every install's data.
+  `tests/test_wording.php` checks the grower side too.
 
 ## 6. The changelog
 
-`grace_addon/CHANGELOG.md` is read by growers in two places: Home
-Assistant's add-on changelog, and GRACe's own "What's new" pop-up, which
-shows the newest entry the first time anyone opens the updated add-on
-(`whats_new_lib.php`). **The 1.2.0 entry is the standard.** Match its tone
-and layout:
+`grace_addon/CHANGELOG.md` is read by growers in two places: the app's
+changelog in Home Assistant, and GRACe's own "What's new" pop-up, which
+shows the newest entry the first time anyone opens the updated app, along
+with any earlier entries that install never showed (`whats_new_lib.php`).
+**The 1.2.0 entry is the standard.** Match its tone and layout:
 
 - Heading `## [x.y.z] - YYYY-MM-DD`, newest entry at the top.
 - One plain sentence summing up the release. Leave it out when the entry
@@ -144,7 +159,8 @@ and layout:
 - Each release's notes go in its own entry, once. Don't repeat an earlier
   release's notes in a new entry (say a `### What's new in 1.2` section
   under 1.3.0): Home Assistant's update dialog shows the whole file, so
-  they'd appear twice. Old entries can be trimmed once they're a few
+  they'd appear twice, and What's new already brings along the earlier
+  notes an install missed. Old entries can be trimmed once they're a few
   releases old.
 - Write for growers: what changed for them, not how. No file names,
   functions or tables. Use neutral examples ("Joe's Farm"), never strain

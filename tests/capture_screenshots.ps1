@@ -18,11 +18,15 @@
          If PowerShell refuses to run scripts from the WSL folder, use:
            powershell -ExecutionPolicy Bypass -File .\tests\capture_screenshots.ps1
 
+    The dev server's database is /data/grace.db unless you say otherwise. If
+    yours lives elsewhere (a scratch copy, so your real /data is never
+    touched), pass its path in WSL as -Database /path/to/grace.db.
+
     Each shot loads a page, optionally fills in the form (so the guide shows
     real-looking entries), then saves a PNG. Desktop shots are 1280 px wide
     and as tall as the page (up to a limit); phone shots are a 390 x 844
     screen at 2x. The last two show the "What's new" pop-up: the script marks
-    the latest notes unseen in /data/grace.db for those, and marks them seen
+    the latest notes unseen in the dev database for those, and marks them seen
     again at the end, so every other shot is free of it.
 
     To add a shot, add a line to $shots and reference the PNG from
@@ -32,8 +36,13 @@ param(
     [string]$OutDir = (Join-Path $PSScriptRoot '..\docs\screenshots'),
     [string]$BaseUrl = 'http://127.0.0.1:8420',
     [string[]]$Only = @(),
-    [string]$Browser = ''
+    [string]$Browser = '',
+    # The dev server's database, as a path in WSL
+    [string]$Database = '/data/grace.db'
 )
+# "-Only a,b" arrives as one string when the script runs with powershell -File
+# (it used to save nothing): split it on the commas
+$Only = @($Only | ForEach-Object { $_ -split ',' } | ForEach-Object { $_.Trim() } | Where-Object { $_ })
 $ErrorActionPreference = 'Stop'
 
 # --- Find a browser --------------------------------------------------------------
@@ -59,14 +68,14 @@ $changelog = Join-Path $PSScriptRoot '..\grace_addon\CHANGELOG.md'
 $version = (Select-String -Path $changelog -Pattern '^## \[([^\]]+)\]' | Select-Object -First 1).Matches[0].Groups[1].Value
 
 # Mark What's new seen ($value = a version) or unseen ('pending') in the WSL
-# dev database. Runs PHP in WSL, which the dev setup already needs.
+# dev database (-Database). Runs PHP in WSL, which the dev setup already needs.
 function Set-WhatsNewMarker([string]$value) {
     $code = '$v = $argv[1] === ''pending'' ? '''' : $argv[1];' +
-            '$p = new PDO(''sqlite:/data/grace.db'');' +
+            '$p = new PDO(''sqlite:'' . $argv[2]);' +
             '$p->prepare(''UPDATE Settings SET value = ? WHERE name = ?'')->execute([$v, ''whatsNewSeenVersion'']);'
-    & wsl.exe -e php -r $code $value
+    & wsl.exe -e php -r $code $value $Database
     if ($LASTEXITCODE -ne 0) {
-        throw "Couldn't update the What's new marker in /data/grace.db through WSL."
+        throw "Couldn't update the What's new marker in $Database through WSL."
     }
 }
 
