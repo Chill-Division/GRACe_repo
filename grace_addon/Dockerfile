@@ -26,12 +26,6 @@ RUN apk -U upgrade && apk add --no-cache \
         echo "extension=session.so"; \
     } > /etc/php83/conf.d/21-session.ini
 
-#RUN mkdir -p /grace_config && \
-#    chown -R php:nginx /grace_config && \
-#    chmod -R 660 /grace_config && \
-#    touch /grace_config/grace.db && \
-#    chown php:nginx /grace_config/grace.db
-
 COPY files/general files/php83 /
 # The changelog, for the "What's new" pop-up after an update (whats_new_lib.php)
 COPY CHANGELOG.md /www/CHANGELOG.md
