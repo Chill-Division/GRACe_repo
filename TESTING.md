@@ -91,11 +91,11 @@ The shell checks (PHP syntax and duplicate script tags) fail the run when they f
 *   **Shown safely:** dates appear as stored (NZ time) as day/month/year hours:minutes, only the requested number of lines are listed, and the pages escape what they show.
 
 ### 13. What's New (`tests/test_whats_new.php`)
-*   **Reading the changelog:** the newest `## [x.y.z] - date` section of `grace_addon/CHANGELOG.md` is found (it must match `config.yaml`), stops where the previous version starts, and renders to HTML with headings, lists, bold and code, escaping everything else.
+*   **Reading the changelog:** every `## [x.y.z] - date` section of `grace_addon/CHANGELOG.md` is read in order, and the real file lists each version once, newest first (the newest must match `config.yaml`). Each section stops where the previous version starts and renders to HTML with headings, lists, bold and code, escaping everything else. Notes for several versions each get a "GRACe x.y.z, released ..." label, while one version's notes render exactly as before.
 *   **New installs never see it:** the first run on an empty database records the current version as seen, and setting up the company afterwards doesn't change that.
 *   **Upgrades see it once:** an install with company details or ledger entries from before What's new existed sees the latest notes. Once they're marked seen, nobody sees them again, on any device (it's stored in the `Settings` table as `whatsNewSeenVersion`). Only the current version can be marked seen.
-*   **Only the latest:** after skipped versions only the newest notes show, going back to an older version shows nothing, and a missing changelog shows nothing without an error.
-*   **Wiring:** the footer adds the pop-up (and its script) only when there's something to show, closing it posts to `handle_whats_new.php`, Administration → What's new shows the notes on demand, the Dockerfile copies `CHANGELOG.md` into the image, and `nav.php` doesn't leak its loop variables into pages.
+*   **Catching up:** an install that last saw the version before gets just the newest notes. One that missed a version (skipped it, or nobody opened GRACe before the next update) gets every version's notes it hasn't seen, newest first, and nothing it has. An install from before What's new existed gets only the newest. Going back to an older version shows nothing, and a missing changelog shows nothing without an error.
+*   **Wiring:** the footer adds the pop-up (and its script) only when there's something to show, closing it posts to `handle_whats_new.php`, Administration → What's new shows the notes on demand (including any nobody has seen yet), the Dockerfile copies `CHANGELOG.md` into the image, and `nav.php` doesn't leak its loop variables into pages.
 
 ### 14. Annual Stocktake Logic (`tests/test_annual_stocktake.php`)
 *   **Opening balance:** Plants that left stock in any earlier year (destroyed / sent / legacy-harvested) must not appear in a later year's Start Amount.
@@ -159,34 +159,52 @@ The shell checks (PHP syntax and duplicate script tags) fail the run when they f
 *   **Both themes:** it's a black wordmark on a transparent background, and the dark theme turns it white.
 *   **Room in the menu:** with the logo, the brand and all four menu items need about 890px on one line, so the menu folds into the hamburger below 960px (not 768px). Tablets in portrait, like iPads at 810-834px, get the folded menu instead of a squashed one.
 
-### 26. Dashboard Links (`tests/test_dashboard_links.php`)
-*   **Cards open their list:** "Plants growing" and "Plants drying" on the Dashboard open List all plants already filtered to Growing or Harvested - Drying, the same statuses the cards count, so the number on the card matches the list.
+### 26. Theme Colours (`tests/test_theme_overrides.php`)
+*   **GRACe's colours win:** the light and dark colours in `growcart.css` sit on top of Pico's own themes, so every rule there that sets Pico's colours for a theme has to be at least as specific as Pico's theme selectors, and `growcart.css` has to load after Pico so a tie goes to GRACe. Pico's light theme uses `:root:not([data-theme=dark])`, which beat the old bare `[data-theme="light"]`, so up to 1.3.0 the light theme showed Pico's blue buttons and links, a white page and Pico's focus rings. The theme blocks now start with `:root`.
+*   **Easy to read:** in both themes, text, muted text and links reach 4.5:1 on the page and on cards, as does the text on main buttons (normal and under the pointer) and on outline buttons. The edges of fields and tick boxes, and of the field you're in, reach 3:1, the brand guide's minimum for graphics. White on GRACe's brighter green (#16a34a) is only 3.3:1, which is why the main buttons use #15803d.
+*   **Small coloured text (1.4.0):** badges, the menu item you're on, the version number, success and error messages and the licence banner use their own text colours (`--g-accent-text`, `--g-warning-text`, `--g-danger-text`, `--g-info-text`), at least 4.5:1 on their see-through tint over a card or the page, in both themes. Up to 1.3.x the light theme used the tints' own colours for the text, 2.8 to 4.4:1.
+*   **The counting:** a small specificity counter checks the selectors (attributes and pseudo-classes count as classes, `:not()` as its argument, `:where()` as nothing), with known answers so a mistake in it shows up.
+
+### 27. Inter Font (`tests/test_fonts.php`)
+*   **Ships with the add-on:** GRACe's text is Inter, the Chill Division font, served from `fonts/inter/` so it works under ingress and on a Home Assistant box with no internet. Every `url()` in `growcart.css` is a relative path to a file in the add-on, and no page, script or stylesheet loads anything from another site, such as Google Fonts.
+*   **Its licence:** Inter is free under the SIL Open Font License 1.1, which has to travel with every copy of the fonts. `fonts/inter/OFL.txt` holds it, with the Inter Project Authors' copyright line.
+*   **Real fonts, every letter:** both files are WOFF2 fonts (not a saved error page) covering every weight, and between them they cover plain Latin and the letters with macrons (ā, ē, ī, ō, ū and capitals). Inter comes first in the font list.
+*   **The detectors:** the url() reader, the relative path check and the unicode-range reader have known answers, so a mistake in them shows up.
+
+### 28. Tables on a Phone (`tests/test_phone_tables.php`)
+*   **One value per line:** under 768px wide, a table marked `wide-table` keeps each value on one line and scrolls sideways, instead of squeezing every column down to its longest word (a date over three lines, a company's address down the screen a word at a time). Its headers can wrap. A `cell-long` cell (an address, a route, a reason) wraps at a readable width, and a row with one cell across the table ("Nothing to report") wraps as usual.
+*   **Only on phones:** the rules sit under `@media (max-width: 767.98px)`, so tablets and PCs lay tables out as before.
+*   **Which tables:** the monthly reports, the annual stocktake, both tables on Harvest / Destroy / Send, All plants, Verified companies, Complete manifest, the chain of custody shipment exchanges and Record dry weight change's recent entries, with their long cells marked. Tables that fit a phone, or nearly do, stay unmarked (the file lists, Receive plants' recent entries), so they don't start scrolling sideways.
+*   **The detectors:** the @media block finder, the rule splitter and the declaration reader have known answers, so a mistake in them shows up.
+
+### 29. Dashboard Links (`tests/test_dashboard_links.php`)
+*   **Cards open their list:** "Plants growing" and "Plants drying" on the Dashboard open All plants already filtered to Growing or Harvested - Drying, the same statuses the cards count, so the number on the card matches the list.
 *   **Only real filters:** the list page applies a status from the address only if it's one of its filter choices, and loads its script with the version tag so the change reaches browsers after an update.
 
-### 27. Marking Manifest Plants as Sent (`tests/test_manifest_mark_sent.php`)
+### 30. Marking Manifest Plants as Sent (`tests/test_manifest_mark_sent.php`)
 *   **Where the form goes:** a plant manifest from us to another company with "Then mark these plants as sent" on goes to Harvest / Destroy / Send; with it off, or for flower, plants coming in or between two other companies, it goes to the manifest as before.
 *   **What gets filled in:** only a plant manifest from us fills in its genetics, count and company; flower, incoming, unknown and non-numeric ids fill in nothing.
 *   **Nothing is saved early:** the plants are only ticked (drying plants first) and still have to be confirmed. Afterwards it returns to the manifest with `location.replace()`, so going Back can't reopen the ticked page.
 
-### 28. Report Reminders on a Phone (`tests/test_report_notify.php`)
+### 31. Report Reminders on a Phone (`tests/test_report_notify.php`)
 *   **When:** from 9am on the first weekday of the month (Monday when the 1st is a weekend), catching up within the Dashboard's first week if GRACe was off, and never twice in a month.
 *   **What:** off until switched on with a device chosen; nothing in a month with nothing to report, or once the report is sent or dismissed on the Dashboard; January names the materials-out report and the annual stocktake together; a failed send is tried again on the next check.
 *   **Settings:** only a device Home Assistant offers can be chosen, and reminders can't be switched on while Home Assistant can't be reached. Phones (the Home Assistant app) are listed first, without the catch-all services.
 *   **Home Assistant:** starts a stand-in for the Supervisor and checks the real requests: the notify service path, the add-on's token, the title and message, an unknown device, a refused device name, and Home Assistant being down.
 *   **Wiring:** `homeassistant_api: true` in `config.yaml`, the PHP command line in the image, the executable `report-reminders` service that runs the check every few minutes, the check refusing web requests, and the Administration card and menu.
 
-### 29. Asset Versions (`tests/test_asset_versions.php`)
+### 32. Asset Versions (`tests/test_asset_versions.php`)
 *   **Fresh after an update:** every local script and stylesheet a page loads carries the asset version (`?v=` and `GRACE_ASSET_VERSION`, which each release bumps), so browsers fetch the new copy instead of keeping an old one. Many page scripts used to load without it.
 *   **Set before use:** every page that uses it loads `header.php`, which sets it, first; `footer.php` copies it into `$assetVersion`.
 
-### 30. Retiring Genetics (`tests/test_retire_genetics.php`)
+### 33. Retiring Genetics (`tests/test_retire_genetics.php`)
 *   **Upgrading:** a 1.2 database gets the `retired_at` column in place, with every genetics in use and every plant and flower entry still linked to it. A second run changes nothing.
 *   **Only with nothing on site:** plants growing or drying, or flower on hand, stop it, and the message says what's there ("2 plants growing, 1 drying and 1,234.5 g of flower"). History alone doesn't, and neither do shipments already sent while their manifest is In Progress. A flower balance within 0.05 g of zero (hundredths from an older version) counts as none, so 0.1 g entries can always clear it.
-*   **Hidden from new entries:** Receive plants, Record dry weight change and Generate Shipping Manifest list only genetics in use, and receiving plants, recording flower and generating a manifest refuse a retired one, in case the form was opened before it was retired.
-*   **Reports never change:** the annual stocktake, Current Plants, the monthly report, recent entries and stock on hand are identical before and after retiring and bringing back. Only the genetics library, the database setup and the Retire genetics page know about `retired_at`.
+*   **Hidden from new entries:** Receive plants or take clones, Record dry weight change and Generate shipping manifest list only genetics in use, and receiving plants, recording flower and generating a manifest refuse a retired one, in case the form was opened before it was retired.
+*   **Reports never change:** the annual stocktake, Current plants, the monthly report, recent entries and stock on hand are identical before and after retiring and bringing back. Only the genetics library, the database setup and the Retire genetics page know about `retired_at`.
 *   **Bring back:** "Bring back" undoes it, and adding a retired genetics' name again (any capitals or spaces) brings it back instead of making a second one.
 
-### 31. Static Code Analysis (`tests/static_checks.sh`)
+### 34. Static Code Analysis (`tests/static_checks.sh`)
 *   **Critical Paths:**
     *   Verifies Database path is `/data/grace.db`
     *   Verifies Upload path is `/data/uploads/`
@@ -196,22 +214,36 @@ The shell checks (PHP syntax and duplicate script tags) fail the run when they f
 *   **Duplicates:** Scans for duplicate `<script src="...">` tags in PHP files (prevent redeclaration errors).
 *   **PHP extensions:** Fails on `ctype_*` or `mb_*` functions. The add-on image only loads `pdo`, `pdo_sqlite` and `session` on top of PHP's core, so they would crash in production even though they work on a dev PC.
 
-### 32. Version Consistency (`tests/test_version_consistency.php`)
+### 35. Version Consistency (`tests/test_version_consistency.php`)
 *   **Why:** Ensures the version number is identical across:
     *   `config.yaml` (Home Assistant)
     *   `nav.php` (UI Display)
     *   `CHANGELOG.md` (Release Notes)
 *   **Release helper** (`tests/test_bump_version.php`): `tests/bump_version.php x.y.z` refuses a bad or older version and changes nothing until the changelog has the new entry; then it sets the version everywhere, and running it again changes nothing.
 
-### 33. PHP Syntax Check (`tests/syntax_check.sh`)
+### 36. PHP Syntax Check (`tests/syntax_check.sh`)
 *   **Linting:** Runs `php -l` on all PHP files in `grace_addon/files/general/www/public/` to catch syntax errors before runtime.
+
+### 37. Shipping Manifest PDF (`tests/test_manifest_pdf.php`)
+*   **Macrons print:** a manifest for "Ōtaki Whānau Growers Ltd" at "12 Māori Road" has every piece of text drawn in Inter, embedded in the PDF, with the macrons in place. Up to 1.3.x it used TCPDF's Helvetica, which has no macrons, and printed "?taki Wh?nau Growers". TCPDF always lists Helvetica as a resource, so the test follows which font draws each piece of text, not which fonts are listed.
+*   **The brand look:** the Chill Division logo is on it, dates are day/month/year, and a manifest with plain names still builds.
+*   **The files:** `TCPDF/fonts` holds Inter regular and semibold (`inter.*`, `interb.*`, made by `tests/build_pdf_fonts.php`) with Inter's licence (`inter-OFL.txt`). The print logo is a PNG with no alpha channel, because TCPDF needs GD or Imagick for one with alpha and the add-on image has neither.
+*   **TCPDF's cache:** TCPDF deletes images in its cache folder when it's done, and that defaulted to the whole temp folder, so a copy of GRACe under `/tmp` lost its logo. GRACe gives TCPDF a folder of its own, and the test checks the logo is still there afterwards.
+
+### 38. Wording and Consistency (`tests/test_wording.php`)
+*   **Same name everywhere:** each card on Tracking, Reporting and Administration opens a page with that name as its heading and in the browser tab (1.3.x had "Record dry weight change" open "Record Flower Transaction", and five more like it).
+*   **The brand guide's writing rules:** headings, buttons, labels, table headers and cards are in sentence case (names like GRACe, Form D and SOPs keep their capitals), form labels have no colon at the end, a licence is spelt the NZ way, on-screen text has no semicolons or long dashes, and pages say they're in NZ English (`lang="en-NZ"`), so browsers spell-check the NZ way.
+*   **Dates and numbers:** dates on screen are 26/11/2026 (the Dashboard, the licence banner and the document lists showed 2026-11-26 or 26-11-2026). Materials-out and stocktake totals have no stray ".00", the Dashboard says "1 plant", and number columns are marked, right-aligned and in tabular figures so they line up.
+*   **Where things live:** the menu says Tracking, All plants sits under Reporting (and the menu highlights Reporting on it), and Receive plants or take clones asks for the genetics before the number, in a card as wide as the recent entries under it, like Record dry weight change.
+*   **Home Assistant's own word:** Home Assistant renamed add-ons to apps in 2026.2, so on-screen text, the user guide, the grower half of the README and the repository's name say app (and Settings → Apps), apart from one sentence telling older versions what apps used to be called. The README's install steps start with the one-click link. "add-on" stays for the technical side growers never see, like the add-on image and the `grace_addon` slug.
 
 ## Demo / Development Helpers (not part of CI)
 
 *   `tests/seed_demo_data.php [--force] [--legacy]` fills a dev database with realistic content (plants, ledger entries, companies, documents, manifests, and a retired genetics). `--legacy` shapes it like a 1.0.x install (old Genetics columns, UTC times) so you can watch the 1.1 upgrade run on the next page load. See DEVELOPMENT.md.
 *   `tests/demo_report_reminders.php [from] [to]` replays the dashboard reminder decisions for any date range against the dev database.
 *   `tests/ha_standin.php` stands in for Home Assistant's API so Administration → Report reminders can be tried on a dev machine. See "Trying report reminders" in DEVELOPMENT.md.
-*   `tests/capture_screenshots.ps1 [-Only name,name]` (Windows, headless Edge) retakes the screenshots in `docs/screenshots/` from the dev server, including the "What's new" pop-up. See "Refresh the screenshots" in DEVELOPMENT.md.
+*   `tests/capture_screenshots.ps1 [-Only name,name] [-Database path]` (Windows, headless Edge) retakes the screenshots in `docs/screenshots/` from the dev server, including the "What's new" pop-up. `-Database` is the dev server's database in WSL, `/data/grace.db` unless you say otherwise. See "Refresh the screenshots" in DEVELOPMENT.md.
+*   `tests/build_pdf_fonts.php inter.ttf interb.ttf` turns Inter into the font files TCPDF uses for the manifest PDF. See "The manifest PDF's fonts" in DEVELOPMENT.md.
 *   `tests/bump_version.php x.y.z` sets the version in `config.yaml`, `nav.php` and `GRACE_ASSET_VERSION` once the changelog entry is written. See the release checklist in DEVELOPMENT.md.
 
 ## Manual Verification Checklist
@@ -225,12 +257,18 @@ The CI suite is PHP-only, so browser behaviours still need a manual pass
 *   [ ] **Quick select** (Harvest / Destroy / Send): selecting N of a genetics ticks the oldest/youngest N including drying plants, re-running replaces that genetics' selection, and manual ticks still work.
 *   [ ] **Confirm steps** (Receive plants, Record dry weight): pressing the button shows a summary; Cancel saves nothing and keeps the form filled in; Confirm saves and shows what was recorded.
 *   [ ] **Large entries**: set Administration → Entry warning limits low (say 3 plants and 10 g), then receive 5 plants, record 20 g and generate a 12-plant manifest. Each confirm shows the red warning and Confirm stays disabled until the tick box is ticked. Put the limits back afterwards.
-*   [ ] **What's new**: seed with `--legacy` (an upgraded install) and open any page. The pop-up shows the newest changelog section folded, "Show more…" opens it into a scrolling area, and after "Got it" it doesn't come back in any browser. A normal seed (a new install) never shows it. Administration → What's new shows the notes any time. Check it at phone size too.
-*   [ ] **Dashboard banners**: report reminder banners appear in their windows (use `dashboard.php?demo_date=YYYY-MM-DD`), Dismiss persists, and acknowledged licenses stay out of "License Renewals Due".
+*   [ ] **What's new**: seed with `--legacy` (an upgraded install) and open any page. The pop-up shows the newest changelog section folded, "Show more…" opens it into a scrolling area, and after "Got it" it doesn't come back in any browser. A normal seed (a new install) never shows it. Administration → What's new shows the notes any time. Check it at phone size too. To check catching up, set `whatsNewSeenVersion` in the `Settings` table to an older version (say `1.2.0`) before opening a page: each newer version's notes show under their own label, newest first.
+*   [ ] **Dashboard banners**: report reminder banners appear in their windows (use `dashboard.php?demo_date=YYYY-MM-DD`), Dismiss persists, and acknowledged licences stay out of "Licence renewals due".
 *   [ ] **Draft email buttons**: open a pre-filled email in a new tab (webmail-safe) on the monthly and annual report pages.
-*   [ ] **License date picker**: on Company Licenses, the date picker stops at 15 months from today.
-*   [ ] **Dashboard cards**: "Plants growing" and "Plants drying" open List all plants with the filter already set, showing as many plants as the card says.
-*   [ ] **Manifest plants**: generate a plant manifest to an external company with "Then mark these plants as sent" on. Harvest / Destroy / Send opens with that many plants ticked (drying first), Send External and the company chosen; confirming marks them sent and returns to the manifest. With the toggle off it goes straight to the manifest.
+*   [ ] **Licence date picker**: on Company licences, the date picker stops at 15 months from today.
+*   [ ] **Dashboard cards**: "Plants growing" and "Plants drying" open All plants with the filter already set, showing as many plants as the card says.
+*   [ ] **Manifest plants**: generate a plant manifest to an external company with "Then mark these plants as sent" on. Harvest / Destroy / Send opens with that many plants ticked (drying first), Send external and the company chosen; confirming marks them sent and returns to the manifest. With the toggle off it goes straight to the manifest.
 *   [ ] **Report reminders** (on a real Home Assistant): Administration → Report reminders lists the phones with the Home Assistant app, "Send a test notification" arrives on the chosen one, and after switching on and saving the page shows when the next reminder can go out.
+*   [ ] **Theme colours and buttons**: in the light theme, buttons and links are GRACe green on the soft green-grey page (not Pico's blue on white), and pressing Tab through a form puts a solid green ring on each box. In both themes buttons are pill shaped, second actions (Cancel, Dismiss, Choose File, Retire) are outlines that turn green under the pointer, and fields and tick boxes have a clear edge. Check a phone, a tablet (about 820px) and a PC.
+*   [ ] **Inter font**: text on every page is Inter, the Chill Division font, even on a Home Assistant box with no internet. A name with macrons (Ōtaki, Māori) shows in the same font as the letters around it.
+*   [ ] **Tables on a phone**: at phone width (390px), Last month's report keeps each entry on one line, with the company and its address on two lines when you swipe across. Dates on Chain of custody documents and licence numbers on Verified companies stay on one line too. Tables that fitted the screen before, like Receive plants' recent entries, still do.
 *   [ ] **Maker logo**: the Chill Division logo shows beside GRACe on the light and dark themes. At tablet width (about 820px) the menu folds into the hamburger with nothing squashed, and above 960px all four menu items sit on one line.
-*   [ ] **Retire genetics**: Administration → Retire genetics greys out Retire for genetics with plants or flower on site and says what's there. Retiring one with nothing on site asks first; afterwards it's missing from Receive plants, Record dry weight change and Generate Shipping Manifest, but still in every report. "Bring back" returns it, and so does typing its name in "+ Add new genetics…" (it's selected for you).
+*   [ ] **Retire genetics**: Administration → Retire genetics greys out Retire for genetics with plants or flower on site and says what's there. Retiring one with nothing on site asks first; afterwards it's missing from Receive plants or take clones, Record dry weight change and Generate shipping manifest, but still in every report. "Bring back" returns it, and so does typing its name in "+ Add new genetics…" (it's selected for you).
+*   [ ] **Manifest PDF**: generate a manifest to a company with macrons in its name or address (add one called "Ōtaki Whānau Growers" at "12 Māori Road"). The PDF has the Chill Division logo top left, its text is Inter, and the macrons print. Plain names print as before.
+*   [ ] **Entry pages**: on a PC, Receive plants or take clones puts Genetics, How many plants and Add plants side by side, and Record dry weight change its four fields, each in a card as wide as the recent entries below. On a phone they stack. Choosing "Testing" or "Other" on Record dry weight change still shows the company or the reason box.
+*   [ ] **Numbers and dates**: Last month's materials out shows totals like 5628 (not 5628.00) and the card above them like 5,628 g. Number columns line up on the right in the reports, Current plants, All plants and recent entries. Every date on screen reads like 26/11/2026, and the Dashboard says "1 plant" for one.

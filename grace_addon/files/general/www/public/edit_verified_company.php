@@ -26,32 +26,32 @@ require 'header.php';
 
         <hgroup class="page-header">
             <h1>Edit <?php echo htmlspecialchars($company['name']); ?></h1>
-            <p>Update this company's details, for example when their license is renewed each year or their staff contact changes. New Chain of Custody documents and manifests will use the updated details; records already in your ledger keep the details from when they were created.</p>
+            <p>Update this company's details, for example when their licence is renewed each year or their staff contact changes. New chain of custody documents and manifests use the updated details. Records already in your ledger keep the details from when they were created.</p>
         </hgroup>
 
         <article class="form-card">
             <form id="editCompanyForm" class="form">
                 <input type="hidden" name="companyId" value="<?php echo (int) $company['id']; ?>">
 
-                <label for="companyName">Company Name:</label>
+                <label for="companyName">Company name</label>
                 <input type="text" id="companyName" name="companyName" class="input" required value="<?php echo htmlspecialchars($company['name']); ?>">
 
-                <label for="licenseNumber">License #:</label>
+                <label for="licenseNumber">Licence number</label>
                 <input type="text" id="licenseNumber" name="licenseNumber" class="input" required value="<?php echo htmlspecialchars($company['license_number']); ?>">
 
-                <label for="address">Address:</label>
+                <label for="address">Address</label>
                 <textarea id="address" name="address" class="input" rows="3" required><?php echo htmlspecialchars($company['address'] ?? ''); ?></textarea>
 
-                <label for="contactName">Primary Contact Name:</label>
+                <label for="contactName">Primary contact name</label>
                 <input type="text" id="contactName" name="contactName" class="input" required value="<?php echo htmlspecialchars($company['primary_contact_name'] ?? ''); ?>">
 
-                <label for="contactEmail">Primary Contact Email:</label>
+                <label for="contactEmail">Primary contact email</label>
                 <input type="email" id="contactEmail" name="contactEmail" class="input" required value="<?php echo htmlspecialchars($company['primary_contact_email'] ?? ''); ?>">
 
-                <label for="contactPhone">Primary Contact Phone:</label>
+                <label for="contactPhone">Primary contact phone</label>
                 <input type="tel" id="contactPhone" name="contactPhone" class="input" required value="<?php echo htmlspecialchars($company['primary_contact_phone'] ?? ''); ?>">
 
-                <button type="submit" class="button">Save Changes</button>
+                <button type="submit" class="button">Save changes</button>
                 <a href="verified_companies.php" role="button" class="secondary outline">Cancel</a>
             </form>
         </article>

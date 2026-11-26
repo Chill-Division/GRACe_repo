@@ -64,7 +64,7 @@ $before = ownCompany($pdo);
 check('A missing company name is refused',
     saveOwnCompany($pdo, ['companyName' => '  '] + $input), ['success' => false, 'message' => 'Please enter your company name.']);
 check('A missing license number is refused',
-    saveOwnCompany($pdo, ['companyLicense' => ''] + $input)['message'], 'Please enter your license number.');
+    saveOwnCompany($pdo, ['companyLicense' => ''] + $input)['message'], 'Please enter your licence number.');
 check('A missing address is refused',
     saveOwnCompany($pdo, ['companyAddress' => ''] + $input)['message'], 'Please enter your address.');
 check('An invalid email is refused',

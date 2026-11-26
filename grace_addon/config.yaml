@@ -1,23 +1,15 @@
 name: "GRACe Portal"
 description: "Growers Regulatory Assistance & Compliance engine"
 url: "https://www.chilldivision.co.nz"
-version: "1.3.0"
+version: "1.4.0"
 slug: "grace_addon"
 panel_icon: mdi:cannabis
 init: false
 arch:
   - aarch64
   - amd64
-  - armhf
-  - armv7
-  - i386
 ingress: true
 ingress_port: 8420
 startup: application
 # Report reminders on a phone go out through Home Assistant's notify services
 homeassistant_api: true
-
-map:
-  - type: addon_config
-    read_only: False
-    path: /grace_config

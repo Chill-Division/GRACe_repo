@@ -212,11 +212,11 @@ foreach ($flowerRows as $f) {
 $stmt->execute([1, -42.00, 'Subtract', 'Send external', seedTime(['first day of last month', '+14 days', '10:00'], $legacy), 2]);
 
 // --- Documents (with real files so downloads work) --------------------------
-seedDocument($pdo, $uploadDir, 'licenses', 'cultivation-license-2026.pdf', 320, date('Y-m-d', strtotime('+10 days')));  // triggers the expiry banner
-seedDocument($pdo, $uploadDir, 'licenses', 'supply-license-2026.pdf', 200, date('Y-m-d', strtotime('+9 months')));
+seedDocument($pdo, $uploadDir, 'licenses', 'cultivation-licence-2026.pdf', 320, date('Y-m-d', strtotime('+10 days')));  // triggers the expiry banner
+seedDocument($pdo, $uploadDir, 'licenses', 'supply-licence-2026.pdf', 200, date('Y-m-d', strtotime('+9 months')));
 // Expired but already acknowledged: must NOT appear in the nav banner or the
 // dashboard's License Renewals Due list (regression check for 0.18.0)
-seedDocument($pdo, $uploadDir, 'licenses', 'cultivation-license-2025.pdf', 500, date('Y-m-d', strtotime('-80 days')), 1);
+seedDocument($pdo, $uploadDir, 'licenses', 'cultivation-licence-2025.pdf', 500, date('Y-m-d', strtotime('-80 days')), 1);
 seedDocument($pdo, $uploadDir, 'sops', 'SOP-pest-management.pdf', 90);
 seedDocument($pdo, $uploadDir, 'sops', 'SOP-harvest-procedure.pdf', 60);
 seedDocument($pdo, $uploadDir, 'offtakes', 'offtake-agreement-aotearoa.pdf', 150);

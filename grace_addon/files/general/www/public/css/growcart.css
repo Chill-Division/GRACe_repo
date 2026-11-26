@@ -8,16 +8,52 @@
    1. Design tokens + Pico overrides
    -------------------------------------------------------------------------- */
 
-:root {
-  --pico-font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI",
-    Roboto, "Helvetica Neue", Arial, sans-serif;
-  --pico-border-radius: 0.625rem;
-  --pico-form-element-spacing-vertical: 0.65rem;
-  --pico-transition: 0.18s ease-in-out;
-  --g-radius-lg: 0.875rem;
+/* Inter, the Chill Division font. The add-on serves it itself, so it works on
+   a Home Assistant box with no internet. Both files are variable fonts that
+   cover every weight. The first holds the letters with macrons (ā, ō) and
+   other accents, the second plain Latin. Inter is free under the SIL Open
+   Font License, which has to stay with the files (fonts/inter/OFL.txt). */
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("../fonts/inter/inter-latin-ext-wght-normal.woff2") format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329,
+    U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
 }
 
-[data-theme="dark"] {
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("../fonts/inter/inter-latin-wght-normal.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329,
+    U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+:root {
+  --pico-font-family: "Inter", ui-sans-serif, system-ui, -apple-system,
+    "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  /* Corners from the Chill Division brand guide: 10px for fields, 14px for
+     cards (buttons are pills, in section 6) */
+  --pico-border-radius: 10px;
+  --pico-form-element-spacing-vertical: 0.65rem;
+  --pico-transition: 0.18s ease-in-out;
+  --g-radius-lg: 14px;
+}
+
+/* The two theme blocks start with :root on purpose. Pico's light theme uses
+   :root:not([data-theme=dark]), which outranks a bare [data-theme="light"],
+   so without it the light theme showed Pico's blue buttons and white page
+   instead of these. With :root the two tie, and this file loads after Pico. */
+:root[data-theme="dark"] {
+  /* Small coloured text: the dark theme's own colours already read well */
+  --g-accent-text: var(--g-accent);
+  --g-danger-text: var(--g-danger);
+  --g-warning-text: var(--g-warning);
+  --g-info-text: var(--g-info);
   --g-bg: #0f1512;
   --g-surface: #161f1a;
   --g-surface-raised: #1c2620;
@@ -51,15 +87,26 @@
   --pico-primary-inverse: #ffffff;
   --pico-primary-focus: rgba(74, 222, 128, 0.35);
   --pico-primary-underline: rgba(74, 222, 128, 0.5);
+  /* Second actions (Cancel, Dismiss, Choose file...) are the brand's outline
+     button: no fill, a light edge, green on hover */
+  --pico-secondary: var(--g-text);
+  --pico-secondary-background: transparent;
+  --pico-secondary-border: var(--g-text);
+  --pico-secondary-inverse: var(--g-text);
+  --pico-secondary-hover: var(--g-accent);
+  --pico-secondary-hover-background: transparent;
+  --pico-secondary-hover-border: var(--g-accent);
+  --pico-secondary-focus: var(--pico-primary-focus);
   --pico-form-element-background-color: #121a15;
-  --pico-form-element-border-color: var(--g-border);
+  /* Field and tick box edges at 3:1, the brand's minimum for graphics */
+  --pico-form-element-border-color: #627168;
   --pico-form-element-active-border-color: var(--g-accent-strong);
   --pico-form-element-focus-color: var(--pico-primary-focus);
   --pico-table-border-color: var(--g-border);
   --pico-table-row-stripped-background-color: rgba(255, 255, 255, 0.025);
 }
 
-[data-theme="light"] {
+:root[data-theme="light"] {
   --g-bg: #f4f7f5;
   --g-surface: #ffffff;
   --g-surface-raised: #fbfdfb;
@@ -75,6 +122,12 @@
   --g-warning-soft: rgba(217, 119, 6, 0.12);
   --g-info: #2563eb;
   --g-info-soft: rgba(37, 99, 235, 0.08);
+  /* Small coloured text (badges, the menu, messages) on white or a tint:
+     the colours above are 2.8 to 4.4:1 there, these are 5.3:1 or more */
+  --g-accent-text: #166534;
+  --g-danger-text: #b91c1c;
+  --g-warning-text: #92400e;
+  --g-info-text: #1d4ed8;
   --g-header-bg: rgba(255, 255, 255, 0.85);
   --g-shadow: 0 1px 2px rgba(16, 24, 20, 0.06), 0 8px 24px rgba(16, 24, 20, 0.06);
 
@@ -84,19 +137,35 @@
   --pico-muted-border-color: var(--g-border);
   --pico-card-background-color: var(--g-surface);
   --pico-card-sectioning-background-color: var(--g-surface-raised);
-  --pico-primary: var(--g-accent);
-  --pico-primary-background: #16a34a;
-  --pico-primary-border: #16a34a;
-  --pico-primary-hover: #15803d;
-  --pico-primary-hover-background: #15803d;
-  --pico-primary-hover-border: #15803d;
+  /* Links and buttons use the darker green, the same buttons as the dark
+     theme: white on #16a34a is only 3.3:1, on #15803d it's 5:1, and #15803d
+     links stay above 4.5:1 on the page background */
+  --pico-primary: var(--g-accent-strong);
+  --pico-primary-background: #15803d;
+  --pico-primary-border: #15803d;
+  --pico-primary-hover: #166534;
+  --pico-primary-hover-background: #166534;
+  --pico-primary-hover-border: #166534;
   --pico-primary-inverse: #ffffff;
-  --pico-primary-focus: rgba(22, 163, 74, 0.3);
-  --pico-primary-underline: rgba(22, 163, 74, 0.5);
+  --pico-primary-focus: rgba(22, 163, 74, 0.5);
+  --pico-primary-underline: rgba(21, 128, 61, 0.5);
+  /* Second actions (Cancel, Dismiss, Choose file...) are the brand's outline
+     button: no fill, a dark edge, green on hover */
+  --pico-secondary: var(--g-text);
+  --pico-secondary-background: transparent;
+  --pico-secondary-border: var(--g-text);
+  --pico-secondary-inverse: var(--g-text);
+  --pico-secondary-hover: var(--g-accent-strong);
+  --pico-secondary-hover-background: transparent;
+  --pico-secondary-hover-border: var(--g-accent-strong);
+  --pico-secondary-focus: var(--pico-primary-focus);
   --pico-form-element-background-color: #ffffff;
-  --pico-form-element-border-color: var(--g-border);
-  --pico-form-element-active-border-color: var(--g-accent);
-  --pico-form-element-focus-color: var(--pico-primary-focus);
+  /* Field and tick box edges at 3:1, the brand's minimum for graphics
+     (--g-border nearly vanishes on a white card), and a solid ring around
+     the field you're typing in */
+  --pico-form-element-border-color: #86918b;
+  --pico-form-element-active-border-color: var(--g-accent-strong);
+  --pico-form-element-focus-color: var(--g-accent-strong);
   --pico-table-border-color: var(--g-border);
   --pico-table-row-stripped-background-color: rgba(16, 24, 20, 0.025);
 }
@@ -201,7 +270,7 @@ header.app-header {
 
 .nav-brand-sub small {
   font-size: inherit;
-  color: var(--g-accent);
+  color: var(--g-accent-text);
 }
 
 /* "by Chill Division", the maker's logo beside the GRACe name */
@@ -219,10 +288,12 @@ header.app-header {
   color: var(--g-text-muted);
 }
 
+/* At least 34px tall, the brand guide's smallest logo on screen (the dots
+   on the i fill in below that). 1.9rem alone is 30px on a phone. */
 .nav-maker-logo {
   display: block;
   width: auto;
-  height: 1.9rem;
+  height: max(1.9rem, 34px);
 }
 
 /* The logo is a black wordmark: white on the dark theme */
@@ -267,7 +338,7 @@ header.app-header {
 }
 
 .nav-menu li a.active {
-  color: var(--g-accent);
+  color: var(--g-accent-text);
   background: var(--g-accent-soft);
 }
 
@@ -428,11 +499,11 @@ header.app-header {
 }
 
 .license-alert strong {
-  color: var(--g-danger);
+  color: var(--g-danger-text);
 }
 
 .license-alert a {
-  color: var(--g-danger);
+  color: var(--g-danger-text);
   font-weight: 600;
   text-decoration: underline;
 }
@@ -563,7 +634,7 @@ a.nav-card:focus {
   padding: 0.1rem 0.5rem;
   border-radius: 99px;
   background: var(--g-warning-soft);
-  color: var(--g-warning);
+  color: var(--g-warning-text);
   font-size: 0.7rem;
   font-weight: 600;
   text-transform: uppercase;
@@ -586,8 +657,95 @@ article {
   max-width: 42rem;
 }
 
+/* Entry forms across the page (1.4.0): Receive plants or take clones and
+   Record dry weight change set their fields side by side, in a card as wide
+   as the "Recent entries" table under it, the way Harvest / Destroy / Send
+   lays out its controls. On a phone they stack, as before. */
+.form-card--wide {
+  max-width: none;
+}
+
+.entry-hint {
+  display: block;
+}
+
+@media (min-width: 768px) {
+  .entry-fields {
+    display: grid;
+    gap: 1rem;
+    align-items: end;
+  }
+
+  .entry-fields--inline {
+    grid-template-columns: minmax(0, 2fr) minmax(9rem, 1fr) auto;
+  }
+
+  .entry-fields--grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .entry-fields .field--wide {
+    grid-column: 1 / -1;
+  }
+
+  .entry-fields .field > :is(input, select, textarea) {
+    margin-bottom: 0;
+  }
+
+  .entry-fields > button[type="submit"],
+  .entry-actions > button[type="submit"] {
+    width: auto;
+    margin-bottom: 0;
+    padding-inline: 2rem;
+  }
+
+  .entry-hint:not(:empty) {
+    margin-top: 0.6rem;
+  }
+
+  .entry-actions {
+    margin-top: 1.25rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .entry-fields--grid {
+    grid-template-columns: minmax(0, 1.6fr) repeat(3, minmax(0, 1fr));
+  }
+
+  .entry-fields--grid .field--wide {
+    grid-column: span 2;
+  }
+}
+
 .form-card h2 {
   margin-bottom: 1rem;
+}
+
+/* Buttons follow the Chill Division brand guide: pill shaped, SemiBold, with
+   a 1.5px edge. The main action is filled GRACe green, a second action is an
+   outline (Pico's .secondary, see the theme blocks). Fields and tick boxes
+   get the same 1.5px edge. */
+button,
+[type="submit"],
+[type="button"],
+[type="reset"],
+[role="button"],
+[type="file"]::file-selector-button {
+  --pico-border-width: 1.5px;
+  border-radius: 999px;
+  font-weight: 600;
+}
+
+input,
+select,
+textarea {
+  --pico-border-width: 1.5px;
+}
+
+/* Tick boxes are rounded squares, so they don't look like round options */
+[type="checkbox"]:not([role="switch"]) {
+  border-radius: 6px;
 }
 
 /* A switch with a line of explanation under it */
@@ -675,6 +833,34 @@ article {
   font-size: 0.875rem;
 }
 
+/* On a phone, or any screen under 768px wide, a table with more columns
+   than fit scrolls sideways, as it always has. A wide-table also keeps each
+   value on one line. Without it the browser squeezed every column down to
+   its longest word, so a date broke over three lines and an address ran
+   down the screen a word at a time. Its headers can wrap instead ("Weight
+   (grams)" over two lines), so they don't make a column wider than its
+   values need. A cell-long cell, like a company with its address, wraps at
+   a readable width. A row with one cell across the table ("Nothing to
+   report") wraps as usual. */
+@media (max-width: 767.98px) {
+  .table-wrap .wide-table th {
+    white-space: normal;
+  }
+
+  .table-wrap .wide-table td {
+    white-space: nowrap;
+  }
+
+  .table-wrap .wide-table td[colspan],
+  .table-wrap .wide-table td.cell-long {
+    white-space: normal;
+  }
+
+  .table-wrap .wide-table td.cell-long {
+    min-width: 17rem;
+  }
+}
+
 /* --------------------------------------------------------------------------
    8. Badges (plant status etc.)
    -------------------------------------------------------------------------- */
@@ -688,27 +874,27 @@ article {
   line-height: 1.5;
   white-space: nowrap;
   background: var(--g-accent-soft);
-  color: var(--g-accent);
+  color: var(--g-accent-text);
 }
 
 .badge--growing {
   background: var(--g-accent-soft);
-  color: var(--g-accent);
+  color: var(--g-accent-text);
 }
 
 .badge--drying {
   background: var(--g-warning-soft);
-  color: var(--g-warning);
+  color: var(--g-warning-text);
 }
 
 .badge--destroyed {
   background: var(--g-danger-soft);
-  color: var(--g-danger);
+  color: var(--g-danger-text);
 }
 
 .badge--sent {
   background: var(--g-info-soft);
-  color: var(--g-info);
+  color: var(--g-info-text);
 }
 
 .badge--neutral {
@@ -731,13 +917,13 @@ article {
 .status-message.success {
   background: var(--g-accent-soft);
   border-color: var(--g-accent-strong);
-  color: var(--g-accent);
+  color: var(--g-accent-text);
 }
 
 .status-message.error {
   background: var(--g-danger-soft);
   border-color: var(--g-danger);
-  color: var(--g-danger);
+  color: var(--g-danger-text);
 }
 
 #selectionCounter {
@@ -814,7 +1000,7 @@ article {
    -------------------------------------------------------------------------- */
 
 .grace-modal article {
-  max-width: 26rem;
+  max-width: 28rem;
   margin: 1rem;
   padding: 1.5rem;
   border: 1px solid var(--g-border);
@@ -846,8 +1032,12 @@ article {
   margin-bottom: 0.2rem;
 }
 
+/* When the buttons don't fit side by side (a long label, or a phone), they
+   stack with the main action on top, instead of squeezing a label onto two
+   lines inside its pill. */
 .grace-modal article footer {
   display: flex;
+  flex-wrap: wrap-reverse;
   justify-content: flex-end;
   gap: 0.6rem;
   margin: 1.25rem -1.5rem -1.5rem;
@@ -911,14 +1101,40 @@ article {
 }
 
 .whats-new-notes h4,
-.whats-new-page h4 {
+.whats-new-page h4,
+.whats-new-notes h5,
+.whats-new-page h5 {
   margin: 1rem 0 0.4rem;
   font-size: 0.95rem;
 }
 
 .whats-new-notes h4:first-child,
-.whats-new-page h4:first-child {
+.whats-new-page h4:first-child,
+.whats-new-version-label + h5 {
   margin-top: 0;
+}
+
+/* Notes for several versions at once (1.3.1, whats_new_lib.php): each one
+   starts with a small "GRACe x.y.z, released ..." label, newest first. The
+   headings under a label are h5, styled like the h4s of a single version. */
+.whats-new-notes h5,
+.whats-new-page h5 {
+  --pico-color: var(--pico-h4-color);
+}
+
+.whats-new-version + .whats-new-version {
+  margin-top: 1.1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--pico-muted-border-color);
+}
+
+.whats-new-notes .whats-new-version-label,
+.whats-new-page .whats-new-version-label {
+  margin: 0 0 0.5rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--g-text-muted);
 }
 
 .whats-new-notes ul,
@@ -935,6 +1151,16 @@ article {
 .grace-modal .whats-new-notes p,
 .grace-modal .whats-new-notes li {
   color: var(--pico-color);
+}
+
+/* Number columns (1.4.0, from the brand guide): right-aligned with tabular
+   figures, so weights and counts line up by place value. Only cells marked
+   .num: Inter's tabular setting also widens hyphens, colons and full stops,
+   which spaced out dates and times when it was tried on whole tables. */
+th.num,
+td.num {
+  font-variant-numeric: tabular-nums;
+  text-align: right;
 }
 
 /* "Recent entries" under the entry forms (recent_lib.php) */
@@ -1114,7 +1340,7 @@ a.stat-card:focus {
 
 .stat-card .stat-value {
   font-size: 1.6rem;
-  font-weight: 700;
+  font-weight: 800; /* ExtraBold, the brand guide's weight for big numbers */
   letter-spacing: -0.02em;
   color: var(--g-accent);
 }

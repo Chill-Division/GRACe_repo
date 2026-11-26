@@ -29,32 +29,32 @@ foreach ($stockStmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
     $flowerStock[(int) $row['genetics_id']] = (float) $row['total'];
 }
 
-$pageTitle = 'GRACe - Generate Shipping Manifest';
+$pageTitle = 'GRACe - Generate shipping manifest';
 require 'header.php';
 ?>
 
     <main class="container">
         <hgroup class="page-header">
-            <h1>Generate Shipping Manifest</h1>
-            <p>Create a manifest for plants or flower moving between license holders.</p>
+            <h1>Generate shipping manifest</h1>
+            <p>Create a manifest for plants or flower moving between licence holders.</p>
         </hgroup>
 
         <article class="form-card">
-            <p><strong>How this works:</strong> generating a manifest records it as <span class="badge badge--drying">In Progress</span>.
+            <p><strong>How this works.</strong> Generating a manifest records it as <span class="badge badge--drying">In Progress</span>.
             If you are sending <strong>flower</strong> to an external company, the shipped weight is
             <strong>automatically deducted from your dried-flower inventory</strong> the moment the manifest is generated,
             so no separate ledger entry is needed. If you are sending <strong>plants</strong>, leave "Then mark these plants
             as sent" on and Harvest / Destroy / Send opens next with them ticked, ready to check and confirm.
-            The manifest stays In Progress until the signed Chain of Custody
-            (photo or PDF) is attached on the <a href="complete_manifest.php">Complete Manifest</a> page.</p>
+            The manifest stays In Progress until the signed chain of custody
+            (photo or PDF) is attached on the <a href="complete_manifest.php">Complete manifest</a> page.</p>
         </article>
 
         <article class="form-card">
             <form id="shippingManifestForm" class="form" method="post" action="process_shipping_manifest.php"
                   data-large-plants="<?php echo (int) $limits['plants']; ?>"
                   data-large-grams="<?php echo (int) $limits['grams']; ?>">
-                <h2>Sending Party</h2>
-                <label for="sendingChoice">Choose:</label>
+                <h2>Sending party</h2>
+                <label for="sendingChoice">Company</label>
                 <select id="sendingChoice" name="sendingChoice" class="input" required>
                     <option value="us">Us</option>
                     <option value="external">External</option>
@@ -62,8 +62,8 @@ require 'header.php';
 
                 <div id="sendingDetails"></div>
 
-                <h2>Receiving Party</h2>
-                <label for="receivingChoice">Choose:</label>
+                <h2>Receiving party</h2>
+                <label for="receivingChoice">Company</label>
                 <select id="receivingChoice" name="receivingChoice" class="input" required>
                     <option value="us">Us</option>
                     <option value="external">External</option>
@@ -71,17 +71,17 @@ require 'header.php';
 
                 <div id="receivingDetails"></div>
 
-                <h2>Product Details</h2>
-                <label for="productType">Product Type:</label>
+                <h2>Product details</h2>
+                <label for="productType">Product type</label>
                 <select id="productType" name="productType" class="input" required>
                     <option value="flower">Flower</option>
                     <option value="plant">Plant</option>
                 </select>
 
-                <label for="quantity">Quantity or Weight (grams for flower):</label>
+                <label for="quantity">Quantity, or weight in grams for flower</label>
                 <input type="number" id="quantity" name="quantity" class="input" min="0.1" step="0.1" inputmode="decimal" required>
 
-                <label for="geneticsId">Genetics:</label>
+                <label for="geneticsId">Genetics</label>
                 <select id="geneticsId" name="geneticsId" class="input" required>
                     <?php foreach ($geneticsList as $genetic): ?>
                         <option value="<?php echo (int) $genetic['id']; ?>">
@@ -99,7 +99,7 @@ require 'header.php';
                     <small>Harvest / Destroy / Send opens next with the plants ticked and this company chosen, so you can check them and confirm.</small>
                 </div>
 
-                <button type="submit" class="button">Generate Manifest</button>
+                <button type="submit" class="button">Generate manifest</button>
             </form>
         </article>
     </main>
@@ -127,22 +127,22 @@ require 'header.php';
 
             if (choice === 'us') {
                 detailElement.innerHTML = `
-                    <label>Company Name:</label>
+                    <label>Company name</label>
                     <input type="text" name="${prefix}CompanyName" class="input" value="${escapeHtml(ownCompany.company_name)}" readonly>
 
-                    <label>License #:</label>
+                    <label>Licence number</label>
                     <input type="text" name="${prefix}LicenseNumber" class="input" value="${escapeHtml(ownCompany.company_license_number)}" readonly>
 
-                    <label>Address:</label>
+                    <label>Address</label>
                     <textarea name="${prefix}Address" class="input" rows="2" readonly>${escapeHtml(ownCompany.company_address)}</textarea>
 
-                    <label>Contact Email:</label>
+                    <label>Contact email</label>
                     <input type="email" name="${prefix}ContactEmail" class="input" value="${escapeHtml(ownCompany.primary_contact_email)}" readonly>
                 `;
             } else {
                 // No company is picked for you: choosing the first one in the
                 // list by default made it easy to address a shipment wrongly
-                let options = '<label>Select Company:</label>';
+                let options = '<label>Choose a company</label>';
                 options += `<select name="${prefix}CompanySelect" class="input" required>`;
                 options += '<option value="" disabled selected>Select company</option>';
                 companies.forEach(company => {
@@ -180,16 +180,16 @@ require 'header.php';
             }
             let infoContainer = document.createElement('div');
             infoContainer.innerHTML = `
-                <label>Company Name:</label>
+                <label>Company name</label>
                 <input type="text" name="${prefix}CompanyName" class="input" value="${escapeHtml(selectedCompany.name)}" readonly>
 
-                <label>License #:</label>
+                <label>Licence number</label>
                 <input type="text" name="${prefix}LicenseNumber" class="input" value="${escapeHtml(selectedCompany.license_number)}" readonly>
 
-                <label>Address:</label>
+                <label>Address</label>
                 <textarea name="${prefix}Address" class="input" rows="2" readonly>${escapeHtml(selectedCompany.address)}</textarea>
 
-                <label>Contact Email:</label>
+                <label>Contact email</label>
                 <input type="email" name="${prefix}ContactEmail" class="input" value="${escapeHtml(selectedCompany.primary_contact_email)}" readonly>
             `;
             // Remove any previous appended company details

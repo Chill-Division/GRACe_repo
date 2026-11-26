@@ -235,7 +235,7 @@ function confirmAction(options) {
                 ${warning ? `<p class="grace-modal-warning" role="alert">${escapeHtml(warning)}</p>
                 <label class="grace-modal-tick"><input type="checkbox" data-modal-tick> ${escapeHtml(warningTick)}</label>` : ''}
                 <footer>
-                    <button type="button" class="secondary" data-modal-cancel>${escapeHtml(cancelLabel)}</button>
+                    <button type="button" class="secondary outline" data-modal-cancel>${escapeHtml(cancelLabel)}</button>
                     <button type="button"${danger ? ' class="modal-danger"' : ''} data-modal-confirm>${escapeHtml(confirmLabel)}</button>
                 </footer>
             </article>`;

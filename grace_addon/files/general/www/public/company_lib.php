@@ -25,7 +25,7 @@ function saveOwnCompany(PDO $pdo, array $input)
 {
     $fields = [
         'companyName' => 'Please enter your company name.',
-        'companyLicense' => 'Please enter your license number.',
+        'companyLicense' => 'Please enter your licence number.',
         'companyAddress' => 'Please enter your address.',
         'primaryContactEmail' => 'Please enter a valid contact email.',
     ];
@@ -81,7 +81,7 @@ function addVerifiedCompany(PDO $pdo, array $input)
 {
     $fields = [
         'companyName' => 'company name',
-        'licenseNumber' => 'license number',
+        'licenseNumber' => 'licence number',
         'address' => 'address',
         'contactName' => 'contact name',
         'contactEmail' => 'contact email',
@@ -176,7 +176,7 @@ function updateVerifiedCompany(PDO $pdo, array $input)
         $stmt = $pdo->prepare("SELECT id FROM Companies WHERE license_number = ? AND id != ?");
         $stmt->execute([$licenseNumber, $companyId]);
         if ($stmt->fetch()) {
-            return "Error: Another company already has that license number.";
+            return "Error: Another company already has that licence number.";
         }
 
         $stmt = $pdo->prepare("SELECT id FROM Companies WHERE primary_contact_email = ? AND id != ?");

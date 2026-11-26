@@ -1,5 +1,4 @@
 <?php
-require_once 'TCPDF/tcpdf.php';
 require_once 'init_db.php';
 require_once 'manifest_lib.php';
 require_once 'genetics_lib.php';
@@ -128,84 +127,16 @@ try {
     ]);
     $manifestId = (int) $pdo->lastInsertId();
 
-    // --- Build the manifest PDF and persist it so it can be re-downloaded later ---
-    $pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
-    $pdf->SetCreator(PDF_CREATOR);
-    $pdf->SetAuthor('Chill Division');
-    $pdf->SetTitle('Shipping Manifest');
-    $pdf->SetMargins(15, 15, 15);
-    $pdf->SetHeaderMargin(15);
-    $pdf->AddPage();
-
-    $senderName = htmlspecialchars($sender['name'] ?? '');
-    $senderLicense = htmlspecialchars($sender['license'] ?? '');
-    $senderEmail = htmlspecialchars($sender['email'] ?? '');
-    $receiverName = htmlspecialchars($receiver['name'] ?? '');
-    $receiverLicense = htmlspecialchars($receiver['license'] ?? '');
-    $geneticsName = htmlspecialchars($genetics['name']);
-    $formattedAddress = nl2br(htmlspecialchars($receiver['address'] ?? ''));
-    $quantityLabel = $productType === 'flower' ? $quantity . ' g' : $quantity;
-
-    $htmlContent = <<<EOD
-
-    <style>
-         h1 { color: #85bbe9; text-align: left; font-weight: bold; }
-        table { width: 100%; }
-        td { padding: 5px; vertical-align: middle; }
-    </style>
-
-
-    <div class="flex items-center justify-between">
-        <div>
-            <h1>Chill Division Universal Shipping Manifest</h1>
-        </div>
-    </div>
-
-    <h2>Sending Party:</h2>
-    <table>
-        <tr><td><strong>Manifest #:</strong></td><td><u>{$manifestId}</u></td></tr>
-        <tr><td><strong>Staff Name Preparing Shipment:</strong></td><td>________________________</td></tr>
-        <tr><td><strong>Sending Company name + Licence #:</strong></td><td><u>{$senderName} / {$senderLicense}</u></td></tr>
-        <tr><td><strong>Arrival Notification Email:</strong></td><td><u>{$senderEmail}</u></td></tr>
-        <tr><td><strong>Date / Time Prepared for shipment:</strong></td><td><u>{$datePrepared}</u></td></tr>
-        <tr><td><strong>Product Type:</strong></td><td><u>{$productType}</u></td></tr>
-        <tr><td><strong>Genetics:</strong></td><td><u>{$geneticsName}</u></td></tr>
-        <tr><td><strong># of Items Sent:</strong></td><td><u>{$quantityLabel}</u></td></tr>
-        <tr><td><strong>Shipment Weight (Net / Gross):</strong></td><td>________________________</td></tr>
-        <tr><td><strong>Recipient Staff Name:</strong></td><td>________________________</td></tr>
-        <tr><td><strong>Recipient Company + Licence #:</strong></td><td><u>{$receiverName} / {$receiverLicense}</u></td></tr>
-        <tr><td><strong>Destination Address:</strong></td><td><u>{$formattedAddress}</u></td></tr>
-    </table>
-
-    <p class="signature"><strong>• Staff Signature:</strong> ________________________</p>
-
-    <h2>Transit Chain of Custody (if applicable):</h2>
-    <table class="ms-[30px]">
-        <tr><td><strong>Collected from Facility By:</strong></td><td>________________________</td></tr>
-        <tr><td><strong>Date / Time Shipment Collected:</strong></td><td>____/____/______ ____:____</td></tr>
-        <tr><td><strong># of Items Collected:</strong></td><td>________________________</td></tr>
-    </table>
-
-     <p class="signature"><strong>• Collection Signature / Tracking Number:</strong> ________________________</p>
-
-
-    <h2>Receiving Party:</h2>
-    <table class="ms-[30px]">
-        <tr><td><strong>Received By (Staff Name):</strong></td><td>________________________</td></tr>
-        <tr><td><strong>Date / Time of Receipt:</strong></td><td>____/____/______ ____:____</td></tr>
-        <tr><td><strong># of Items Received:</strong></td><td>________________________</td></tr>
-        <tr><td><strong>Shipment Weight (Net / Gross):</strong></td><td>________________________</td></tr>
-    </table>
-
-    <p class="signature"><strong>• Signature of Receiving Party:</strong>________________________</p>
-
-    <p><em>Please scan/photo upon receipt of goods and send a copy to <strong>{$senderEmail}</strong></em></p>
-    <p><em>This manifest is recorded as In Progress (manifest #{$manifestId}) in GRACe. It must be completed with the
-    signed Chain of Custody attached once the shipment is received.</em></p>
-    EOD;
-
-    $pdf->writeHTML($htmlContent, true, false, true, false, '');
-    $pdfOutput = $pdf->Output('shipping_manifest.pdf', 'S');
+    // --- Build the manifest PDF (manifest_lib.php) and keep it so it can be re-downloaded later ---
+    $pdfOutput = renderShippingManifestPdf([
+        'id' => $manifestId,
+        'sender' => $sender,
+        'receiver' => $receiver,
+        'genetics' => $genetics['name'],
+        'productType' => $productType,
+        'quantity' => $quantity,
+        'prepared' => $datePrepared,
+    ]);
 
     $manifestDir = '/data/uploads/manifests';
     if (!is_dir($manifestDir)) {

@@ -9,7 +9,7 @@ $pdo = initializeDatabase();
 $limits = getEntryWarningLimits($pdo);
 $recent = recentReceipts($pdo);
 
-$pageTitle = 'GRACe - Receive Genetics';
+$pageTitle = 'GRACe - Receive plants or take clones';
 require 'header.php';
 ?>
 
@@ -17,24 +17,27 @@ require 'header.php';
         <div id="statusMessage" class="status-message" style="display: none;"></div>
 
         <hgroup class="page-header">
-            <h1>Receive Genetics</h1>
-            <p>Any time you're receiving or adding genetics, either through a Form D declaration, taking clones, or from another licensed cultivator, this is where you want to add them.</p>
+            <h1>Receive plants or take clones</h1>
+            <p>Use this whenever plants come into your stock, whether that's clones you've taken, plants from another licensed cultivator, or plants declared on a Form D.</p>
         </hgroup>
 
-        <article class="form-card">
+        <article class="form-card form-card--wide">
             <form id="receiveGeneticsForm" class="form" action="handle_receive_genetics.php" method="post"
                   data-large-plants="<?php echo (int) $limits['plants']; ?>">
-
-                <label for="plantCount">How many plants received / clones taken:</label>
-                <input type="number" id="plantCount" name="plantCount" class="input" min="1" max="<?php echo GRACE_MAX_PLANTS_PER_ENTRY; ?>" step="1" inputmode="numeric" required>
-
-                <label for="geneticsName">Genetics Name:</label>
-                <select id="geneticsName" name="geneticsName" class="input" required>
-                    <option value="" disabled selected>Select Genetics</option>
-                </select>
-                <small id="stockHint" aria-live="polite"></small>
-
-                <button type="submit" class="button">Add plants</button>
+                <div class="entry-fields entry-fields--inline">
+                    <div class="field">
+                        <label for="geneticsName">Genetics</label>
+                        <select id="geneticsName" name="geneticsName" class="input" required>
+                            <option value="" disabled selected>Choose genetics</option>
+                        </select>
+                    </div>
+                    <div class="field">
+                        <label for="plantCount">How many plants</label>
+                        <input type="number" id="plantCount" name="plantCount" class="input" min="1" max="<?php echo GRACE_MAX_PLANTS_PER_ENTRY; ?>" step="1" inputmode="numeric" required>
+                    </div>
+                    <button type="submit" class="button">Add plants</button>
+                </div>
+                <small id="stockHint" class="entry-hint" aria-live="polite"></small>
             </form>
         </article>
 
@@ -44,13 +47,13 @@ require 'header.php';
             <p class="recent-entries-note">Your last <?php echo GRACE_RECENT_ENTRIES; ?>, newest first, so you can check what you just did and spot anything entered twice.</p>
             <figure class="table-wrap">
                 <table>
-                    <thead><tr><th>When</th><th>Genetics</th><th>Plants</th></tr></thead>
+                    <thead><tr><th>When</th><th>Genetics</th><th class="num">Plants</th></tr></thead>
                     <tbody>
                         <?php foreach ($recent as $entry): ?>
                         <tr>
                             <td><?php echo htmlspecialchars(formatLedgerDateTime($entry['when'])); ?></td>
                             <td><?php echo htmlspecialchars($entry['genetics']); ?></td>
-                            <td><?php echo (int) $entry['count']; ?></td>
+                            <td class="num"><?php echo (int) $entry['count']; ?></td>
                         </tr>
                         <?php endforeach; ?>
                     </tbody>

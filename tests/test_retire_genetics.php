@@ -343,8 +343,8 @@ check('Retire genetics page: goes back to the page after saving, so a refresh do
     strpos($page, "header('Location: retire_genetics.php?") !== false, true);
 check('Retire genetics page: names are escaped', substr_count($page, "htmlspecialchars(\$genetics['name'])") >= 3, true);
 check('Retire genetics page: the button is greyed out while something is on site', strpos($page, "' disabled'") !== false, true);
-check('Administration links to Retire genetics under Genetics Management',
-    (bool) preg_match('/Genetics Management.*href="retire_genetics\.php"/s', $source('administration.php')), true);
+check('Administration links to Retire genetics under Genetics management',
+    (bool) preg_match('/Genetics management.*href="retire_genetics\.php"/s', $source('administration.php')), true);
 check('The menu highlights Administration on Retire genetics', strpos($source('nav.php'), "'retire_genetics'") !== false, true);
 check('The user guide explains retiring genetics', strpos((string) file_get_contents(__DIR__ . '/../grace_addon/DOCS.md'), '# Retiring genetics') !== false, true);
 

@@ -30,7 +30,7 @@ $hasUpload = isset($_FILES['file']) && $_FILES['file']['error'] !== UPLOAD_ERR_N
 
 // Hard rule: a manifest cannot be closed off without a Chain of Custody attached
 if (!$hasUpload && !$existingDocId) {
-    respond(false, 'A Chain of Custody photo or PDF must be attached before the manifest can be completed.');
+    respond(false, 'A chain of custody photo or PDF must be attached before the manifest can be completed.');
 }
 
 $cocDocumentId = null;
@@ -49,7 +49,7 @@ if ($hasUpload) {
 
     $extension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
     if (!in_array($extension, ['jpg', 'jpeg', 'png', 'gif', 'webp', 'pdf'], true)) {
-        respond(false, 'Chain of Custody must be a photo (jpg, png, gif, webp) or a PDF.');
+        respond(false, 'The chain of custody must be a photo (jpg, png, gif, webp) or a PDF.');
     }
 
     $uploadDir = '/data/uploads/coc';
@@ -73,7 +73,7 @@ if ($hasUpload) {
                              AND id NOT IN (SELECT coc_document_id FROM ShippingManifests WHERE coc_document_id IS NOT NULL)");
     $stmt->execute([$existingDocId]);
     if (!$stmt->fetch()) {
-        respond(false, 'Selected Chain of Custody document is unavailable or already attached to another manifest.');
+        respond(false, 'That chain of custody document is unavailable or already attached to another manifest.');
     }
     $cocDocumentId = $existingDocId;
 }

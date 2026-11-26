@@ -27,7 +27,7 @@ if (is_array($typed)) {
     ];
 }
 
-$pageTitle = 'GRACe - Your Company Information';
+$pageTitle = 'GRACe - Your company information';
 require 'header.php';
 ?>
 
@@ -37,22 +37,22 @@ require 'header.php';
         <?php endif; ?>
 
         <hgroup class="page-header">
-            <h1>Your Company Information</h1>
-            <p>Enter your own company information. This is used to generate information for emailing to the Agency, as well as Chain of Custody documents.</p>
+            <h1>Your company information</h1>
+            <p>Enter your own company information. This is used to generate information for emailing to the Agency, as well as chain of custody documents.</p>
         </hgroup>
 
         <article class="form-card">
             <form id="companyInfoForm" action="process_own_company.php" method="post" class="form">
-                <label for="companyName">Company Name:</label>
+                <label for="companyName">Company name</label>
                 <input type="text" id="companyName" name="companyName" class="input" required value="<?php echo htmlspecialchars($companyInfo['company_name'] ?? ''); ?>">
 
-                <label for="companyLicense">Company License #:</label>
+                <label for="companyLicense">Company licence number</label>
                 <input type="text" id="companyLicense" name="companyLicense" class="input" required value="<?php echo htmlspecialchars($companyInfo['company_license_number'] ?? ''); ?>">
 
-                <label for="companyAddress">Company Address:</label>
+                <label for="companyAddress">Company address</label>
                 <textarea id="companyAddress" name="companyAddress" class="input" required><?php echo htmlspecialchars($companyInfo['company_address'] ?? ''); ?></textarea>
 
-                <label for="primaryContactEmail">Primary Contact Email:</label>
+                <label for="primaryContactEmail">Primary contact email</label>
                 <input type="email" id="primaryContactEmail" name="primaryContactEmail" class="input" required value="<?php echo htmlspecialchars($companyInfo['primary_contact_email'] ?? ''); ?>">
 
                 <button type="submit" class="button">Save</button>
