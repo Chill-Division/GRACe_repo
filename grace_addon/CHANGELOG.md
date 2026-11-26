@@ -1,4 +1,4 @@
-## [1.4.0] - 2026-11-16
+## [1.4.0] - 2026-11-26
 A tidy-up across GRACe: clearer names, easier forms, and manifests that print macrons properly.
 
 ### Changes
